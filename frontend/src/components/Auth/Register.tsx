@@ -1,6 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes';
+import bg from '../../assets/static/images/bg.jpg';
+import logo from '../../assets/logo-full.svg';
+import { APP_NAME } from '../../constants';
 
 type Props = {};
 
@@ -8,47 +11,53 @@ const Register: FC<Props> = (props) => {
 	const history = useHistory();
 
 	return (
-		<div className='h-100vh d-flex align-items-center justify-content-center'>
-			<div className='card w-100' style={{ maxWidth: '450px' }}>
-				<div className='card-body'>
-					<div className='d-flex justify-content-center'>
+		<div className='peers ai-s fxw-nw h-100vh'>
+			<div className='peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv' style={{ backgroundImage: `url(${bg})` }}>
+				<div className='pos-a centerXY'>
+					<div className='bgc-white bdrs-50p pos-r' style={{ height: '120px', width: '120px' }}>
 						<img
-							src='/logo.svg'
-							className='rounded-circle border clickable'
-							onClick={() => history.push(routes.LANDING)}
-							alt='Paymento'
-							style={{
-								height: '80px',
-								width: '80px',
-							}}
+							className='pos-a centerXY rounded-circle'
+							src={logo}
+							alt={APP_NAME}
+							style={{ width: '100px', height: '100px' }}
 						/>
 					</div>
-					<h4 className='card-title text-center mb-0'>Paymento</h4>
-					<p className='card-text text-center mb-0'>Thanks for coming!</p>
-					<p className='card-text text-center'>Create an account and fill in on the details later.</p>
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							history.push(routes.DASHBOARD);
-						}}>
-						<div className='form-group'>
-							<label htmlFor='email'>Email</label>
-							<input type='email' name='email' id='email' placeholder='Email' className='form-control' />
+				</div>
+			</div>
+			<div className='col-12 col-md-4 peer pX-40 pY-80 h-100 bgc-white scrollable pos-r' style={{ minWidth: '320px' }}>
+				<h4 className='fw-300 c-grey-900 mB-40'>Hi! Thanks for reaching out to us!</h4>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						toastr.success('Registered successfully!', undefined, { extendedTimeOut: 99999 });
+					}}>
+					<div className='form-group'>
+						<label className='text-normal text-dark'>Username</label>
+						<input type='text' className='form-control' placeholder='John Doe' />
+					</div>
+					<div className='form-group'>
+						<label className='text-normal text-dark'>Email Address</label>
+						<input type='email' className='form-control' placeholder='name@email.com' />
+					</div>
+					<div className='form-group'>
+						<label className='text-normal text-dark'>Password</label>
+						<input type='password' className='form-control' placeholder='Password' />
+					</div>
+					<div className='form-group'>
+						<label className='text-normal text-dark'>Confirm Password</label>
+						<input type='password' className='form-control' placeholder='Confirm Password' />
+					</div>
+					<div className='form-group row'>
+						<div className='col-12 col-md-4'>
+							<button className='btn btn-primary'>Sign Up</button>
 						</div>
-						<div className='form-group'>
-							<label htmlFor='password'>Password</label>
-							<input type='password' name='password' id='password' placeholder='Password' className='form-control' />
-						</div>
-						<div className='form-group d-flex align-items-center'>
-							<button type='submit' className='btn btn-primary btn-sm'>
-								Sign Up
-							</button>
-							<Link className='ml-auto' to={routes.LOGIN}>
+						<div className='col-12 col-md-8 d-flex'>
+							<Link to={routes.LOGIN} className='ml-md-auto mt-1'>
 								Already have an account? Sign In
 							</Link>
 						</div>
-					</form>
-				</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	);

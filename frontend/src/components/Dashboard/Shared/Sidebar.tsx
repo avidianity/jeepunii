@@ -1,6 +1,11 @@
 import React, { FC } from 'react';
+import { Link } from 'react-router-dom';
+import { APP_NAME } from '../../../constants';
+import { routes } from '../../../routes';
 
 type Props = {};
+
+const colors = [];
 
 const Sidebar: FC<Props> = (props) => {
 	return (
@@ -9,7 +14,7 @@ const Sidebar: FC<Props> = (props) => {
 				<div className='sidebar-logo'>
 					<div className='peers ai-c fxw-nw'>
 						<div className='peer peer-greed'>
-							<a className='sidebar-link td-n' href='index.html'>
+							<Link className='sidebar-link td-n' to={routes.LANDING}>
 								<div className='peers ai-c fxw-nw'>
 									<div className='peer'>
 										<div className='logo d-flex align-items-center justify-content-center'>
@@ -22,10 +27,10 @@ const Sidebar: FC<Props> = (props) => {
 										</div>
 									</div>
 									<div className='peer peer-greed'>
-										<h5 className='lh-1 mB-0 logo-text'>Paymento</h5>
+										<h5 className='lh-1 mB-0 logo-text'>{APP_NAME}</h5>
 									</div>
 								</div>
-							</a>
+							</Link>
 						</div>
 						<div className='peer'>
 							<div className='mobile-toggle sidebar-toggle'>

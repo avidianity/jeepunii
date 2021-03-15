@@ -18,10 +18,10 @@ class User extends Authenticatable implements MustVerifyEmail
     const CUSTOMER = 'Customer';
 
     const ROLES = [
-        static::ADMIN,
-        static::COOPERATIVE_OWNER,
-        static::DRIVER,
-        static::CUSTOMER,
+        self::ADMIN,
+        self::COOPERATIVE_OWNER,
+        self::DRIVER,
+        self::CUSTOMER,
     ];
 
     /**
@@ -33,6 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'cooperative_id',
     ];
 
     /**
@@ -53,4 +54,21 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'approved' => 'boolean',
     ];
+
+    protected static function booted()
+    {
+        static::deleted(function (self $user) {
+            $user->file->delete();
+        });
+    }
+
+    public function file()
+    {
+        return $this->belongsTo(File::class);
+    }
+
+    public function cooperative()
+    {
+        return $this->belongsTo(Cooperative::class);
+    }
 }

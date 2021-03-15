@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cooperative;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -46,7 +47,7 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['password', 'string', 'min:6', 'max:30'],
             'role' => ['required', 'string', Rule::in([User::COOPERATIVE_OWNER, User::DRIVER])],
-            'organization_id' => ['required', 'numeric'],
+            'cooperative_id' => ['required', 'numeric', Rule::exists(Cooperative::class, 'id')],
         ]);
 
         $user = User::make($data);

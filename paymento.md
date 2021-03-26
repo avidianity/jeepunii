@@ -9,8 +9,7 @@
 
 ## Customers
 
-- [ ] Register
-- [ ] Track LOC with GPS
+- [x] Register
 - [ ] Scanning
 - [ ] Payment Transaction
 - [ ] Input of Routes of Destination
@@ -19,11 +18,12 @@
 - [ ] History of Routes
 - [ ] History of Jeeps
 - [ ] Proof of Payment
-- [ ] Wallet
+- [x] Wallet
 - [ ] Request to driver if route and fare does not exist
 
 ## Driver
 
+- [ ] Track LOC with GPS
 - [ ] Time-in jeep assigned
 - [ ] Time-out jeep assigned
 - [ ] Monitor number of paying passengers in realtime
@@ -34,16 +34,16 @@
 ## Cooperative Owners
 
 - [ ] Generate QR
-- [ ] Management of Jeep Drivers (CRUD)
-- [ ] Management of Jeep Inventory
-- [ ] Assignment of Drivers to Jeep
+- [x] Management of Jeep Drivers (CRUD)
+- [x] Management of Jeep Inventory
+- [x] Assignment of Drivers to Jeep
 - [ ] Statistics and Analytics of sales, earnings, jeep, passengers, driver, common locations (daily, weekly, monthly)
 - [ ] Notify drivers on assigned jeep (sms)
-- [ ] Input Routes with Fare
+- [x] Input Routes with Fare
 
 ## Administrator
 
-- [ ] Manage Users
-- [ ] Approve Pending Registrations
-- [ ] Approve top-up wallet coins
-- [ ] Approve Organization
+- [x] Manage Users
+- [x] Approve Pending Registrations
+- [x] Approve top-up wallet coins
+- [x] Approve Organization

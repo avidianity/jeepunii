@@ -26,7 +26,7 @@ const Notifications: FC<Props> = (props) => {
 				<li>
 					<ul className='ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm'>
 						<li>
-							<a href='' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
+							<a href='/' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
 								<div className='peer mR-15'>
 									<img className='w-3r bdrs-50p' src='/https://randomuser.me/api/portraits/men/1.jpg' alt='' />
 								</div>
@@ -45,7 +45,7 @@ const Notifications: FC<Props> = (props) => {
 							</a>
 						</li>
 						<li>
-							<a href='' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
+							<a href='/' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
 								<div className='peer mR-15'>
 									<img className='w-3r bdrs-50p' src='/https://randomuser.me/api/portraits/men/2.jpg' alt='' />
 								</div>
@@ -64,7 +64,7 @@ const Notifications: FC<Props> = (props) => {
 							</a>
 						</li>
 						<li>
-							<a href='' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
+							<a href='/' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
 								<div className='peer mR-15'>
 									<img className='w-3r bdrs-50p' src='/https://randomuser.me/api/portraits/men/3.jpg' alt='' />
 								</div>
@@ -86,7 +86,7 @@ const Notifications: FC<Props> = (props) => {
 				</li>
 				<li className='pX-20 pY-15 ta-c bdT'>
 					<span>
-						<a href='' className='c-grey-600 cH-blue fsz-sm td-n'>
+						<a href='/' className='c-grey-600 cH-blue fsz-sm td-n'>
 							View All Notifications
 							<i className='ti-angle-right fsz-xs mL-10'></i>
 						</a>

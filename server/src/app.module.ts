@@ -25,6 +25,9 @@ import { JeepModule } from './jeep/jeep.module';
 				database: config.get<string>('DB_NAME'),
 				entities: ['dist/models/*.entity.{js, ts}'],
 				synchronize: config.get('ENV') !== 'production',
+				extra: {
+					decimalNumbers: true,
+				},
 			}),
 			inject: [ConfigService],
 		}),

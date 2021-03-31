@@ -18,7 +18,7 @@ Error.prototype.toJSON = function () {
 };
 
 // eslint-disable-next-line
-String.prototype.parseNumbers = function () {
+String.prototype.toNumber = function () {
 	const parts = this.split('.');
 	if (parts.length > 1) {
 		const whole = (parts[0].match(/\d/g) || []).join('');
@@ -30,6 +30,11 @@ String.prototype.parseNumbers = function () {
 		return 0;
 	}
 	return Number(match.join('')) || 0;
+};
+
+//eslint-disable-next-line
+Array.prototype.random = function () {
+	return this[Math.floor(Math.random() * this.length)];
 };
 
 export {};

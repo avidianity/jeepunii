@@ -1,5 +1,5 @@
 import toastr from 'toastr';
-import _ from 'lodash';
+import _, { isArray, isString } from 'lodash';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -12,35 +12,16 @@ export function toBool(data: any) {
 	return data ? true : false;
 }
 
-export function validURL(str: string) {
-	var pattern = new RegExp(
-		'^(https?:\\/\\/)?' + // protocol
-			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-			'(\\#[-a-z\\d_]*)?$',
-		'i'
-	); // fragment locator
-	return !!pattern.test(str);
-}
-
-export function makeDummyPagination() {
-	return {
-		current_page: 0,
-		data: [],
-		first_page_url: '',
-		from: '',
-		last_page: '',
-		last_page_url: '',
-		links: [],
-		next_page_url: '',
-		path: '',
-		per_page: 1,
-		prev_page_url: '',
-		to: '',
-		total: 0,
-	} as any;
+export function validURL(url: string) {
+	let valid = false;
+	var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!-/]))?/;
+	try {
+		new URL(url);
+		valid = true;
+	} catch (_) {
+		valid = false;
+	}
+	return !!pattern.test(url) && valid;
 }
 
 export function ucfirst(string: string) {
@@ -57,20 +38,26 @@ export function ucwords(string: string) {
 }
 
 export function handleError(error: any) {
-	if (error.response) {
-		const response = error.response;
-		if (response.data.message && response.status !== 422) {
-			toastr.error(response.data.message);
-		} else if (response.status === 422) {
-			Object.values(response.data.errors).forEach((errors: any) => errors.forEach((error: any) => toastr.error(error)));
-		} else {
-			toastr.error('Something went wrong, please try again later.', 'Oops!');
+	if (error) {
+		if (error.response) {
+			const response = error.response;
+			if (response.data.message) {
+				if (isArray(response.data.message)) {
+					return response.data.message.forEach((message: string) =>
+						toastr.error(ucfirst(message), undefined, { extendedTimeOut: 2000 })
+					);
+				} else if (isString(response.data.message)) {
+					return toastr.error(response.data.message);
+				}
+			}
+		} else if (error.message) {
+			if (error.message.includes('Network Error')) {
+				return toastr.error('Unable to connect. Please check your internet connection or the server may be down.');
+			}
+			return toastr.error(error.message);
 		}
-	} else if (error.message) {
-		toastr.error(error.message);
-	} else {
-		toastr.error('Something went wrong, please try again later.', 'Oops!');
 	}
+	return toastr.error('Something went wrong, please try again later.', 'Oops!');
 }
 
 export function groupBy<T, K extends keyof T>(data: Array<T>, key: K) {
@@ -84,29 +71,6 @@ export function groupBy<T, K extends keyof T>(data: Array<T>, key: K) {
 		temp[property].push(item);
 	});
 	return Object.keys(temp).map((key) => temp[key]);
-}
-
-export function createTableColumns(data: Array<any>) {
-	if (data.length === 0) {
-		return [];
-	}
-
-	return Object.keys(data[0]).map((key) => {
-		switch (key) {
-			case 'id':
-				return 'ID';
-			case 'createdAt':
-				return 'Created';
-			case 'updatedAt':
-				return 'Modified';
-			case 'created_at':
-				return 'Created';
-			case 'updated_at':
-				return 'Modified';
-			default:
-				return sentencify(key);
-		}
-	});
 }
 
 export function sentencify(words: string) {
@@ -124,7 +88,12 @@ export function makeMask<T extends Function>(callable: T, callback: Function) {
 }
 
 export function except<T, K extends keyof T>(data: T, keys: Array<K>) {
-	const copy = { ...data };
+	const copy = {} as T;
+
+	for (const key in data) {
+		copy[key] = data[key];
+	}
+
 	for (const key of keys) {
 		if (key in copy) {
 			delete copy[key];
@@ -137,7 +106,7 @@ export function exceptMany<T, K extends keyof T>(data: Array<T>, keys: Array<K>)
 	return [...data].map((item) => except(item, keys));
 }
 
-export function orEqual<T>(data: T, keys: Array<T>) {
+export function has<T>(keys: Array<T>, data: T) {
 	return keys.includes(data);
 }
 

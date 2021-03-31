@@ -48,6 +48,10 @@ export class CreateUserDTO {
 	@IsOptional()
 	cooperativeId?: number;
 
+	@IsNumber()
+	@IsOptional()
+	coins?: number;
+
 	@IsBoolean()
 	@IsNotEmpty()
 	approved: boolean;

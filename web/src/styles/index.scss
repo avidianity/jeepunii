@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'toastr';
+@import 'icons';
 
 .h-100vh {
 	height: 100vh;
@@ -7,4 +8,50 @@
 
 .clickable:hover {
 	cursor: pointer;
+}
+
+@keyframes spinning {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spinning-reverse {
+	from {
+		transform: rotate(-0deg);
+	}
+	to {
+		transform: rotate(-360deg);
+	}
+}
+
+.spin {
+	animation-name: spinning;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+
+.spin-reverse {
+	animation-name: spinning-reverse;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+
+.ReactQueryDevtools {
+	z-index: 9999 !important;
+}
+
+.hide-on-mobile {
+	display: none !important;
+}
+
+@media screen and (min-width: 576px) {
+	.hide-on-mobile {
+		display: block;
+	}
 }

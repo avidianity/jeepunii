@@ -22,8 +22,9 @@ export class User extends Model {
 		'password',
 		'role',
 		'approved',
+		'coins',
 	];
-	protected hidden = ['password'];
+	protected hidden = ['password', 'currentToken'];
 
 	@Column()
 	firstName: string;
@@ -42,6 +43,9 @@ export class User extends Model {
 
 	@Column()
 	password: string;
+
+	@Column('decimal', { default: 0 })
+	coins: number;
 
 	@Column({ type: 'enum', enum: RolesEnum, default: RolesEnum.PASSENGER })
 	role: RolesEnum;

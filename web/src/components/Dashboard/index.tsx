@@ -1,39 +1,35 @@
-import React, { FC, useContext, useEffect } from 'react';
-import { useHistory } from 'react-router';
+import React, { FC, useEffect } from 'react';
+import { Route, Switch } from 'react-router';
 import { v4 } from 'uuid';
-import { EventContext } from '../../contexts';
+import { useURL } from '../../hooks';
 import { routes } from '../../routes';
 import Footer from './Shared/Footer';
 import Navbar from './Shared/Navbar';
 import Sidebar from './Shared/Sidebar';
+import Users from './Users';
 
 type Props = {};
 
 const Dashboard: FC<Props> = (props) => {
-	const history = useHistory();
-	const { AuthBus } = useContext(EventContext);
+	const url = useURL();
 
 	const fetchRequirements = (id: string) => {
-		['/loader.js', '/bundle.js'].forEach((url) => {
+		const scripts = ['/loader.js', '/bundle.js'].map((url) => {
 			const script = document.createElement('script');
 			script.src = `${process.env.PUBLIC_URL}${url}`;
 			script.defer = true;
 			script.type = 'text/javascript';
 			script.setAttribute('data-id', id);
-			document.body.append(script);
+			return script;
 		});
+		document.body.append(...scripts);
 	};
 
 	useEffect(() => {
 		const id = v4();
 		fetchRequirements(id);
 
-		const key = AuthBus.listen('logout', () => {
-			history.push(routes.LOGIN);
-		});
-
 		return () => {
-			AuthBus.unlisten(key);
 			document.querySelectorAll(`[data-id="${id}"]`)?.forEach((element) => element.remove());
 		};
 		// eslint-disable-next-line
@@ -46,7 +42,11 @@ const Dashboard: FC<Props> = (props) => {
 				<Navbar />
 				<main className='main-content bgc-grey-100'>
 					<div id='mainContent'>
-						<div className='full-container'></div>
+						<div className='full-container pt-5'>
+							<Switch>
+								<Route path={url(routes.USERS)} component={Users} />
+							</Switch>
+						</div>
 					</div>
 				</main>
 			</div>

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import md5 from 'md5';
 import { Token } from 'src/models/token.entity';
+import { User } from 'src/models/user.entity';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
@@ -34,6 +35,13 @@ export class AuthController {
 			user,
 			token: text,
 		};
+	}
+
+	@Post('/logout')
+	@UseGuards(HttpBearerGuard)
+	async logout(@Request() req) {
+		const user: User = req.user;
+		return await user.currentToken.remove();
 	}
 
 	@Get('/check')

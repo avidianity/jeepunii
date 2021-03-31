@@ -1,4 +1,5 @@
 import {
+	ForbiddenException,
 	Injectable,
 	NotFoundException,
 	UnprocessableEntityException,
@@ -24,10 +25,14 @@ export class AuthService {
 		}
 
 		const user = new User();
+
 		user.fill({
 			...data,
 			password: Hash.make(data.password),
 		});
+
+		user.approved = false;
+
 		return await user.save();
 	}
 
@@ -39,6 +44,12 @@ export class AuthService {
 		if (!user) {
 			throw new NotFoundException({
 				message: 'Email does not exist.',
+			});
+		}
+
+		if (!user.approved) {
+			throw new ForbiddenException({
+				message: 'Your account is not approved yet.',
 			});
 		}
 

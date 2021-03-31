@@ -16,13 +16,25 @@
 	</head>
 	<body class="app">
 		<noscript>You need to enable JavaScript to run this app.</noscript>
-		<div id="loader" style="display: flex; align-items: center; justify-content: center">
+		<div
+			id="loader"
+			style="
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				position: fixed !important;
+				height: 100%;
+				width: 100%;
+				top: 0;
+				left: 0;
+			"
+		>
 			<img
 				src="%PUBLIC_URL%/logo-full.svg"
 				alt="Paymento"
 				style="height: 200px; width: 200px; border-radius: 50%; border: 1px solid rgba(50, 50, 50, 0.25)"
 			/>
 		</div>
-		<div id="root"></div>
+		<div id="root" style="z-index: 0"></div>
 	</body>
 </html>

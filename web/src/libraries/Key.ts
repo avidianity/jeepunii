@@ -16,4 +16,8 @@ export class Key {
 	getName() {
 		return this.name;
 	}
+
+	toString() {
+		return `'${this.id} - ${this.name}'`;
+	}
 }

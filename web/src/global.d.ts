@@ -1,10 +1,14 @@
 declare global {
 	interface String {
-		parseNumbers(): number;
+		toNumber(): number;
 	}
 
 	interface Error {
 		toJSON(): Object;
+	}
+
+	interface Array<T> {
+		random(): T;
 	}
 }
 

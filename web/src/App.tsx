@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
@@ -8,10 +8,17 @@ import Landing from './components/Landing';
 import FourZeroFour from './components/Shared/FourZeroFour';
 import { AuthContext, EventContext } from './contexts';
 import { EventBus } from './libraries/EventBus';
+import { State } from './libraries/State';
 import { routes } from './routes';
+import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { UserContract } from './contracts/user.contract';
+import axios from 'axios';
 
 function App() {
-	const [logged, setLogged] = useState(false);
+	const state = State.getInstance();
+	const [logged, setLogged] = useState((state.has('user') && state.has('token')) || false);
+	const [user, setUser] = useState<UserContract | null>(state.has('user') ? state.get('user') : null);
 
 	const EventBuses = {
 		AuthBus: new EventBus(),
@@ -27,29 +34,54 @@ function App() {
 		});
 	};
 
+	const checkAuth = async () => {
+		try {
+			const { data } = await axios.get('/auth/check');
+			setUser(data);
+			setLogged(true);
+			if (state.get<boolean>('remember')) {
+				state.set('user', data);
+			}
+		} catch (error) {
+			console.log(error.toJSON());
+			EventBuses.AuthBus.dispatch('logout');
+		}
+	};
+
 	useEffect(() => {
 		fetchRequirements();
-		const logoutKey = EventBuses.AuthBus.listen('logout', () => setLogged(false));
-		const loginKey = EventBuses.AuthBus.listen('login', () => setLogged(true));
+		const loginKey = EventBuses.AuthBus.listen<UserContract>('login', (user) => {
+			setLogged(true);
+			setUser(user);
+		});
+
+		if (state.has('token')) {
+			axios.defaults.headers.common['Authorization'] = `Bearer ${state.get('token')}`;
+		}
+
+		checkAuth();
+
 		return () => {
 			EventBuses.AuthBus.unlisten(loginKey);
-			EventBuses.AuthBus.unlisten(logoutKey);
 		};
 		// eslint-disable-next-line
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ logged, setLogged }}>
+		<AuthContext.Provider value={{ logged, setLogged, user, setUser }}>
 			<EventContext.Provider value={EventBuses}>
-				<Router>
-					<Switch>
-						<Route path={routes.LANDING} exact component={Landing} />
-						<Route path={routes.LOGIN} component={Login} />
-						<Route path={routes.REGISTER} component={Register} />
-						<Route path={routes.DASHBOARD} component={Dashboard} />
-						<Route component={FourZeroFour} />
-					</Switch>
-				</Router>
+				<QueryClientProvider client={new QueryClient()}>
+					<Router>
+						<Switch>
+							<Route path={routes.LANDING} exact component={Landing} />
+							<Route path={routes.LOGIN} component={Login} />
+							<Route path={routes.REGISTER} component={Register} />
+							<Route path={routes.DASHBOARD} component={Dashboard} />
+							<Route component={FourZeroFour} />
+						</Switch>
+						<ReactQueryDevtools position='bottom-right' />
+					</Router>
+				</QueryClientProvider>
 			</EventContext.Provider>
 		</AuthContext.Provider>
 	);

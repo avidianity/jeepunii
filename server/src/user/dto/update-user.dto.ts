@@ -49,6 +49,10 @@ export class UpdateUserDTO {
 	@IsOptional()
 	cooperativeId?: number;
 
+	@IsNumber()
+	@IsOptional()
+	coins?: number;
+
 	@IsBoolean()
 	@IsOptional()
 	approved?: boolean;

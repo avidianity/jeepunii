@@ -28,7 +28,7 @@ const Messages: FC<Props> = (props) => {
 						<li>
 							<a href='/' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
 								<div className='peer mR-15'>
-									<img className='w-3r bdrs-50p' src='/https://randomuser.me/api/portraits/men/1.jpg' alt='' />
+									<img className='w-3r bdrs-50p' src='https://randomuser.me/api/portraits/men/1.jpg' alt='' />
 								</div>
 								<div className='peer peer-greed'>
 									<div>
@@ -50,7 +50,7 @@ const Messages: FC<Props> = (props) => {
 						<li>
 							<a href='/' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
 								<div className='peer mR-15'>
-									<img className='w-3r bdrs-50p' src='/https://randomuser.me/api/portraits/men/2.jpg' alt='' />
+									<img className='w-3r bdrs-50p' src='https://randomuser.me/api/portraits/men/2.jpg' alt='' />
 								</div>
 								<div className='peer peer-greed'>
 									<div>
@@ -72,7 +72,7 @@ const Messages: FC<Props> = (props) => {
 						<li>
 							<a href='/' className='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
 								<div className='peer mR-15'>
-									<img className='w-3r bdrs-50p' src='/https://randomuser.me/api/portraits/men/3.jpg' alt='' />
+									<img className='w-3r bdrs-50p' src='https://randomuser.me/api/portraits/men/3.jpg' alt='' />
 								</div>
 								<div className='peer peer-greed'>
 									<div>

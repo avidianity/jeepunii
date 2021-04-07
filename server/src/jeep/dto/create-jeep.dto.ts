@@ -12,12 +12,10 @@ export class CreateJeepDTO {
 	@IsNotEmpty()
 	plateNumber: string;
 
-	@IsNumber()
 	@IsNotEmpty()
 	@Exists(Cooperative)
 	cooperativeId: number;
 
-	@IsNumber()
 	@Exists(User)
 	@IsOptional()
 	driverId?: number;

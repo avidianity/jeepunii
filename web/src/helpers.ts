@@ -2,8 +2,22 @@ import toastr from 'toastr';
 import _, { isArray, isString } from 'lodash';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import qrcode from 'qrcode';
 
 dayjs.extend(relativeTime);
+
+export class QRCode {
+	static toDataURL(data: any) {
+		return new Promise<string>((resolve, reject) => {
+			qrcode.toDataURL(data, (error, url) => {
+				if (error) {
+					return reject(error);
+				}
+				return resolve(url);
+			});
+		});
+	}
+}
 
 export function outIf<T>(condition: boolean, output: T, defaultValue = ''): T {
 	return condition ? output : ((defaultValue as unknown) as T);
@@ -44,10 +58,10 @@ export function handleError(error: any) {
 			if (response.data.message) {
 				if (isArray(response.data.message)) {
 					return response.data.message.forEach((message: string) =>
-						toastr.error(ucfirst(message), undefined, { extendedTimeOut: 2000 })
+						toastr.error(sentencify(message), undefined, { extendedTimeOut: 2000 })
 					);
 				} else if (isString(response.data.message)) {
-					return toastr.error(response.data.message);
+					return toastr.error(sentencify(response.data.message));
 				}
 			}
 		} else if (error.message) {
@@ -74,7 +88,12 @@ export function groupBy<T, K extends keyof T>(data: Array<T>, key: K) {
 }
 
 export function sentencify(words: string) {
-	return ucwords(_.snakeCase(words).split('_').join(' '));
+	return ucfirst(
+		_.snakeCase(words)
+			.split('_')
+			.map((word) => (word.toLowerCase() === 'id' ? 'ID' : word))
+			.join(' ')
+	);
 }
 
 export function fromNow(date: any) {

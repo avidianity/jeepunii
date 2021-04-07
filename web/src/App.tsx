@@ -14,6 +14,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { UserContract } from './contracts/user.contract';
 import axios from 'axios';
+import Tooltip from './components/Shared/Tooltip';
 
 function App() {
 	const state = State.getInstance();
@@ -80,6 +81,7 @@ function App() {
 							<Route component={FourZeroFour} />
 						</Switch>
 						<ReactQueryDevtools position='bottom-right' />
+						<Tooltip />
 					</Router>
 				</QueryClientProvider>
 			</EventContext.Provider>

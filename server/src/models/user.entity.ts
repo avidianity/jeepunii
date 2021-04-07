@@ -6,24 +6,27 @@ import { Token } from './token.entity';
 
 export enum RolesEnum {
 	ADMIN = 'Admin',
-	COOPERATIVE = 'Cooperative',
+	COOPERATIVE = 'Cooperative Owner',
 	DRIVER = 'Driver',
 	PASSENGER = 'Passenger',
 }
 
 @Entity()
 export class User extends Model {
-	protected fillable = [
-		'firstName',
-		'lastName',
-		'address',
-		'email',
-		'phone',
-		'password',
-		'role',
-		'approved',
-		'coins',
-	];
+	protected fillable() {
+		return [
+			'firstName',
+			'lastName',
+			'address',
+			'email',
+			'phone',
+			'password',
+			'role',
+			'approved',
+			'coins',
+		];
+	}
+
 	protected hidden = ['password', 'currentToken'];
 
 	@Column()

@@ -43,7 +43,6 @@ export class CreateUserDTO {
 	@IsIn(Roles)
 	role: RolesEnum;
 
-	@IsNumber()
 	@Exists(Cooperative)
 	@IsOptional()
 	cooperativeId?: number;

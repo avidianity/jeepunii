@@ -44,7 +44,6 @@ export class UpdateUserDTO {
 	@IsOptional()
 	role?: RolesEnum;
 
-	@IsNumber()
 	@Exists(Cooperative)
 	@IsOptional()
 	cooperativeId?: number;

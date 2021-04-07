@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts';
 import { routes } from '../../routes';
 import styles from '../../styles/landing/navbar.module.scss';
-import { AccountCircle } from '@material-ui/icons';
 
 type Props = {};
 
@@ -42,7 +41,7 @@ const Navbar: FC<Props> = (props) => {
 					) : (
 						<li className={`nav-item mx-2 ${styles['nav-item']}`}>
 							<Link className={`nav-link d-flex align-items-center`} to={routes.DASHBOARD}>
-								<AccountCircle className='mr-1' />
+								<i className='material-icons mr-1'>account_circle</i>
 								{user?.firstName}
 							</Link>
 						</li>

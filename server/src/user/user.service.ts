@@ -2,13 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { EntityServiceContract } from 'src/interfaces/entity-service-contract.interface';
 import { Cooperative } from 'src/models/cooperative.entity';
 import { User } from 'src/models/user.entity';
+import { FindManyOptions } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService implements EntityServiceContract<User> {
-	all() {
-		return User.find({ relations: ['cooperative'] });
+	all(options?: FindManyOptions<User>) {
+		return User.find({ ...options, relations: ['cooperative'] });
 	}
 
 	async find(id: number) {

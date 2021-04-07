@@ -10,6 +10,14 @@ declare global {
 	interface Array<T> {
 		random(): T;
 	}
+
+	interface HTMLButtonElement {
+		disable(mode?: boolean): void;
+	}
+
+	interface StringConstructor {
+		random(size?: number): string;
+	}
 }
 
 export {};

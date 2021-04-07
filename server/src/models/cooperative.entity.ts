@@ -5,7 +5,9 @@ import { User } from './user.entity';
 
 @Entity()
 export class Cooperative extends Model {
-	protected fillable = ['name', 'description', 'website', 'approved'];
+	protected fillable() {
+		return ['name', 'description', 'website', 'approved'];
+	}
 
 	@Column()
 	name: string;

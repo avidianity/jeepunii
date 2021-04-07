@@ -6,9 +6,11 @@ import {
 	Param,
 	Post,
 	Put,
+	Query,
 	UseGuards,
 } from '@nestjs/common';
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
+import { RolesEnum } from 'src/models/user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserService } from './user.service';
@@ -19,7 +21,10 @@ export class UserController {
 	constructor(protected users: UserService) {}
 
 	@Get()
-	async index() {
+	async index(@Query('role') role?: RolesEnum) {
+		if (role) {
+			return await this.users.all({ where: { role } });
+		}
 		return await this.users.all();
 	}
 

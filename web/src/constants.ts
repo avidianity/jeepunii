@@ -8,3 +8,5 @@ export const RoleColorMap = {
 	[RolesEnum.DRIVER]: 'success',
 	[RolesEnum.PASSENGER]: 'warning',
 };
+
+export const Roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER, RolesEnum.PASSENGER];

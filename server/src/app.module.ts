@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CooperativeModule } from './cooperative/cooperative.module';
 import { JeepModule } from './jeep/jeep.module';
+import { CryptoModule } from './crypto/crypto.module';
 
 @Module({
 	imports: [
@@ -19,11 +18,11 @@ import { JeepModule } from './jeep/jeep.module';
 			useFactory: (config: ConfigService) => ({
 				type: config.get<any>('DB_CONNECTION'),
 				host: config.get<string>('DB_HOST'),
-				port: Number(config.get<string>('DB_PORT')),
+				port: config.get<string>('DB_PORT'),
 				username: config.get<string>('DB_USERNAME'),
 				password: config.get<string>('DB_PASSWORD'),
 				database: config.get<string>('DB_NAME'),
-				entities: ['dist/models/*.entity.{js, ts}'],
+				entities: ['{dist, src}/models/*.entity.{js, ts}'],
 				synchronize: config.get('ENV') !== 'production',
 				extra: {
 					decimalNumbers: true,
@@ -35,8 +34,9 @@ import { JeepModule } from './jeep/jeep.module';
 		UserModule,
 		CooperativeModule,
 		JeepModule,
+		CryptoModule,
 	],
-	controllers: [AuthController],
-	providers: [AuthService],
+	controllers: [],
+	providers: [],
 })
 export class AppModule {}

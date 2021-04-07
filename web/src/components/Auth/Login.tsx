@@ -9,7 +9,6 @@ import { useForm } from 'react-hook-form';
 import { handleError } from '../../helpers';
 import { State } from '../../libraries/State';
 import axios from 'axios';
-import { Loop } from '@material-ui/icons';
 
 type Props = {};
 
@@ -117,7 +116,7 @@ const Login: FC<Props> = (props) => {
 							</div>
 							<div className='peer'>
 								<button type='submit' className='btn btn-primary' disabled={processing}>
-									{!processing ? 'Sign In' : <Loop className='spin-reverse' />}
+									{!processing ? 'Sign In' : <i className='material-icons spin-reverse'>loop</i>}
 								</button>
 							</div>
 						</div>

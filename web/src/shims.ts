@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 Error.prototype.toJSON = function () {
 	const alt = {} as any;
 
@@ -17,7 +16,6 @@ Error.prototype.toJSON = function () {
 	return alt;
 };
 
-// eslint-disable-next-line
 String.prototype.toNumber = function () {
 	const parts = this.split('.');
 	if (parts.length > 1) {
@@ -32,9 +30,28 @@ String.prototype.toNumber = function () {
 	return Number(match.join('')) || 0;
 };
 
-//eslint-disable-next-line
+const characters = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+
+String.random = (size = 40) => {
+	let results = '';
+
+	for (let x = 0; x < size; x++) {
+		results += characters.charAt(Math.floor(Math.random() * characters.length));
+	}
+
+	return results;
+};
+
 Array.prototype.random = function () {
 	return this[Math.floor(Math.random() * this.length)];
+};
+
+HTMLButtonElement.prototype.disable = function (mode?: boolean) {
+	if (mode === false) {
+		this.removeAttribute('disabled');
+	} else {
+		this.setAttribute('disabled', 'disabled');
+	}
 };
 
 export {};

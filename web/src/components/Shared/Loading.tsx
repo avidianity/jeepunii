@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { Loop } from '@material-ui/icons';
 
 type Props = {
 	className?: string;
@@ -8,7 +7,7 @@ type Props = {
 const Loading: FC<Props> = ({ className }) => {
 	return (
 		<div className={`d-flex h-100 align-items-center justify-content-center ${className}`}>
-			<Loop className='spin-reverse' />
+			<i className='material-icons spin-reverse'>loop</i>
 		</div>
 	);
 };

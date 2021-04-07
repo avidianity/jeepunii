@@ -5,7 +5,9 @@ import { User } from './user.entity';
 
 @Entity()
 export class Jeep extends Model {
-	protected fillable = ['name', 'plateNumber'];
+	protected fillable() {
+		return ['name', 'plateNumber'];
+	}
 
 	@Column()
 	name: string;

@@ -4,7 +4,6 @@ import { routes } from '../../routes';
 import bg from '../../assets/static/images/bg.jpg';
 import logo from '../../assets/logo-full.svg';
 import { APP_NAME } from '../../constants';
-import { AirlineSeatReclineNormal, Loop, AssignmentInd, SupervisorAccount } from '@material-ui/icons';
 import { useForm } from 'react-hook-form';
 import { CooperativeContract } from '../../contracts/cooperative.contract';
 import { useQuery } from 'react-query';
@@ -15,18 +14,27 @@ import { cooperativeService } from '../../services/cooperative.service';
 
 type Props = {};
 
-const Main: FC<{ processing: boolean; register: any; role: string; cooperatives: CooperativeContract[] }> = ({
-	processing,
-	register,
-	role,
-	cooperatives,
-}) => (
+const Main: FC<{
+	processing: boolean;
+	register: any;
+	role: string;
+	cooperatives: CooperativeContract[];
+	setRole: (role: string | null) => void;
+}> = ({ processing, register, role, cooperatives, setRole }) => (
 	<>
 		<div className='row'>
 			<div className='form-group col-12'>
 				<p className='lead'>
 					Selected: <b>{role}</b>
 				</p>
+				<button
+					className='btn btn-info btn-sm'
+					onClick={(e) => {
+						e.preventDefault();
+						setRole(null);
+					}}>
+					Reset
+				</button>
 			</div>
 			<div className='form-group col-12 col-md-6'>
 				<label className='text-normal text-dark'>First Name</label>
@@ -73,6 +81,9 @@ const Main: FC<{ processing: boolean; register: any; role: string; cooperatives:
 							</option>
 						))}
 					</select>
+					<small className='form-text text-muted'>
+						If you can't find your respective cooperative, please request it to a administrator.
+					</small>
 				</div>
 			) : null}
 			<div className='form-group col-12'>
@@ -90,7 +101,7 @@ const Main: FC<{ processing: boolean; register: any; role: string; cooperatives:
 		<div className='form-group row'>
 			<div className='col-12 col-md-4'>
 				<button type='submit' className='btn btn-primary' disabled={processing}>
-					{!processing ? 'Sign Up' : <Loop className='spin-reverse' />}
+					{!processing ? 'Sign Up' : <i className='material-icons spin-reverse'>loop</i>}
 				</button>
 			</div>
 			<div className='col-12 col-md-8 d-flex'>
@@ -159,7 +170,7 @@ const Register: FC<Props> = (props) => {
 											setRole('Passenger');
 										}}>
 										Passenger
-										<AirlineSeatReclineNormal />
+										<i className='material-icons'>airline_seat_recline_normal</i>
 									</button>
 								</div>
 								<div className='col-12 col-md-auto my-2 text-center'>
@@ -170,7 +181,7 @@ const Register: FC<Props> = (props) => {
 											setRole('Driver');
 										}}>
 										Driver
-										<AssignmentInd />
+										<i className='material-icons'>assignment_ind</i>
 									</button>
 								</div>
 								<div className='col-12 col-md-auto my-2 text-center'>
@@ -181,13 +192,13 @@ const Register: FC<Props> = (props) => {
 											setRole('Cooperative Owner');
 										}}>
 										Cooperative Owner
-										<SupervisorAccount />
+										<i className='material-icons'>supervisor_account</i>
 									</button>
 								</div>
 							</div>
 						</div>
 					) : data ? (
-						<Main processing={processing} role={role} cooperatives={data} register={register} />
+						<Main processing={processing} role={role} cooperatives={data} register={register} setRole={setRole} />
 					) : null}
 				</form>
 			</div>

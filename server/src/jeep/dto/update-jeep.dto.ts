@@ -12,12 +12,10 @@ export class UpdateJeepDTO {
 	@IsOptional()
 	plateNumber?: string;
 
-	@IsNumber()
 	@Exists(Cooperative)
 	@IsOptional()
 	cooperativeId?: number;
 
-	@IsNumber()
 	@Exists(User)
 	@IsOptional()
 	driverId?: number;

@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 
 export class Model extends BaseEntity {
-	protected fillable = [];
 	protected hidden = [];
 
 	constructor(data?: any) {
@@ -18,10 +17,16 @@ export class Model extends BaseEntity {
 		}
 	}
 
+	protected fillable(): string[] {
+		return [];
+	}
+
 	fill(data: Partial<this>) {
+		const fillable = this.fillable();
 		Object.entries(data).forEach(([key, value]) => {
-			if (this.fillable.includes(key)) {
+			if (fillable.includes(key.trim())) {
 				this[key] = value;
+			} else {
 			}
 		});
 

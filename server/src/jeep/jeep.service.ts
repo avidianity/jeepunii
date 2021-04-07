@@ -9,11 +9,13 @@ import { UpdateJeepDTO } from './dto/update-jeep.dto';
 @Injectable()
 export class JeepService implements EntityServiceContract<Jeep> {
 	async all() {
-		return await Jeep.find({ relations: ['cooperative'] });
+		return await Jeep.find({ relations: ['cooperative', 'driver'] });
 	}
 
 	async find(id: number) {
-		const jeep = await Jeep.findOne(id, { relations: ['cooperative'] });
+		const jeep = await Jeep.findOne(id, {
+			relations: ['cooperative', 'driver'],
+		});
 
 		if (!jeep) {
 			throw new NotFoundException('Jeep does not exist.');

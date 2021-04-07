@@ -37,9 +37,12 @@ export class AuthService {
 	}
 
 	async login(data: LoginDTO) {
-		const user = await User.findOne({
-			email: data.email,
-		});
+		const user = await User.findOne(
+			{
+				email: data.email,
+			},
+			{ relations: ['cooperative'] },
+		);
 
 		if (!user) {
 			throw new NotFoundException({

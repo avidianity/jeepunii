@@ -1,30 +1,29 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { useTable } from 'react-table';
-import Loading from './Loading';
+import { outIf, toBool } from '../../helpers';
+import Card from './Card';
 
-type Props = {
+type Props<T> = {
 	title: string;
-	columns: Array<{ Header: string; accessor: string }>;
-	data?: any[];
-	loading: boolean;
+	columns: Array<{ Header: string; accessor: keyof T }>;
+	data?: T[];
+	head?: () => JSX.Element | JSX.Element[];
 };
 
-const Table: FC<Props> = ({ title, columns, data, loading }) => {
-	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-		columns: columns,
-		data: data || [],
+const Table = function <T>({ title, columns, data, head }: Props<T>) {
+	const table = useTable({
+		columns: columns as any,
+		data: (data || []) as any,
 	});
 
-	if (loading) {
-		return <Loading className='mt-2' />;
-	}
+	const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = table;
 
 	return (
 		<div className='container-fluid'>
-			<div className='bgc-white bd bdrs-3 p-20 mB-20'>
-				<h4 className='c-grey-900 mB-20'>{title}</h4>
+			<Card title={title}>
 				{rows.length === 0 ? <p>No Data</p> : null}
-				<div className='table-responsive'>
+				{head ? head() : null}
+				<div className={`table-responsive ${outIf(toBool(head), 'mt-2')}`}>
 					<table className='table table-bordered' {...getTableProps()}>
 						<thead>
 							{headerGroups.map((headerGroup) => (
@@ -49,7 +48,7 @@ const Table: FC<Props> = ({ title, columns, data, loading }) => {
 						</tbody>
 					</table>
 				</div>
-			</div>
+			</Card>
 		</div>
 	);
 };

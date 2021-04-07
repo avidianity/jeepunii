@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Delete,
@@ -9,6 +10,7 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
+import { CryptoService } from 'src/crypto/crypto.service';
 import { CreateJeepDTO } from './dto/create-jeep.dto';
 import { UpdateJeepDTO } from './dto/update-jeep.dto';
 import { JeepService } from './jeep.service';
@@ -16,11 +18,25 @@ import { JeepService } from './jeep.service';
 @Controller('jeeps')
 @UseGuards(HttpBearerGuard)
 export class JeepController {
-	constructor(protected jeep: JeepService) {}
+	constructor(protected jeep: JeepService, protected crypto: CryptoService) {}
 
 	@Get()
 	async get() {
 		return await this.jeep.all();
+	}
+
+	@Get(':id/crypto')
+	async encrypt(@Param('id') id: number) {
+		const jeep = await this.jeep.find(id);
+		const payload = jeep.toJSON();
+		delete payload.cooperative;
+		delete payload.driver;
+		return this.crypto.encrypt(payload);
+	}
+
+	@Get(':id')
+	async show(@Param('id') id: number) {
+		return await this.jeep.find(id);
 	}
 
 	@Post()

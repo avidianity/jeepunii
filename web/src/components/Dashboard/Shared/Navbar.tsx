@@ -1,4 +1,4 @@
-import React, { createRef, FC, useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { State } from '../../../libraries/State';
 import Menu from './Navbar/Menu';
 import Messages from './Navbar/Messages';
@@ -7,15 +7,11 @@ import Notifications from './Navbar/Notifications';
 type Props = {};
 
 const Navbar: FC<Props> = (props) => {
-	const sidebarToggleRef = createRef<HTMLAnchorElement>();
 	const state = State.getInstance();
 
 	useEffect(() => {
 		if (state.get('sidebar-collapsed')) {
 			document.body.classList.add('is-collapsed');
-		}
-		if (sidebarToggleRef.current) {
-			sidebarToggleRef.current.onclick = null;
 		}
 		// eslint-disable-next-line
 	}, []);
@@ -26,9 +22,6 @@ const Navbar: FC<Props> = (props) => {
 				<ul className='nav-left'>
 					<li>
 						<a
-							ref={sidebarToggleRef}
-							id='sidebar-toggle'
-							className='sidebar-toggle'
 							href='/'
 							onClick={(e) => {
 								e.preventDefault();

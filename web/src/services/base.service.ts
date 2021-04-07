@@ -7,8 +7,9 @@ export class BaseService<T> {
 		this.url = url;
 	}
 
-	async fetch() {
-		const { data } = await axios.get<T[]>(`${this.url}`);
+	async fetch(params?: { [key: string]: string }) {
+		const url = `${this.url}${params ? `?${new URLSearchParams(params).toString()}` : ''}`;
+		const { data } = await axios.get<T[]>(url);
 		return data;
 	}
 
@@ -22,7 +23,7 @@ export class BaseService<T> {
 		return data;
 	}
 
-	async update(id: any, payload: T) {
+	async update(id: any, payload: Partial<T>) {
 		const { data } = await axios.put(`${this.url}/${id}`, payload);
 		return data;
 	}

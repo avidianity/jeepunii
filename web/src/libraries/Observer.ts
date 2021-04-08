@@ -10,7 +10,6 @@ export class Observer {
 	}
 
 	execute(value: any) {
-		console.log(`Executing ${this.key.getName()}: ${this.key.getID()} - ${JSON.stringify(value)}`);
 		this.callback(value);
 	}
 

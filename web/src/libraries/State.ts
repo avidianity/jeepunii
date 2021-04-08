@@ -35,7 +35,7 @@ export class State {
 		try {
 			const data = this.storage.getItem(this.key);
 			return data ? JSON.parse(data) : {};
-		} catch (error) {
+		} catch (_) {
 			return {};
 		}
 	}

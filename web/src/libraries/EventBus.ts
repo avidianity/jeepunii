@@ -12,8 +12,8 @@ export class EventBus {
 		if (!(key in this.observers)) {
 			this.observers[key] = [];
 		}
+
 		const handle = new Key(key);
-		console.log(`Registering ${key}`);
 		this.observers[key].unshift(new Observer(handle, callback));
 
 		return handle;
@@ -30,7 +30,6 @@ export class EventBus {
 		const index = this.observers[name].findIndex((observer) => observer.getKey().getID() === id);
 
 		if (index >= 0) {
-			console.log(`Unregistering ${key.toString()}`);
 			this.observers[name].splice(index, 1);
 		}
 	}
@@ -39,7 +38,7 @@ export class EventBus {
 		if (!(name in this.observers)) {
 			return this;
 		}
-		console.log(`Dispactched ${name}`);
+
 		this.observers[name].forEach((observer) => observer.execute(value));
 		return this;
 	}

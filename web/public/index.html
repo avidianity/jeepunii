@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Paymento</title>
+		<meta name="description" content="Contactless Jeepney Payment System" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="theme-color" content="#000000" />
+		<link rel="icon" type="image/png" sizes="196x196" href="%PUBLIC_URL%/assets/favicon-196.png" />
+		<link rel="apple-touch-icon" href="%PUBLIC_URL%/assets/apple-icon-180.png" />
+		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+		<link rel="stylesheet" href="%PUBLIC_URL%/loader.css" />
+		<link rel="stylesheet" href="%PUBLIC_URL%/style.css" />
+	</head>
+	<body class="app">
+		<noscript>You need to enable JavaScript to run this app.</noscript>
+		<div
+			id="loader"
+			style="
+				display: flex !important;
+				align-items: center !important;
+				justify-content: center !important;
+				position: fixed !important;
+				height: 100vh !important;
+				width: 100vw !important;
+				top: 0 !important;
+				left: 0 !important;
+				z-index: 99999 !important;
+			"
+		>
+			<img
+				src="%PUBLIC_URL%/logo-full.svg"
+				alt="Paymento"
+				style="height: 200px; width: 200px; border-radius: 50%; border: 1px solid rgba(50, 50, 50, 0.25)"
+			/>
+		</div>
+		<div id="root" style="z-index: 0"></div>
+	</body>
+</html>

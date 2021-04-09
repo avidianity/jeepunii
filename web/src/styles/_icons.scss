@@ -1,0 +1,31 @@
+@font-face {
+	font-family: 'themify';
+	font-style: normal;
+	font-weight: 400;
+	src: url(../assets/static/fonts/icons/themify/themify.woff) format('woff2');
+}
+
+@mixin center {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+}
+
+.material-icons {
+	font-size: 16px !important;
+}
+
+.btn > .material-icons {
+	@include center;
+	padding: 4px !important;
+}
+
+.btn-sm > .material-icons {
+	font-size: 12px;
+	padding: 2px !important;
+}
+
+.btn-icon {
+	@include center;
+	padding: 4px !important;
+}

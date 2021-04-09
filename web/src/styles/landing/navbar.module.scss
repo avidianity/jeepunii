@@ -1,0 +1,47 @@
+@import '../variables';
+
+@mixin auth-buttons {
+	color: #fff !important;
+	border-radius: 0.75rem;
+	padding: 6px 12px !important;
+	height: 35px;
+	width: 80px;
+	text-align: center;
+}
+
+.login {
+	@include auth-buttons();
+	color: rgb(30, 30, 30) !important;
+	background-color: #fff !important;
+	border: 0.25px solid rgba(50, 50, 50, 0.5);
+}
+
+.register {
+	@include auth-buttons();
+	background-color: $light-blue;
+}
+
+.login:hover {
+	background-color: rgba(50, 50, 50, 0.9) !important;
+	color: #fff !important;
+}
+
+.register:hover {
+	background-color: #33bee0 !important;
+}
+
+.brand {
+	color: #686a6b !important;
+}
+
+.nav-item {
+	margin-top: 0.25rem;
+	margin-bottom: 0.25rem;
+}
+
+@media screen and (min-width: $sm) {
+	.nav-item {
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+}

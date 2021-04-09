@@ -8,5 +8,6 @@ import { HttpBearerStrategy } from './http-bearer.strategy';
 	imports: [PassportModule],
 	controllers: [AuthController],
 	providers: [AuthService, HttpBearerStrategy],
+	exports: [AuthService],
 })
 export class AuthModule {}

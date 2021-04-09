@@ -66,4 +66,8 @@ export class User extends Model {
 	jeep: Jeep;
 
 	currentToken: Token;
+
+	getFullname() {
+		return `${this.lastName}, ${this.firstName}`;
+	}
 }

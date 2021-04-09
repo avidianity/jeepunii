@@ -43,7 +43,7 @@ export class Model extends BaseEntity {
 	toJSON() {
 		const data: any = {};
 
-		const payload = except(this, [...this.hidden, 'hidden', 'fillable']);
+		const payload = except(this, [...this.hidden, 'hidden']);
 
 		for (const key in payload) {
 			data[key] = payload[key];
@@ -52,7 +52,14 @@ export class Model extends BaseEntity {
 		return data;
 	}
 
-	static from(data: any) {
+	toID() {
+		return `${this.constructor.name}:${this.id}`;
+	}
+
+	static from(data: any, forceFill?: boolean) {
+		if (forceFill === true) {
+			return new this().forceFill(data);
+		}
 		return new this(data);
 	}
 

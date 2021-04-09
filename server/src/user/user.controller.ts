@@ -10,7 +10,8 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
-import { RolesEnum } from 'src/models/user.entity';
+import { RolesEnum, User } from 'src/models/user.entity';
+import { FindManyOptions } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserService } from './user.service';
@@ -22,10 +23,24 @@ export class UserController {
 
 	@Get()
 	async index(@Query('role') role?: RolesEnum) {
+		const options: FindManyOptions<User> = { where: {} };
+
 		if (role) {
-			return await this.users.all({ where: { role } });
+			options.where = {
+				role,
+			};
 		}
-		return await this.users.all();
+
+		const user = this.users.getUser();
+
+		if (!['Admin', 'Passenger'].includes(user.role)) {
+			options.where = {
+				...(options.where as any),
+				cooperative: user.cooperative,
+			};
+		}
+
+		return await this.users.all(options);
 	}
 
 	@Get(':id')

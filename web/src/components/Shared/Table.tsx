@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTable } from 'react-table';
 import { outIf, toBool } from '../../helpers';
+import { State } from '../../libraries/State';
 import Card from './Card';
 
 type Props<T> = {
@@ -11,6 +12,8 @@ type Props<T> = {
 };
 
 const Table = function <T>({ title, columns, data, head }: Props<T>) {
+	const state = State.getInstance();
+
 	const table = useTable({
 		columns: columns as any,
 		data: (data || []) as any,
@@ -24,7 +27,7 @@ const Table = function <T>({ title, columns, data, head }: Props<T>) {
 				{rows.length === 0 ? <p>No Data</p> : null}
 				{head ? head() : null}
 				<div className={`table-responsive ${outIf(toBool(head), 'mt-2')}`}>
-					<table className='table table-bordered' {...getTableProps()}>
+					<table className={`table table-bordered ${outIf(state.get<boolean>('table-sm'), 'table-sm')}`} {...getTableProps()}>
 						<thead>
 							{headerGroups.map((headerGroup) => (
 								<tr {...headerGroup.getHeaderGroupProps()}>

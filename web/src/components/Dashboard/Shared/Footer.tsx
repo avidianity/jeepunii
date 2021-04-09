@@ -6,7 +6,7 @@ type Props = {};
 
 const Footer: FC<Props> = (props) => {
 	return (
-		<footer className='bdT ta-c p-30 lh-0 fsz-sm c-grey-600'>
+		<footer className='bdT ta-c p-30 lh-0 fsz-sm c-grey-600 hide-on-mobile'>
 			<span>
 				Copyright © 2019{' '}
 				<Link to={routes.LANDING} title='Paymento'>

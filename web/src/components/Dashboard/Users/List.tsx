@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { FC, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -73,6 +74,10 @@ const List: FC<Props> = (props) => {
 					accessor: 'role',
 				},
 				{
+					Header: 'Issued',
+					accessor: 'issued',
+				},
+				{
 					Header: 'Actions',
 					accessor: 'actions',
 				},
@@ -81,6 +86,7 @@ const List: FC<Props> = (props) => {
 				...user,
 				approved: user.approved ? <span className='badge badge-success'>Yes</span> : <span className='badge badge-danger'>No</span>,
 				role: <span className={`badge badge-${RoleColorMap[user.role]}`}>{user.role}</span>,
+				issued: dayjs(user.createdAt).format('MMMM DD, YYYY hh:mm A'),
 				actions: (
 					<div className='d-flex'>
 						<Link to={`${url(`/${user.id}/edit`)}`} className='btn btn-warning btn-sm btn-icon mx-1' data-tip='Edit User'>

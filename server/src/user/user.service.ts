@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { EntityServiceContract } from 'src/interfaces/entity-service-contract.interface';
+import { LogsService } from 'src/logs/logs.service';
 import { Cooperative } from 'src/models/cooperative.entity';
 import { User } from 'src/models/user.entity';
 import { FindManyOptions } from 'typeorm';
@@ -8,6 +9,12 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService implements EntityServiceContract<User> {
+	constructor(protected logs: LogsService) {}
+
+	getUser() {
+		return this.logs.getUser();
+	}
+
 	all(options?: FindManyOptions<User>) {
 		return User.find({ ...options, relations: ['cooperative'] });
 	}
@@ -24,11 +31,17 @@ export class UserService implements EntityServiceContract<User> {
 	async create(data: CreateUserDTO) {
 		const cooperative = await Cooperative.findOneOrFail(data.cooperativeId);
 
-		const user = new User(data);
+		const user = await new User({
+			...data,
+			cooperative,
+		}).save();
 
-		user.cooperative = cooperative;
+		this.logs.log(
+			`${this.logs.getUser().getFullname()} created a user.`,
+			user,
+		);
 
-		return await user.save();
+		return user;
 	}
 
 	async update(id: number, data: UpdateUserDTO) {
@@ -43,11 +56,21 @@ export class UserService implements EntityServiceContract<User> {
 			user.cooperative = cooperative;
 		}
 
+		this.logs.log(
+			`${this.logs.getUser().getFullname()} updated a user.`,
+			user,
+		);
+
 		return await user.save();
 	}
 
 	async delete(id: number) {
 		const user = await this.find(id);
+
+		this.logs.log(
+			`${this.logs.getUser().getFullname()} deleted a user.`,
+			user,
+		);
 
 		return await user.remove();
 	}

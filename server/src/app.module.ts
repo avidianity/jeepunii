@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { CooperativeModule } from './cooperative/cooperative.module';
 import { JeepModule } from './jeep/jeep.module';
 import { CryptoModule } from './crypto/crypto.module';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
 	imports: [
@@ -24,6 +25,7 @@ import { CryptoModule } from './crypto/crypto.module';
 				database: config.get<string>('DB_NAME'),
 				entities: ['{dist, src}/models/*.entity.{js, ts}'],
 				synchronize: config.get('ENV') !== 'production',
+				cache: true,
 				extra: {
 					decimalNumbers: true,
 				},
@@ -35,6 +37,7 @@ import { CryptoModule } from './crypto/crypto.module';
 		CooperativeModule,
 		JeepModule,
 		CryptoModule,
+		LogsModule,
 	],
 	controllers: [],
 	providers: [],

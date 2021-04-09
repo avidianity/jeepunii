@@ -5,6 +5,7 @@ import { useURL } from '../../hooks';
 import { routes } from '../../routes';
 import Cooperatives from './Cooperatives';
 import Jeeps from './Jeeps';
+import Logs from './Logs';
 import Footer from './Shared/Footer';
 import Navbar from './Shared/Navbar';
 import Sidebar from './Shared/Sidebar';
@@ -49,6 +50,7 @@ const Dashboard: FC<Props> = (props) => {
 								<Route path={url(routes.USERS)} component={Users} />
 								<Route path={url(routes.COOPERATIVES)} component={Cooperatives} />
 								<Route path={url(routes.JEEPS)} component={Jeeps} />
+								<Route path={url(routes.LOGS)} component={Logs} />
 							</Switch>
 						</div>
 					</div>

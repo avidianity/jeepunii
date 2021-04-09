@@ -31,9 +31,19 @@ const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) 
 		// eslint-disable-next-line
 	}, []);
 
+	const toggleModal = (event: React.MouseEvent<Element, MouseEvent>) => {
+		event.preventDefault();
+		$(`#${id}`).modal('toggle');
+	};
+
+	const dismissModal = (event: React.MouseEvent<Element, MouseEvent>) => {
+		event.preventDefault();
+		$(`#${id}`).modal('hide');
+	};
+
 	return (
 		<>
-			<button type='button' className={`${buttonClassName}`} data-toggle='modal' data-target={`#${id}`} {...props}>
+			<button type='button' className={`${buttonClassName}`} onClick={toggleModal} data-target={`#${id}`} {...props}>
 				{title}
 			</button>
 			<div id={id} className='modal fade' tabIndex={-1}>
@@ -41,7 +51,7 @@ const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) 
 					<div className='modal-content'>
 						<div className='modal-header'>
 							<h5 className='modal-title'>{modalTitle}</h5>
-							<button type='button' className='close' data-dismiss='modal'>
+							<button type='button' className='close' onClick={dismissModal}>
 								<span aria-hidden='true'>&times;</span>
 							</button>
 						</div>
@@ -63,7 +73,7 @@ const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) 
 									<i className='material-icons'>download</i>
 								</button>
 							) : null}
-							<button className='btn btn-secondary btn-sm' data-dismiss='modal'>
+							<button className='btn btn-secondary btn-sm' onClick={dismissModal}>
 								Close
 							</button>
 						</div>

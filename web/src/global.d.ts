@@ -1,4 +1,8 @@
 declare global {
+	interface Window {
+		$: JQueryStatic;
+	}
+
 	interface String {
 		toNumber(): number;
 	}

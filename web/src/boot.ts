@@ -2,8 +2,11 @@ import toastr from 'toastr';
 import axios from 'axios';
 import './shims';
 import { State } from './libraries/State';
+import $ from 'jquery';
+import 'bootstrap';
 
 window.toastr = toastr;
+window.$ = $;
 
 axios.defaults.baseURL = `${process.env.REACT_APP_SERVER_URL}`;
 

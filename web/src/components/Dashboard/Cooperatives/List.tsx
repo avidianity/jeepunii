@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { FC, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
@@ -74,6 +75,10 @@ const List: FC<Props> = (props) => {
 					accessor: 'approved',
 				},
 				{
+					Header: 'Issued',
+					accessor: 'issued',
+				},
+				{
 					Header: 'Actions',
 					accessor: 'actions',
 				},
@@ -90,6 +95,7 @@ const List: FC<Props> = (props) => {
 						{cooperative.website}
 					</a>
 				),
+				issued: dayjs(cooperative.createdAt).format('MMMM DD, YYYY hh:mm A'),
 				actions: (
 					<div className='d-flex'>
 						{!cooperative.approved ? (

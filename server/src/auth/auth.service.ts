@@ -13,6 +13,8 @@ import { RegisterDTO } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
+	constructor() {}
+
 	async register(data: RegisterDTO) {
 		const count = await User.count({
 			email: data.email,
@@ -65,7 +67,7 @@ export class AuthService {
 				hash: md5(hash),
 			},
 			{
-				relations: ['user', 'user.cooperative'],
+				relations: ['user', 'user.cooperative', 'user.jeep'],
 			},
 		);
 		if (!token) {

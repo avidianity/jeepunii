@@ -84,6 +84,6 @@ export class LogsService implements EntityServiceContract<Log> {
 	}
 
 	getUser(): User {
-		return this.request.user as User;
+		return this.request.user as any;
 	}
 }

@@ -7,6 +7,7 @@ import { CooperativeModule } from './cooperative/cooperative.module';
 import { JeepModule } from './jeep/jeep.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { LogsModule } from './logs/logs.module';
+import { DriversModule } from './drivers/drivers.module';
 
 @Module({
 	imports: [
@@ -35,11 +36,12 @@ import { LogsModule } from './logs/logs.module';
 			inject: [ConfigService],
 		}),
 		AuthModule,
+		CryptoModule,
+		LogsModule,
 		UserModule,
 		CooperativeModule,
 		JeepModule,
-		CryptoModule,
-		LogsModule,
+		DriversModule,
 	],
 	controllers: [],
 	providers: [],

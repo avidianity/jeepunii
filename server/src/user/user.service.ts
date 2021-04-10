@@ -16,11 +16,13 @@ export class UserService implements EntityServiceContract<User> {
 	}
 
 	all(options?: FindManyOptions<User>) {
-		return User.find({ ...options, relations: ['cooperative'] });
+		return User.find({ ...options, relations: ['cooperative', 'jeep'] });
 	}
 
 	async find(id: number) {
-		const user = await User.findOne(id, { relations: ['cooperative'] });
+		const user = await User.findOne(id, {
+			relations: ['cooperative', 'jeep'],
+		});
 		if (!user) {
 			throw new NotFoundException({ message: 'User does not exist.' });
 		}
@@ -79,5 +81,9 @@ export class UserService implements EntityServiceContract<User> {
 		);
 
 		return await user.remove();
+	}
+
+	getLogsService() {
+		return this.logs;
 	}
 }

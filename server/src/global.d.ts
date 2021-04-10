@@ -14,6 +14,7 @@ declare global {
 
 	namespace Express {
 		interface User {
+			id: number;
 			firstName: string;
 			lastName: string;
 			address: string;
@@ -28,6 +29,8 @@ declare global {
 			jeep?: Jeep;
 			currentToken?: Token;
 			getFullname(): string;
+			createdAt: Date;
+			updatedAt: Date;
 		}
 	}
 }

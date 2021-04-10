@@ -6,6 +6,7 @@ import './shims';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+	console.log('haha');
 	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 	app.enableCors();
 
@@ -17,7 +18,8 @@ async function bootstrap() {
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
-
-	await app.listen(process.env.PORT || 3000);
+	await app.listen(process.env.PORT || 3000, () =>
+		console.log(`Listenting to ${process.env.PORT || 3000}`),
+	);
 }
-bootstrap();
+bootstrap().catch((error) => console.error(error));

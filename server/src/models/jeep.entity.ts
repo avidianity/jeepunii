@@ -21,4 +21,8 @@ export class Jeep extends Model {
 	@OneToOne(() => User, (user) => user.jeep)
 	@JoinColumn()
 	driver: User;
+
+	getDetails() {
+		return `${this.name} - ${this.plateNumber}`;
+	}
 }

@@ -3,7 +3,7 @@ import React, { FC, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { handleError, outIf } from '../../../helpers';
+import { Asker, handleError, outIf } from '../../../helpers';
 import { useURL } from '../../../hooks';
 import { cooperativeService } from '../../../services/cooperative.service';
 import Table from '../../Shared/Table';
@@ -28,6 +28,18 @@ const List: FC<Props> = (props) => {
 	if (isError) {
 		handleError(error);
 	}
+
+	const deleteCooperative = async (id: any) => {
+		try {
+			if (await Asker.danger('Are you sure you want to delete this cooperative?')) {
+				await cooperativeService.delete(id);
+				refetch();
+				toastr.info('Cooperative has been deleted.', 'Notice');
+			}
+		} catch (error) {
+			handleError(error);
+		}
+	};
 
 	useEffect(() => {
 		ReactTooltip.rebuild();
@@ -116,7 +128,13 @@ const List: FC<Props> = (props) => {
 							data-tip='Edit Cooperative'>
 							<i className='material-icons'>edit</i>
 						</Link>
-						<button className='btn btn-danger btn-sm btn-icon mx-1' data-tip='Delete Cooperative'>
+						<button
+							className='btn btn-danger btn-sm btn-icon mx-1'
+							data-tip='Delete Cooperative'
+							onClick={(e) => {
+								e.preventDefault();
+								deleteCooperative(cooperative.id);
+							}}>
 							<i className='material-icons'>clear</i>
 						</button>
 					</div>

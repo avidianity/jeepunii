@@ -3,9 +3,15 @@ import _, { isArray, isString } from 'lodash';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import qrcode from 'qrcode';
+import swal from 'sweetalert';
 
 dayjs.extend(relativeTime);
 
+export class Asker {
+	static async danger(message: string, title?: string) {
+		return toBool(await swal({ title, text: message, buttons: ['Cancel', 'Confirm'], dangerMode: true, icon: 'warning' }));
+	}
+}
 export class QRCode {
 	static toDataURL(data: any) {
 		return new Promise<string>((resolve, reject) => {

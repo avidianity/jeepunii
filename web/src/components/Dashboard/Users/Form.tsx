@@ -20,7 +20,7 @@ const Form: FC<Props> = (props) => {
 
 	const { user } = useContext(AuthContext);
 
-	const [disableCooperative, setDisableCooperative] = useState(user?.role !== 'Admin');
+	const [disableCooperative, setDisableCooperative] = useState(['Admin', 'Passenger'].includes(user?.role || ''));
 	const { data: cooperatives, refetch: fetchCooperatives } = useQuery('cooperatives', () => cooperativeService.fetch());
 	const history = useHistory();
 	const match = useRouteMatch<{ userID: string }>();

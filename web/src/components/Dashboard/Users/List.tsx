@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { RoleColorMap } from '../../../constants';
 import { AuthContext } from '../../../contexts';
-import { handleError, outIf } from '../../../helpers';
+import { Asker, handleError, outIf } from '../../../helpers';
 import { useURL } from '../../../hooks';
 import { userService } from '../../../services/user.service';
 import Table from '../../Shared/Table';
@@ -22,6 +22,18 @@ const List: FC<Props> = (props) => {
 	if (isError) {
 		handleError(error);
 	}
+
+	const deleteUser = async (id: any) => {
+		try {
+			if (await Asker.danger('Are you sure you want to delete this user?')) {
+				await userService.delete(id);
+				refetch();
+				toastr.info('User has been deleted.', 'Notice');
+			}
+		} catch (error) {
+			handleError(error);
+		}
+	};
 
 	useEffect(() => {
 		ReactTooltip.rebuild();
@@ -96,7 +108,13 @@ const List: FC<Props> = (props) => {
 							<Link to={`${url(`/${user.id}/edit`)}`} className='btn btn-warning btn-sm btn-icon mx-1' data-tip='Edit User'>
 								<i className='material-icons'>edit</i>
 							</Link>
-							<button className='btn btn-danger btn-sm btn-icon mx-1' data-tip='Delete User'>
+							<button
+								className='btn btn-danger btn-sm btn-icon mx-1'
+								data-tip='Delete User'
+								onClick={(e) => {
+									e.preventDefault();
+									deleteUser(user.id);
+								}}>
 								<i className='material-icons'>clear</i>
 							</button>
 						</div>

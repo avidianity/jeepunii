@@ -20,7 +20,16 @@ export class AuthController {
 
 	@Post('/register')
 	async register(@Body() data: RegisterDTO) {
-		return await this.auth.register(data);
+		const user = await this.auth.register(data);
+		const text = String.random();
+		const token = new Token();
+		token.hash = md5(text);
+		token.user = user;
+		await token.save();
+		return {
+			user,
+			token: text,
+		};
 	}
 
 	@Post('/login')

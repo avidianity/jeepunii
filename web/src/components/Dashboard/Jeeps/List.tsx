@@ -3,7 +3,7 @@ import React, { FC, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
-import { handleError, outIf } from '../../../helpers';
+import { Asker, handleError, outIf } from '../../../helpers';
 import { useURL } from '../../../hooks';
 import { jeepService } from '../../../services/jeep.service';
 import QRModal from '../../Shared/QRModal';
@@ -19,6 +19,18 @@ const List: FC<Props> = (props) => {
 	if (isError) {
 		handleError(error);
 	}
+
+	const deleteJeep = async (id: any) => {
+		try {
+			if (await Asker.danger('Are you sure you want to delete this jeep?')) {
+				await jeepService.delete(id);
+				refetch();
+				toastr.info('Jeep has been deleted.', 'Notice');
+			}
+		} catch (error) {
+			handleError(error);
+		}
+	};
 
 	useEffect(() => {
 		ReactTooltip.rebuild();
@@ -91,7 +103,13 @@ const List: FC<Props> = (props) => {
 						<Link to={`${url(`/${jeep.id}/edit`)}`} className='btn btn-warning btn-sm btn-icon mx-1' data-tip='Edit Jeep'>
 							<i className='material-icons'>edit</i>
 						</Link>
-						<button className='btn btn-danger btn-sm btn-icon mx-1' data-tip='Delete Jeep'>
+						<button
+							className='btn btn-danger btn-sm btn-icon mx-1'
+							data-tip='Delete Jeep'
+							onClick={(e) => {
+								e.preventDefault();
+								deleteJeep(jeep.id);
+							}}>
 							<i className='material-icons'>clear</i>
 						</button>
 					</div>

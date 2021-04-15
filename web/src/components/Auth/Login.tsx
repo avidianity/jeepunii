@@ -44,6 +44,7 @@ const Login: FC<Props> = (props) => {
 				state.set('token', token);
 			} else {
 				state.set('remember', false);
+				axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 			}
 
 			history.push(routes.DASHBOARD);

@@ -18,7 +18,7 @@ import Tooltip from './components/Shared/Tooltip';
 
 function App() {
 	const state = State.getInstance();
-	const [logged, setLogged] = useState((state.has('user') && state.has('token')) || false);
+	const [logged, setLogged] = useState(state.has('user') && state.has('token'));
 	const [user, setUser] = useState<UserContract | null>(state.has('user') ? state.get('user') : null);
 
 	const EventBuses = {

@@ -121,7 +121,7 @@ const Register: FC<Props> = (props) => {
 
 	const { logged } = useContext(AuthContext);
 
-	const { data } = useQuery('cooperatives', () => cooperativeService.fetch());
+	const { data: cooperatives } = useQuery('cooperatives', () => cooperativeService.fetch());
 
 	const submit = async (data: any) => {
 		setProcessing(true);
@@ -197,9 +197,9 @@ const Register: FC<Props> = (props) => {
 								</div>
 							</div>
 						</div>
-					) : data ? (
-						<Main processing={processing} role={role} cooperatives={data} register={register} setRole={setRole} />
-					) : null}
+					) : (
+						<Main processing={processing} role={role} cooperatives={cooperatives || []} register={register} setRole={setRole} />
+					)}
 				</form>
 			</div>
 		</div>

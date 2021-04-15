@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Hash } from 'src/helpers';
 import { EntityServiceContract } from 'src/interfaces/entity-service-contract.interface';
 import { LogsService } from 'src/logs/logs.service';
 import { Cooperative } from 'src/models/cooperative.entity';
@@ -40,6 +41,8 @@ export class UserService implements EntityServiceContract<User> {
 			user.cooperative = cooperative;
 		}
 
+		data.password = Hash.make(data.password);
+
 		user = await user.save();
 
 		const self = this.logs.getUser();
@@ -54,6 +57,10 @@ export class UserService implements EntityServiceContract<User> {
 
 	async update(id: number, data: UpdateUserDTO) {
 		const user = await this.find(id);
+
+		if (data.password) {
+			data.password = Hash.make(data.password);
+		}
 
 		user.fill(data);
 

@@ -6,7 +6,7 @@ import './shims';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	console.log('haha');
+
 	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 	app.enableCors();
 

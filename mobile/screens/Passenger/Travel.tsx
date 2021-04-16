@@ -79,12 +79,10 @@ const Travel: FC<Props> = (props) => {
 				</View>
 			)}
 			{jeep && (
-				<View>
+				<View style={{ marginTop: 12 }}>
 					<Text>Jeep Name: {jeep.name}</Text>
 					<Text>Cooperative: {jeep.cooperative?.name}</Text>
-					<Text>
-						Driver: {jeep.driver?.firstName} {jeep.driver?.lastName}
-					</Text>
+					<Text>Driver: {jeep.driver ? `${jeep.driver?.firstName} ${jeep.driver?.lastName}` : 'N/A'}</Text>
 					<Text>Plate Number: {jeep.plateNumber}</Text>
 				</View>
 			)}

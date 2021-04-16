@@ -12,6 +12,7 @@ import {
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
 import { CryptoService } from 'src/crypto/crypto.service';
 import { CreateJeepDTO } from './dto/create-jeep.dto';
+import { CryptoDTO } from './dto/crypto.dto';
 import { UpdateJeepDTO } from './dto/update-jeep.dto';
 import { JeepService } from './jeep.service';
 
@@ -25,13 +26,20 @@ export class JeepController {
 		return await this.jeep.all();
 	}
 
+	@Post('/crypto')
+	async decrypt(@Body() data: CryptoDTO) {
+		const payload = this.crypto.decrypt(data.payload);
+		return await this.jeep.find(payload.id);
+	}
+
 	@Get(':id/crypto')
 	async encrypt(@Param('id') id: number) {
 		const jeep = await this.jeep.find(id);
-		const payload = jeep.toJSON();
-		delete payload.cooperative;
-		delete payload.driver;
-		return this.crypto.encrypt(payload);
+		return this.crypto.encrypt({
+			id: jeep.id,
+			name: jeep.name,
+			plateNumber: jeep.plateNumber,
+		});
 	}
 
 	@Get(':id')

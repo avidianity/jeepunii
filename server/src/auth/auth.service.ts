@@ -35,7 +35,7 @@ export class AuthService {
 			password: Hash.make(data.password),
 		});
 
-		user.approved = false;
+		user.approved = ['Passenger', 'Admin'].includes(data.role);
 
 		return await user.save();
 	}

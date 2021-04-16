@@ -23,6 +23,18 @@ const List: FC<Props> = (props) => {
 		handleError(error);
 	}
 
+	const approveUser = async (id: any) => {
+		try {
+			if (await Asker.notice('Are you sure you want to approve this user?')) {
+				await userService.update(id, { approved: true });
+				refetch();
+				toastr.info('User has been approved.', 'Notice');
+			}
+		} catch (error) {
+			handleError(error);
+		}
+	};
+
 	const deleteUser = async (id: any) => {
 		try {
 			if (await Asker.danger('Are you sure you want to delete this user?')) {
@@ -105,6 +117,17 @@ const List: FC<Props> = (props) => {
 				actions:
 					self?.id !== user.id ? (
 						<div className='d-flex'>
+							{!user.approved ? (
+								<button
+									className='btn btn-success btn-sm btn-icon mx-1'
+									data-tip='Approve User'
+									onClick={(e) => {
+										e.preventDefault();
+										approveUser(user.id);
+									}}>
+									<i className='material-icons'>check</i>
+								</button>
+							) : null}
 							<Link to={`${url(`/${user.id}/edit`)}`} className='btn btn-warning btn-sm btn-icon mx-1' data-tip='Edit User'>
 								<i className='material-icons'>edit</i>
 							</Link>

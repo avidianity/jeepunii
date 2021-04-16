@@ -126,7 +126,10 @@ const Register: FC<Props> = (props) => {
 	const submit = async (data: any) => {
 		setProcessing(true);
 		try {
-			data.role = role?.split(' ')[0];
+			data.role = role;
+			if (data.cooperativeId) {
+				data.cooperativeId = Number(data.cooperativeId);
+			}
 			await axios.post('/auth/register', data);
 			toastr.success('Registered successfully. Please wait for approval.');
 			history.push(routes.LOGIN);
@@ -139,6 +142,12 @@ const Register: FC<Props> = (props) => {
 
 	if (logged) {
 		history.push(routes.DASHBOARD);
+	}
+
+	if (role === 'Cooperative Owner' && cooperatives?.length === 0) {
+		toastr.error('There are no cooperatives yet. Cannot register as a cooperative owner.', 'Oops!');
+		history.goBack();
+		return null;
 	}
 
 	return (

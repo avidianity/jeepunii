@@ -10,7 +10,7 @@
 ## Customers
 
 - [x] Register
-- [ ] Scanning
+- [x] Scanning
 - [ ] Payment Transaction
 - [ ] Input of Routes of Destination
 - [ ] Proof of Identity
@@ -33,7 +33,7 @@
 
 ## Cooperative Owners
 
-- [ ] Generate QR
+- [x] Generate QR
 - [x] Management of Jeep Drivers (CRUD)
 - [x] Management of Jeep Inventory
 - [x] Assignment of Drivers to Jeep

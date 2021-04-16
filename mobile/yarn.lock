@@ -1929,13 +1929,6 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@unimodules/core@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@unimodules/core/-/core-7.0.0.tgz#0311a9c7c0a661368ceef8891f758eb2e166bdf4"
-  integrity sha512-hKxNN6ad2VmmJqB3i1C8IJe27TcchY7YAKpkQhshjPxso61f7iM7AUFeG4vcU1vPH5d/X4Vk1ds8bWxaxg7nnw==
-  dependencies:
-    compare-versions "^3.4.0"
-
 "@unimodules/core@~6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@unimodules/core/-/core-6.0.0.tgz#c76ca5ca92128a059c62bb0c24d0372aaf908408"
@@ -6440,11 +6433,6 @@ unimodules-app-loader@~1.4.0:
   resolved "https://registry.yarnpkg.com/unimodules-app-loader/-/unimodules-app-loader-1.4.0.tgz#8ab738a379b46798aec9e4fda317f17750cd2f92"
   integrity sha512-qBxfXIOLy1KmBDThgmLBPJSNI0xV+6Xz2Sfsu3Hz2ewijaNlgRjSBH3McXIPU/nSVb/vVtcEtDvXuGw3udM0fQ==
 
-unimodules-barcode-scanner-interface@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/unimodules-barcode-scanner-interface/-/unimodules-barcode-scanner-interface-6.0.0.tgz#57674c4c3ba327c1aee9b17904ef0cf428843df9"
-  integrity sha512-AW6XeQ0IhPuhmWRZ8fSaCsS43//6vVCv2I22IGiT20Be3gyHbgp/YG34yX1NLFGiFNHNrxkOwdaLoFsNRsMEkA==
-
 unimodules-barcode-scanner-interface@~5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/unimodules-barcode-scanner-interface/-/unimodules-barcode-scanner-interface-5.4.0.tgz#75ff1ef9272d3f6b607871f64b3c087577453676"
@@ -6479,11 +6467,6 @@ unimodules-image-loader-interface@~5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/unimodules-image-loader-interface/-/unimodules-image-loader-interface-5.4.0.tgz#f31ec5a0747bc8069af78150fb6a8d8cea7ece8d"
   integrity sha512-kJfJWhf7B4ResjKkpgK1cbOavM14jpjKsKdsFcXN04wlLh83mh6mHAOlUIVzA44a5Kzun/mCb2JzKjyo3qQJuA==
-
-unimodules-permissions-interface@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/unimodules-permissions-interface/-/unimodules-permissions-interface-6.0.0.tgz#88682356ec365676ef40a2f69134c482cb1f4825"
-  integrity sha512-P3jiB5wKvI32+5ylJWX4Ka1mIBVn1meqbw2iQuQhYfvReBBEgvdd56d2X5WNoEf4L3w95DQhh5WtXbORaJ1NEw==
 
 unimodules-permissions-interface@~5.4.0:
   version "5.4.0"

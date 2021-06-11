@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany, BeforeRemove } from 'typeorm';
 import { Jeep } from './jeep.entity';
 import { Model } from './model.entity';
 import { User } from './user.entity';
@@ -26,4 +26,20 @@ export class Cooperative extends Model {
 
 	@OneToMany(() => Jeep, (jeep) => jeep.cooperative)
 	jeeps: Jeep[];
+	
+	@BeforeRemove()
+	removeUsers() {
+		await User.createQueryBuilder('user')
+			.where('cooperativeId = :cooperativeId', { cooperativeId: this.id })
+			.delete()
+			.execute();
+	}
+	
+	@BeforeRemove()
+	removeJeeps() {
+		await Jeep.createQueryBuilder('jeep')
+			.where('cooperativeId = :cooperativeId', { cooperativeId: this.id })
+			.delete()
+			.execute();
+	}
 }

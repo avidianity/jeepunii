@@ -101,6 +101,10 @@ const List: FC<Props> = (props) => {
 					accessor: 'role',
 				},
 				{
+					Header: 'Cooperative',
+					accessor: 'cooperative',
+				},
+				{
 					Header: 'Issued',
 					accessor: 'issued',
 				},
@@ -114,6 +118,7 @@ const List: FC<Props> = (props) => {
 				approved: user.approved ? <span className='badge badge-success'>Yes</span> : <span className='badge badge-danger'>No</span>,
 				role: <span className={`badge badge-${RoleColorMap[user.role]}`}>{user.role}</span>,
 				issued: dayjs(user.createdAt).format('MMMM DD, YYYY hh:mm A'),
+				cooperative: user.cooperative?.name || 'N/A',
 				actions:
 					self?.id !== user.id ? (
 						<div className='d-flex'>

@@ -15,10 +15,6 @@ declare global {
 		random(): T;
 	}
 
-	interface HTMLButtonElement {
-		disable(mode?: boolean): void;
-	}
-
 	interface StringConstructor {
 		random(size?: number): string;
 	}

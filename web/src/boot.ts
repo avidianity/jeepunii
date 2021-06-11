@@ -8,7 +8,7 @@ import 'bootstrap';
 window.toastr = toastr;
 window.$ = $;
 
-axios.defaults.baseURL = `${process.env.REACT_APP_SERVER_URL}`;
+axios.defaults.baseURL = `${process.env.REACT_APP_SERVER_URL || 'http://localhost:8000'}`;
 
 axios.defaults.headers.common['Accept'] = 'application/json';
 

@@ -74,6 +74,10 @@ const Main: FC<{
 				<div className='form-group col-12'>
 					<label className='text-normal text-dark'>Cooperative</label>
 					<select ref={register} className='form-control' name='cooperativeId' disabled={processing || cooperatives.length === 0}>
+						<option value='' disabled selected>
+							{' '}
+							-- Select --{' '}
+						</option>
 						{cooperatives.length === 0 ? <option>No Cooperatives Available</option> : null}
 						{cooperatives.map((cooperative, index) => (
 							<option value={cooperative.id} key={index}>
@@ -131,7 +135,7 @@ const Register: FC<Props> = (props) => {
 				data.cooperativeId = Number(data.cooperativeId);
 			}
 			await axios.post('/auth/register', data);
-			toastr.success('Registered successfully. Please wait for approval.');
+			toastr.success(`Registered successfully. ${role !== 'Student' ? 'Please wait for approval' : 'Please login'}.`);
 			history.push(routes.LOGIN);
 		} catch (error) {
 			handleError(error);

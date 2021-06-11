@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import {
+	BeforeRemove,
+	Column,
+	Entity,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+} from 'typeorm';
 import { Cooperative } from './cooperative.entity';
 import { Jeep } from './jeep.entity';
 import { Model } from './model.entity';
@@ -69,5 +76,13 @@ export class User extends Model {
 
 	getFullname() {
 		return `${this.lastName}, ${this.firstName}`;
+	}
+
+	@BeforeRemove()
+	async remoteTokens() {
+		await Token.createQueryBuilder('token')
+			.where('userId = :userId', { userId: this.id })
+			.delete()
+			.execute();
 	}
 }

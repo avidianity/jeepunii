@@ -96,7 +96,7 @@ const Sidebar: FC<Props> = (props) => {
 										</div>
 									</div>
 									<div className='peer peer-greed'>
-										<h5 className='lh-1 mB-0 logo-text'>{APP_NAME}</h5>
+										<h5 className='lh-1 mB-0 logo-text ml-1'>{APP_NAME}</h5>
 									</div>
 								</div>
 							</Link>

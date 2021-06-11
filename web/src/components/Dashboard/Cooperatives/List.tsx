@@ -3,6 +3,7 @@ import React, { FC, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
+import { RolesEnum } from '../../../contracts/user.contract';
 import { Asker, handleError, outIf } from '../../../helpers';
 import { useURL } from '../../../hooks';
 import { cooperativeService } from '../../../services/cooperative.service';
@@ -91,12 +92,23 @@ const List: FC<Props> = (props) => {
 					accessor: 'issued',
 				},
 				{
+					Header: 'Owner(s)',
+					accessor: 'users',
+				},
+				{
 					Header: 'Actions',
 					accessor: 'actions',
 				},
 			]}
 			data={data?.map((cooperative) => ({
 				...cooperative,
+				users: cooperative.users
+					?.filter((user) => user.role === RolesEnum.COOPERATIVE)
+					.map((user, index) => (
+						<span className='d-block' key={index}>
+							{user.lastName}, {user.firstName}
+						</span>
+					)),
 				approved: cooperative.approved ? (
 					<span className='badge badge-success'>Yes</span>
 				) : (

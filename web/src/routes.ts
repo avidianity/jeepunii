@@ -12,4 +12,7 @@ export const routes = {
 	ROUTES: '/routes',
 	SETTINGS: '/settings',
 	DRIVERS: '/drivers',
+	OWNERS: '/cooperative-owners',
+	ADMINS: '/administrators',
+	PASSENGERS: '/passengers',
 };

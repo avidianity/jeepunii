@@ -29,7 +29,7 @@ export class QRCode {
 }
 
 export function outIf<T>(condition: boolean, output: T, defaultValue = ''): T {
-	return condition ? output : ((defaultValue as unknown) as T);
+	return condition ? output : (defaultValue as unknown as T);
 }
 export function toBool(data: any) {
 	return data ? true : false;
@@ -73,6 +73,14 @@ export function handleError(error: any) {
 					);
 				} else if (isString(response.data.message)) {
 					return toastr.error(sentencify(response.data.message));
+				}
+			} else if (response.data.errors) {
+				if (isArray(response.data.errors)) {
+					return response.data.errors.forEach((message: string) =>
+						toastr.error(sentencify(message), undefined, { extendedTimeOut: 2000 })
+					);
+				} else if (isString(response.data.errors)) {
+					return toastr.error(sentencify(response.data.errors));
 				}
 			}
 		} else if (error.message) {
@@ -144,9 +152,9 @@ export function fromNow(date: any) {
 }
 
 export function makeMask<T extends Function>(callable: T, callback: Function) {
-	return (((data: any) => {
+	return ((data: any) => {
 		return callable(callback(data));
-	}) as unknown) as T;
+	}) as unknown as T;
 }
 
 export function except<T, K extends keyof T>(data: T, keys: Array<K>) {

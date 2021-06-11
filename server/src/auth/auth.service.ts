@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import md5 from 'md5';
 import { Hash } from 'src/helpers';
+import { Cooperative } from 'src/models/cooperative.entity';
 import { Token } from 'src/models/token.entity';
 import { User } from 'src/models/user.entity';
 import { LoginDTO } from './dto/login.dto';
@@ -34,6 +35,16 @@ export class AuthService {
 			...data,
 			password: Hash.make(data.password),
 		});
+
+		if (data.cooperativeId) {
+			const cooperative = await Cooperative.findOne(data.cooperativeId);
+			if (!cooperative) {
+				throw new NotFoundException({
+					message: 'Cooperative does not exist.',
+				});
+			}
+			user.cooperative = cooperative;
+		}
 
 		user.approved = ['Passenger', 'Admin'].includes(data.role);
 

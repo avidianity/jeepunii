@@ -26,17 +26,17 @@ export class Cooperative extends Model {
 
 	@OneToMany(() => Jeep, (jeep) => jeep.cooperative)
 	jeeps: Jeep[];
-	
+
 	@BeforeRemove()
-	removeUsers() {
+	async removeUsers() {
 		await User.createQueryBuilder('user')
 			.where('cooperativeId = :cooperativeId', { cooperativeId: this.id })
 			.delete()
 			.execute();
 	}
-	
+
 	@BeforeRemove()
-	removeJeeps() {
+	async removeJeeps() {
 		await Jeep.createQueryBuilder('jeep')
 			.where('cooperativeId = :cooperativeId', { cooperativeId: this.id })
 			.delete()

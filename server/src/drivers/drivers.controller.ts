@@ -16,13 +16,13 @@ export class DriversController {
 
 	@Post('/assign')
 	async assign(@Body() data: DriverCryptoDTO, @Req() request: Request) {
-		const jeep = this.crypto.decrypt(data.payload) as Jeep;
+		const jeep = this.crypto.decrypt<Jeep>(data.payload);
 		return await this.drivers.assign(request.user!.id, jeep.id);
 	}
 
 	@Post('/unassign')
 	async unassign(@Body() data: DriverCryptoDTO, @Req() request: Request) {
-		const jeep = this.crypto.decrypt(data.payload) as Jeep;
+		const jeep = this.crypto.decrypt<Jeep>(data.payload);
 		return await this.drivers.unassign(request.user!.id, jeep.id);
 	}
 }

@@ -4,7 +4,7 @@ import { Request } from 'express';
 import { EntityServiceContract } from 'src/interfaces/entity-service-contract.interface';
 import { Log } from 'src/models/log.entity';
 import { Model } from 'src/models/model.entity';
-import { RolesEnum, User } from 'src/models/user.entity';
+import { RolesEnum } from 'src/models/user.entity';
 import { FindManyOptions } from 'typeorm';
 
 @Injectable()
@@ -83,7 +83,7 @@ export class LogsService implements EntityServiceContract<Log> {
 		}
 	}
 
-	getUser(): User {
-		return this.request.user as any;
+	getUser() {
+		return this.request.user;
 	}
 }

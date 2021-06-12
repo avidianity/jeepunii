@@ -28,6 +28,10 @@ export class QRCode {
 	}
 }
 
+export function isMobile() {
+	return /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 export function outIf<T>(condition: boolean, output: T, defaultValue = ''): T {
 	return condition ? output : (defaultValue as unknown as T);
 }

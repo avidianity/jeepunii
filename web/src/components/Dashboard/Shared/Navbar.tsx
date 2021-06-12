@@ -1,4 +1,5 @@
 import React, { FC, useEffect } from 'react';
+import { isMobile } from '../../../helpers';
 import { State } from '../../../libraries/State';
 import Menu from './Navbar/Menu';
 import Messages from './Navbar/Messages';
@@ -10,7 +11,7 @@ const Navbar: FC<Props> = (props) => {
 	const state = State.getInstance();
 
 	useEffect(() => {
-		if (state.get('sidebar-collapsed')) {
+		if (!isMobile() && state.get('sidebar-collapsed')) {
 			document.body.classList.add('is-collapsed');
 		}
 		// eslint-disable-next-line

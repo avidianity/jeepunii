@@ -1,4 +1,4 @@
-import React, { createRef, FC, useContext, useEffect } from 'react';
+import React, { FC, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '../../../constants';
 import { AuthContext } from '../../../contexts';
@@ -11,18 +11,10 @@ type Props = {};
 const colors = ['brown', 'deep-orange', 'deep-purple', 'indigo', 'light-blue', 'pink', 'purple', 'red', 'teal', 'blue'];
 
 const Sidebar: FC<Props> = (props) => {
-	const sidebarToggleRef = createRef<HTMLAnchorElement>();
 	const url = useURL();
 	const state = State.getInstance();
 
 	const { user } = useContext(AuthContext);
-
-	useEffect(() => {
-		if (sidebarToggleRef.current) {
-			sidebarToggleRef.current.onclick = null;
-		}
-		//eslint-disable-next-line
-	}, []);
 
 	const role = user?.role || '';
 
@@ -104,7 +96,6 @@ const Sidebar: FC<Props> = (props) => {
 						<div className='peer'>
 							<div className='mobile-toggle sidebar-toggle'>
 								<a
-									ref={sidebarToggleRef}
 									href='/'
 									className='td-n'
 									onClick={(e) => {

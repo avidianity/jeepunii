@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import intro from '../../assets/intro.png';
 import { routes } from '../../routes';
 import { Link } from 'react-router-dom';
+import { APP_NAME } from '../../constants';
 
 type Props = {};
 
@@ -14,9 +15,9 @@ const Landing: FC<Props> = (props) => {
 				<div className='row'>
 					<div className='col-12 col-md-6 d-flex'>
 						<div className='align-self-center'>
-							<h1 className='display-4'>Paymento</h1>
+							<h1 className='display-4'>{APP_NAME}</h1>
 							<p className='lead'>
-								Paymento is a Service as a Platform that allows commuters to pay jeepney fares by scanning the QR code.
+								{APP_NAME} is a Service as a Platform that allows commuters to pay jeepney fares by scanning the QR code.
 								Commuters are able to transfer funds to add to their wallet balance in order to pay fares.
 							</p>
 							<Link className='btn btn-primary' to={routes.LOGIN}>

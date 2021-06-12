@@ -1,5 +1,6 @@
 import React, { FC, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { APP_NAME } from '../../constants';
 import { AuthContext } from '../../contexts';
 import { routes } from '../../routes';
 import styles from '../../styles/landing/navbar.module.scss';
@@ -18,7 +19,7 @@ const Navbar: FC<Props> = (props) => {
 					className='mr-2 rounded-circle border shadow-sm'
 					alt='Logo'
 				/>
-				Paymento
+				{APP_NAME}
 			</Link>
 			<button className='navbar-toggler border-0' type='button' data-toggle='collapse' data-target='#navbar'>
 				<i className='material-icons'>menu</i>

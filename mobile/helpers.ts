@@ -20,7 +20,7 @@ export class QRCode {
 }
 
 export function outIf<T>(condition: boolean, output: T, defaultValue = ''): T {
-	return condition ? output : ((defaultValue as unknown) as T);
+	return condition ? output : (defaultValue as unknown as T);
 }
 export function toBool(data: any) {
 	return data ? true : false;
@@ -52,7 +52,6 @@ export function ucwords(string: string) {
 }
 
 export function handleErrors(error: any) {
-	console.error(error);
 	const errors = errorToStrings(error);
 	Toast.show(errors.join('\n'), {
 		duration: Toast.durations.LONG,
@@ -111,9 +110,9 @@ export function fromNow(date: any) {
 }
 
 export function makeMask<T extends Function>(callable: T, callback: Function) {
-	return (((data: any) => {
+	return ((data: any) => {
 		return callable(callback(data));
-	}) as unknown) as T;
+	}) as unknown as T;
 }
 
 export function except<T, K extends keyof T>(data: T, keys: Array<K>) {

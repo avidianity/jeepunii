@@ -3,8 +3,9 @@ import './shims';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import { State } from './libraries/State';
+import config from './localconfig.json';
 
-axios.defaults.baseURL = `http://192.168.254.100:8000`;
+axios.defaults.baseURL = `${config.schema}://${config.address}${config.port ? `:${config.port}` : ''}`;
 
 axios.defaults.headers.common['Accept'] = 'application/json';
 

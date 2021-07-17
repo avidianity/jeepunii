@@ -8,12 +8,12 @@ import { handleErrors } from '../../helpers';
 import axios from 'axios';
 import { State } from '../../libraries/State';
 import { AuthContext } from '../../contexts';
-import { UserContract } from '../../contracts/user.contract';
+import { RolesEnum, UserContract } from '../../contracts/user.contract';
 import Toast from 'react-native-root-toast';
 
 type Props = {};
 
-type Inputs = { email: string; password: string };
+type Inputs = { email: string; password: string; roles: RolesEnum[] };
 
 const Login: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
@@ -31,11 +31,13 @@ const Login: FC<Props> = (props) => {
 		}
 		setProcessing(true);
 		try {
+			payload.roles = [RolesEnum.PASSENGER, RolesEnum.DRIVER];
+
 			const {
 				data: { user, token },
 			} = await axios.post<{ user: UserContract; token: string }>('/auth/login', payload);
 
-			if (!['Passenger', 'Driver'].includes(user.role)) {
+			if (![RolesEnum.PASSENGER, RolesEnum.DRIVER].includes(user.role)) {
 				return Toast.show('This account is not allowed in this application.', {
 					duration: Toast.durations.LONG,
 					position: Toast.positions.BOTTOM,

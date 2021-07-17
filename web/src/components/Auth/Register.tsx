@@ -177,7 +177,7 @@ const Register: FC<Props> = (props) => {
 							<div className='row'>
 								<div className='col-12 col-md-auto my-2 text-center'>
 									<button
-										className='btn btn-info btn-sm'
+										className='btn btn-info btn-sm d-none'
 										onClick={(e) => {
 											e.preventDefault();
 											setRole('Passenger');
@@ -207,6 +207,28 @@ const Register: FC<Props> = (props) => {
 										Cooperative Owner
 										<i className='material-icons'>supervisor_account</i>
 									</button>
+								</div>
+								<div className='col-12 mt-4'>
+									<small className='text-muted'>
+										Note for Passengers: Please download the Jipuni App on your phone and register.
+									</small>
+									<hr />
+									<div className='row'>
+										<a
+											href='/sample-link-to-apk'
+											className='d-flex align-items-center col-12 col-md-6'
+											onClick={(e) => e.preventDefault()}>
+											<i className='fab fa-android'></i>
+											Download App (Android)
+										</a>
+										<a
+											href='/sample-link-to-ios'
+											className='d-flex align-items-center col-12 col-md-6'
+											onClick={(e) => e.preventDefault()}>
+											<i className='fab fa-apple'></i>
+											Download App (iOS)
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>

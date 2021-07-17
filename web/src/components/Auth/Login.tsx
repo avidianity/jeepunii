@@ -9,12 +9,14 @@ import { useForm } from 'react-hook-form';
 import { handleError } from '../../helpers';
 import { State } from '../../libraries/State';
 import axios from 'axios';
+import { RolesEnum } from '../../contracts/user.contract';
 
 type Props = {};
 
 type Inputs = {
 	email: string;
 	password: string;
+	roles: RolesEnum[];
 };
 
 const Login: FC<Props> = (props) => {
@@ -34,6 +36,8 @@ const Login: FC<Props> = (props) => {
 			const {
 				data: { user, token },
 			} = await axios.post('/auth/login', data);
+
+			data.roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER];
 
 			setLogged(true);
 			setUser(user);

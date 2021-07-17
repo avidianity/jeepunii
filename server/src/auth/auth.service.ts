@@ -9,6 +9,7 @@ import { Hash } from 'src/helpers';
 import { Cooperative } from 'src/models/cooperative.entity';
 import { Token } from 'src/models/token.entity';
 import { User } from 'src/models/user.entity';
+import { In } from 'typeorm';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
 
@@ -55,8 +56,11 @@ export class AuthService {
 		const user = await User.findOne(
 			{
 				email: data.email,
+				role: In(data.roles),
 			},
-			{ relations: ['cooperative'] },
+			{
+				relations: ['cooperative'],
+			},
 		);
 
 		if (!user) {

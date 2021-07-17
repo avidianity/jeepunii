@@ -35,7 +35,7 @@ export class AuthController {
 	@Post('/login')
 	async login(@Body() data: LoginDTO) {
 		const user = await this.auth.login(data);
-		const text = String.random();
+		const text = String.random(20);
 		const token = new Token();
 		token.hash = md5(text);
 		token.user = user;

@@ -8,6 +8,7 @@ import { JeepModule } from './jeep/jeep.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { LogsModule } from './logs/logs.module';
 import { DriversModule } from './drivers/drivers.module';
+import { SocketService } from './ws/socket.service';
 
 @Module({
 	imports: [
@@ -44,6 +45,6 @@ import { DriversModule } from './drivers/drivers.module';
 		DriversModule,
 	],
 	controllers: [],
-	providers: [],
+	providers: [SocketService],
 })
 export class AppModule {}

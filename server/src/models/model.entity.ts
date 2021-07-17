@@ -1,7 +1,6 @@
 import { except } from 'src/helpers';
 import {
 	BaseEntity,
-	Column,
 	CreateDateColumn,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
@@ -19,6 +18,10 @@ export class Model extends BaseEntity {
 
 	protected fillable(): string[] {
 		return [];
+	}
+
+	get<T = any>(key: string): T {
+		return this[key];
 	}
 
 	fill(data: Partial<this>) {
@@ -41,15 +44,7 @@ export class Model extends BaseEntity {
 	}
 
 	toJSON() {
-		const data: any = {};
-
-		const payload = except(this, [...this.hidden, 'hidden']);
-
-		for (const key in payload) {
-			data[key] = payload[key];
-		}
-
-		return data;
+		return except(this, [...this.hidden, 'hidden']);
 	}
 
 	toID() {

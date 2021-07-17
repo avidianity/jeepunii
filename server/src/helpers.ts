@@ -24,9 +24,9 @@ export function groupBy<T, K extends keyof T>(data: Array<T>, key: K) {
 }
 
 export function makeMask<T extends Function>(callable: T, callback: Function) {
-	return (((data: any) => {
+	return ((data: any) => {
 		return callable(callback(data));
-	}) as unknown) as T;
+	}) as unknown as T;
 }
 
 export function copy<T>(data: T): T {

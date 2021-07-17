@@ -9,6 +9,8 @@ import {
 import { Cooperative } from './cooperative.entity';
 import { Jeep } from './jeep.entity';
 import { Model } from './model.entity';
+import { SessionPassenger } from './session-passenger.entity';
+import { Session } from './session.entity';
 import { Token } from './token.entity';
 
 export enum RolesEnum {
@@ -71,6 +73,15 @@ export class User extends Model {
 
 	@OneToOne(() => Jeep, (jeep) => jeep.driver)
 	jeep: Jeep;
+
+	@OneToMany(() => Session, (session) => session.driver)
+	sessions: Session[];
+
+	@OneToMany(() => SessionPassenger, (session) => session.passenger)
+	rides: SessionPassenger[];
+
+	@Column({ default: false })
+	riding: boolean;
 
 	currentToken: Token;
 

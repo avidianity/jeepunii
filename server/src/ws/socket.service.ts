@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { User } from 'src/models/user.entity';
+import { RolesEnum, User } from 'src/models/user.entity';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
 import { ConfigService } from '@nestjs/config';
+import {
+	EventNames,
+	EventParams,
+	EventsMap,
+} from 'socket.io/dist/typed-events';
 
 type Users = Array<{ user: User; id: string }>;
 
@@ -81,6 +86,8 @@ export class SocketService {
 		this.server.on('connection', (socket) => {
 			this.connections++;
 			this.users.push({ user: socket.user, id: socket.id });
+			this.server.emit(`connect.${socket.user.id}`);
+
 			socket.on('disconnect', () => {
 				this.connections--;
 
@@ -88,8 +95,17 @@ export class SocketService {
 					(item) => item.id === socket.id,
 				);
 				this.users.splice(index, 1);
+
+				this.server.emit(`disconnect.${socket.user.id}`);
 			});
 		});
+	}
+
+	emit<Ev extends EventNames<EventsMap>>(
+		ev: Ev,
+		...args: EventParams<EventsMap, Ev>
+	): boolean {
+		return this.server.emit(ev, ...args);
 	}
 
 	count() {

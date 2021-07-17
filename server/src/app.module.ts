@@ -9,6 +9,7 @@ import { CryptoModule } from './crypto/crypto.module';
 import { LogsModule } from './logs/logs.module';
 import { DriversModule } from './drivers/drivers.module';
 import { SocketService } from './ws/socket.service';
+import { PointModule } from './session/point/point.module';
 
 @Module({
 	imports: [
@@ -31,7 +32,7 @@ import { SocketService } from './ws/socket.service';
 				extra: {
 					decimalNumbers: true,
 				},
-				logger: 'file',
+				logger: 'advanced-console',
 				logging: 'all',
 			}),
 			inject: [ConfigService],
@@ -43,6 +44,7 @@ import { SocketService } from './ws/socket.service';
 		CooperativeModule,
 		JeepModule,
 		DriversModule,
+		PointModule,
 	],
 	controllers: [],
 	providers: [SocketService],

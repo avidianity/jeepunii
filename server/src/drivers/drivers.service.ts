@@ -1,6 +1,13 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+	BadRequestException,
+	ForbiddenException,
+	Injectable,
+} from '@nestjs/common';
 import { JeepService } from 'src/jeep/jeep.service';
 import { LogsService } from 'src/logs/logs.service';
+import { SessionPoint } from 'src/models/session-point.entity';
+import { Session } from 'src/models/session.entity';
+import { User } from 'src/models/user.entity';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -10,6 +17,61 @@ export class DriversService {
 		protected jeep: JeepService,
 		protected user: UserService,
 	) {}
+
+	async makeSession(driver: User) {
+		if (!driver.jeep) {
+			throw new BadRequestException(
+				'Driver is not assigned to any jeep.',
+			);
+		}
+
+		try {
+			const session = await Session.createQueryBuilder('session')
+				.where('session.driverID = :driverId', { driverId: driver.id })
+				.where('DATE(session.createdAt) > CURDATE()')
+				.where('session.done = :done', { done: false })
+				.limit(1)
+				.getOneOrFail();
+
+			session.points = await SessionPoint.createQueryBuilder('point')
+				.relation(Session, 'points')
+				.of(session)
+				.loadMany();
+
+			return session;
+		} catch (_) {
+			return await Session.create({
+				driver,
+				points: [],
+			}).save();
+		}
+	}
+
+	async getSession(driver: User) {
+		if (!driver.jeep) {
+			throw new BadRequestException(
+				'Driver is not assigned to any jeep.',
+			);
+		}
+
+		try {
+			const session = await Session.createQueryBuilder('session')
+				.where('session.driverID = :driverId', { driverId: driver.id })
+				.where('DATE(session.createdAt) > CURDATE()')
+				.where('session.done = :done', { done: false })
+				.limit(1)
+				.getOneOrFail();
+
+			session.points = await SessionPoint.createQueryBuilder('point')
+				.relation(Session, 'points')
+				.of(session)
+				.loadMany();
+
+			return session;
+		} catch (_) {
+			return null;
+		}
+	}
 
 	async assign(userID: number, jeepID: number) {
 		const jeep = await this.jeep.find(jeepID);

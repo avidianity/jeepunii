@@ -10,6 +10,10 @@ export class Hash {
 	}
 }
 
+export function last<T>(data: T[]): T {
+	return data[data.length - 1];
+}
+
 export function groupBy<T, K extends keyof T>(data: Array<T>, key: K) {
 	const temp: { [key: string]: Array<T> } = {};
 

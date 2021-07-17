@@ -24,6 +24,7 @@ export class UserService implements EntityServiceContract<User> {
 		const user = await User.findOne(id, {
 			relations: ['cooperative', 'jeep'],
 		});
+
 		if (!user) {
 			throw new NotFoundException({ message: 'User does not exist.' });
 		}

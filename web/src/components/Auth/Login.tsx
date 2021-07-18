@@ -33,11 +33,11 @@ const Login: FC<Props> = (props) => {
 	const submit = async (data: Inputs) => {
 		setProcessing(true);
 		try {
+			data.roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER];
+
 			const {
 				data: { user, token },
 			} = await axios.post('/auth/login', data);
-
-			data.roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER];
 
 			setLogged(true);
 			setUser(user);
@@ -84,10 +84,9 @@ const Login: FC<Props> = (props) => {
 					<div className='form-group'>
 						<label className='text-normal text-dark'>Email</label>
 						<input
-							ref={register}
+							{...register('email')}
 							type='email'
 							className='form-control'
-							name='email'
 							placeholder='email@example.com'
 							disabled={processing}
 						/>
@@ -95,10 +94,9 @@ const Login: FC<Props> = (props) => {
 					<div className='form-group'>
 						<label className='text-normal text-dark'>Password</label>
 						<input
-							ref={register}
+							{...register('password')}
 							type='password'
 							className='form-control'
-							name='password'
 							placeholder='Password'
 							disabled={processing}
 						/>

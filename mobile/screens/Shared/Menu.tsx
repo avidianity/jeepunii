@@ -15,7 +15,7 @@ type Props = {};
 const Menu: FC<Props> = (props) => {
 	const state = useMemo(() => State.getInstance(), []);
 
-	const navigation = useNavigation<any>();
+	const navigation = useNavigation();
 
 	const { user, setUser } = useContext(AuthContext);
 
@@ -34,7 +34,8 @@ const Menu: FC<Props> = (props) => {
 				duration: Toast.durations.LONG,
 				position: Toast.positions.BOTTOM,
 			});
-			await Promise.all([state.remove('user'), state.remove('token'), setUser(null)]);
+			await Promise.all([state.remove('user'), state.remove('token')]);
+			setUser(null);
 		}
 	};
 

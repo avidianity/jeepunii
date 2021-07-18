@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext, EventContext } from '../../../../contexts';
-import { outIf } from '../../../../helpers';
+import { Asker, outIf } from '../../../../helpers';
 import { State } from '../../../../libraries/State';
 import { routes } from '../../../../routes';
 
@@ -16,15 +16,16 @@ const Menu: FC<Props> = (props) => {
 	const { user } = useContext(AuthContext);
 
 	const logout = async () => {
-		state.remove('user').remove('token');
-
-		try {
-			await axios.post('/auth/logout');
-		} catch (error) {
-			console.log(error.toJSON());
-		} finally {
-			toastr.info('Logged out successfully.', 'Notice');
-			window.location.href = routes.LOGIN;
+		if (await Asker.notice('Are you sure you want to logout?')) {
+			try {
+				await axios.post('/auth/logout');
+			} catch (error) {
+				console.log(error.toJSON());
+			} finally {
+				state.remove('user').remove('token');
+				toastr.info('Logged out successfully.', 'Notice');
+				window.location.href = routes.LOGIN;
+			}
 		}
 	};
 

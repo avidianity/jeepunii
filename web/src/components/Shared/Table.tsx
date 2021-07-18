@@ -6,7 +6,7 @@ import Card from './Card';
 
 type Props<T> = {
 	title: string;
-	columns: Array<{ Header: string; accessor: keyof T }>;
+	columns: Array<{ Header: string; accessor: keyof T | string }>;
 	data?: T[];
 	head?: () => JSX.Element | JSX.Element[];
 };

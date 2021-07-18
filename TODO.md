@@ -3,45 +3,41 @@
 - Mobile
 - Web
 
-# TODO
+## TODO
 
-# Mobile
+### Mobile
 
-## Customers
+#### Customers
 
 - [x] Register
-- [x] Scanning
-- [ ] Payment Transaction
-- [ ] Input of Routes of Destination
+- [x] Payment Transaction
 - [ ] Proof of Identity
 - [ ] History of Transactions and Payments
 - [ ] History of Routes
 - [ ] History of Jeeps
 - [ ] Proof of Payment
 - [x] Wallet
-- [ ] Request to driver if route and fare does not exist
 
-## Driver
+#### Driver
 
 - [ ] Track LOC with GPS
-- [ ] Time-in jeep assigned
-- [ ] Time-out jeep assigned
+- [ ] Time-in jeep session
+- [ ] Time-out jeep session
 - [ ] Monitor number of paying passengers in realtime
 - [ ] Statistics and Analytics of sales and earnings (daily, weekly, monthly)
 
-# Web
+### Web
 
-## Cooperative Owners
+#### Cooperative Owners
 
 - [x] Generate QR
 - [x] Management of Jeep Drivers (CRUD)
 - [x] Management of Jeep Inventory
 - [x] Assignment of Drivers to Jeep
 - [ ] Statistics and Analytics of sales, earnings, jeep, passengers, driver, common locations (daily, weekly, monthly)
-- [ ] Notify drivers on assigned jeep (sms)
 - [x] Input Routes with Fare
 
-## Administrator
+#### Administrator
 
 - [x] Manage Users
 - [x] Approve Pending Registrations

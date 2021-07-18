@@ -5,138 +5,57 @@ import bg from '../../assets/static/images/bg.jpg';
 import logo from '../../assets/logo-full.svg';
 import { APP_NAME } from '../../constants';
 import { useForm } from 'react-hook-form';
-import { CooperativeContract } from '../../contracts/cooperative.contract';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { handleError } from '../../helpers';
 import { AuthContext } from '../../contexts';
 import { cooperativeService } from '../../services/cooperative.service';
+import { RolesEnum } from '../../contracts/user.contract';
+import InputMask from 'react-input-mask';
 
 type Props = {};
 
-const Main: FC<{
-	processing: boolean;
-	register: any;
-	role: string;
-	cooperatives: CooperativeContract[];
-	setRole: (role: string | null) => void;
-}> = ({ processing, register, role, cooperatives, setRole }) => (
-	<>
-		<div className='row'>
-			<div className='form-group col-12'>
-				<p className='lead'>
-					Selected: <b>{role}</b>
-				</p>
-				<button
-					className='btn btn-info btn-sm'
-					onClick={(e) => {
-						e.preventDefault();
-						setRole(null);
-					}}>
-					Reset
-				</button>
-			</div>
-			<div className='form-group col-12 col-md-6'>
-				<label className='text-normal text-dark'>First Name</label>
-				<input
-					ref={register}
-					type='text'
-					className='form-control'
-					name='firstName'
-					placeholder='First Name'
-					disabled={processing}
-				/>
-			</div>
-			<div className='form-group col-12 col-md-6'>
-				<label className='text-normal text-dark'>Last Name</label>
-				<input ref={register} type='text' className='form-control' name='lastName' placeholder='Last Name' disabled={processing} />
-			</div>
-			<div className='form-group col-12 col-md-12'>
-				<label className='text-normal text-dark'>Email</label>
-				<input
-					ref={register}
-					type='email'
-					className='form-control'
-					name='email'
-					placeholder='name@email.com'
-					disabled={processing}
-				/>
-			</div>
-			<div className='form-group col-12 col-md-6'>
-				<label className='text-normal text-dark'>Address</label>
-				<input ref={register} type='text' className='form-control' name='address' placeholder='Address' disabled={processing} />
-			</div>
-			<div className='form-group col-12 col-md-6'>
-				<label className='text-normal text-dark'>Phone</label>
-				<input ref={register} type='text' className='form-control' name='phone' placeholder='Phone Number' disabled={processing} />
-			</div>
-			{role !== 'Passenger' ? (
-				<div className='form-group col-12'>
-					<label className='text-normal text-dark'>Cooperative</label>
-					<select ref={register} className='form-control' name='cooperativeId' disabled={processing || cooperatives.length === 0}>
-						<option value='' disabled selected>
-							{' '}
-							-- Select --{' '}
-						</option>
-						{cooperatives.length === 0 ? <option>No Cooperatives Available</option> : null}
-						{cooperatives.map((cooperative, index) => (
-							<option value={cooperative.id} key={index}>
-								{cooperative.name}
-							</option>
-						))}
-					</select>
-					<small className='form-text text-muted'>
-						If you can't find your respective cooperative, please request it to a administrator.
-					</small>
-				</div>
-			) : null}
-			<div className='form-group col-12'>
-				<label className='text-normal text-dark'>Password</label>
-				<input
-					ref={register}
-					type='password'
-					className='form-control'
-					name='password'
-					placeholder='Password'
-					disabled={processing}
-				/>
-			</div>
-		</div>
-		<div className='form-group row'>
-			<div className='col-12 col-md-4'>
-				<button type='submit' className='btn btn-primary' disabled={processing}>
-					{!processing ? 'Sign Up' : <i className='material-icons spin-reverse'>loop</i>}
-				</button>
-			</div>
-			<div className='col-12 col-md-8 d-flex'>
-				<Link to={routes.LOGIN} className='ml-md-auto mt-1'>
-					Already have an account? Sign In
-				</Link>
-			</div>
-		</div>
-	</>
-);
+type Inputs = {
+	firstName: string;
+	lastName: string;
+	address: string;
+	email: string;
+	phone: string;
+	password: string;
+	coins: number;
+	role: RolesEnum;
+	approved: boolean;
+	cooperativeId: number;
+};
 
 const Register: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
-	const [role, setRole] = useState<string | null>(null);
-	const { register, handleSubmit } = useForm();
+	const [role, setRole] = useState<RolesEnum | null>(null);
+	const { register, handleSubmit } = useForm<Inputs>();
 	const history = useHistory();
 
 	const { logged } = useContext(AuthContext);
 
 	const { data: cooperatives } = useQuery('cooperatives', () => cooperativeService.fetch());
 
-	const submit = async (data: any) => {
+	const submit = async (data: Inputs) => {
 		setProcessing(true);
 		try {
-			data.role = role;
+			data.role = role!;
 			if (data.cooperativeId) {
 				data.cooperativeId = Number(data.cooperativeId);
 			}
-			await axios.post('/auth/register', data);
-			toastr.success(`Registered successfully. ${role !== 'Student' ? 'Please wait for approval' : 'Please login'}.`);
-			history.push(routes.LOGIN);
+			await axios.post('/auth/register', { ...data, context: 'web' });
+			toastr.success(
+				`Registered successfully. ${
+					role !== RolesEnum.PASSENGER ? 'Please wait for approval' : 'Please login using the mobile app'
+				}.`
+			);
+			if (role !== RolesEnum.PASSENGER) {
+				history.push(routes.LOGIN);
+			} else {
+				history.push(routes.LANDING);
+			}
 		} catch (error) {
 			handleError(error);
 		} finally {
@@ -146,12 +65,6 @@ const Register: FC<Props> = (props) => {
 
 	if (logged) {
 		history.push(routes.DASHBOARD);
-	}
-
-	if (role === 'Cooperative Owner' && cooperatives?.length === 0) {
-		toastr.error('There are no cooperatives yet. Cannot register as a cooperative owner.', 'Oops!');
-		history.goBack();
-		return null;
 	}
 
 	return (
@@ -177,10 +90,10 @@ const Register: FC<Props> = (props) => {
 							<div className='row'>
 								<div className='col-12 col-md-auto my-2 text-center'>
 									<button
-										className='btn btn-info btn-sm d-none'
+										className='btn btn-info btn-sm'
 										onClick={(e) => {
 											e.preventDefault();
-											setRole('Passenger');
+											setRole(RolesEnum.PASSENGER);
 										}}>
 										Passenger
 										<i className='material-icons'>airline_seat_recline_normal</i>
@@ -191,7 +104,7 @@ const Register: FC<Props> = (props) => {
 										className='btn btn-success btn-sm'
 										onClick={(e) => {
 											e.preventDefault();
-											setRole('Driver');
+											setRole(RolesEnum.DRIVER);
 										}}>
 										Driver
 										<i className='material-icons'>assignment_ind</i>
@@ -202,7 +115,15 @@ const Register: FC<Props> = (props) => {
 										className='btn btn-primary btn-sm'
 										onClick={(e) => {
 											e.preventDefault();
-											setRole('Cooperative Owner');
+											if (cooperatives?.length === 0) {
+												toastr.error(
+													'There are no cooperatives yet. Cannot register as a cooperative owner.',
+													'Oops!'
+												);
+												history.goBack();
+											} else {
+												setRole(RolesEnum.COOPERATIVE);
+											}
 										}}>
 										Cooperative Owner
 										<i className='material-icons'>supervisor_account</i>
@@ -210,7 +131,7 @@ const Register: FC<Props> = (props) => {
 								</div>
 								<div className='col-12 mt-4'>
 									<small className='text-muted'>
-										Note for Passengers: Please download the Jipuni App on your phone and register.
+										Note for Passengers: Please download the {APP_NAME} App on your phone and register.
 									</small>
 									<hr />
 									<div className='row'>
@@ -233,7 +154,128 @@ const Register: FC<Props> = (props) => {
 							</div>
 						</div>
 					) : (
-						<Main processing={processing} role={role} cooperatives={cooperatives || []} register={register} setRole={setRole} />
+						<>
+							<div className='row'>
+								<div className='form-group col-12'>
+									<p className='lead'>
+										Selected: <b>{role}</b>
+									</p>
+									<button
+										className='btn btn-info btn-sm'
+										onClick={(e) => {
+											e.preventDefault();
+											setRole(null);
+										}}>
+										Reset
+									</button>
+								</div>
+								<div className='form-group col-12 col-md-6'>
+									<label className='text-normal text-dark'>First Name</label>
+									<input
+										{...register('firstName')}
+										type='text'
+										className='form-control'
+										placeholder='First Name'
+										disabled={processing}
+									/>
+								</div>
+								<div className='form-group col-12 col-md-6'>
+									<label className='text-normal text-dark'>Last Name</label>
+									<input
+										{...register('lastName')}
+										type='text'
+										className='form-control'
+										placeholder='Last Name'
+										disabled={processing}
+									/>
+								</div>
+								<div className='form-group col-12 col-md-12'>
+									<label className='text-normal text-dark'>Email</label>
+									<input
+										{...register('email')}
+										type='email'
+										className='form-control'
+										placeholder='name@email.com'
+										disabled={processing}
+									/>
+								</div>
+								<div className='form-group col-12 col-md-6'>
+									<label className='text-normal text-dark'>Address</label>
+									<input
+										{...register('address')}
+										type='text'
+										className='form-control'
+										placeholder='Address'
+										disabled={processing}
+									/>
+								</div>
+								<div className='form-group col-12 col-md-6'>
+									<label className='text-normal text-dark'>Phone</label>
+									<InputMask
+										mask='+639999999999'
+										{...register('phone')}
+										type='text'
+										id='phone'
+										placeholder='Phone Number'
+										className='form-control'
+										autoComplete='tel'
+										disabled={processing}
+									/>
+								</div>
+								{role !== 'Passenger' ? (
+									<div className='form-group col-12'>
+										<label className='text-normal text-dark'>Cooperative</label>
+										<select
+											{...register('cooperativeId')}
+											className='form-control'
+											disabled={processing || cooperatives?.length === 0}>
+											<option value='' disabled selected>
+												{' '}
+												-- Select --{' '}
+											</option>
+											{cooperatives?.length === 0 ? (
+												<option>No Cooperatives Available</option>
+											) : (
+												<option disabled selected>
+													{' '}
+													-- Select --{' '}
+												</option>
+											)}
+											{cooperatives?.map((cooperative, index) => (
+												<option value={cooperative.id} key={index}>
+													{cooperative.name}
+												</option>
+											))}
+										</select>
+										<small className='form-text text-muted'>
+											~ If you can't find your respective cooperative, please request it to a administrator.
+										</small>
+									</div>
+								) : null}
+								<div className='form-group col-12'>
+									<label className='text-normal text-dark'>Password</label>
+									<input
+										{...register('password')}
+										type='password'
+										className='form-control'
+										placeholder='Password'
+										disabled={processing}
+									/>
+								</div>
+							</div>
+							<div className='form-group row'>
+								<div className='col-12 col-md-4'>
+									<button type='submit' className='btn btn-primary' disabled={processing}>
+										{!processing ? 'Sign Up' : <i className='material-icons spin-reverse'>loop</i>}
+									</button>
+								</div>
+								<div className='col-12 col-md-8 d-flex'>
+									<Link to={routes.LOGIN} className='ml-md-auto mt-1'>
+										Already have an account? Sign In
+									</Link>
+								</div>
+							</div>
+						</>
 					)}
 				</form>
 			</div>

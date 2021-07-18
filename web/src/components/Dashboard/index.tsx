@@ -2,6 +2,7 @@ import React, { FC, useContext, useEffect } from 'react';
 import { Route, Switch, useHistory } from 'react-router';
 import { v4 } from 'uuid';
 import { AuthContext } from '../../contexts';
+import { RolesEnum } from '../../contracts/user.contract';
 import { useURL } from '../../hooks';
 import { routes } from '../../routes';
 import Cooperatives from './Cooperatives';
@@ -34,6 +35,12 @@ const Dashboard: FC<Props> = (props) => {
 	};
 
 	useEffect(() => {
+		if (!user || !logged) {
+			history.goBack();
+		}
+	}, [user, logged, history]);
+
+	useEffect(() => {
 		const id = v4();
 		fetchRequirements(id);
 
@@ -42,11 +49,6 @@ const Dashboard: FC<Props> = (props) => {
 		};
 		// eslint-disable-next-line
 	}, []);
-
-	if (!user || !logged) {
-		history.goBack();
-		return null;
-	}
 
 	return (
 		<>
@@ -57,10 +59,13 @@ const Dashboard: FC<Props> = (props) => {
 					<div id='mainContent'>
 						<div className='full-container pt-5'>
 							<Switch>
-								<Route path={url(routes.USERS)} component={Users} />
 								<Route path={url(routes.COOPERATIVES)} component={Cooperatives} />
 								<Route path={url(routes.JEEPS)} component={Jeeps} />
 								<Route path={url(routes.LOGS)} component={Logs} />
+								<Route path={url(routes.ADMINS)} render={(props) => <Users type={RolesEnum.ADMIN} {...props} />} />
+								<Route path={url(routes.OWNERS)} render={(props) => <Users type={RolesEnum.COOPERATIVE} {...props} />} />
+								<Route path={url(routes.DRIVERS)} render={(props) => <Users type={RolesEnum.DRIVER} {...props} />} />
+								<Route path={url(routes.PASSENGERS)} render={(props) => <Users type={RolesEnum.PASSENGER} {...props} />} />
 							</Switch>
 						</div>
 					</div>

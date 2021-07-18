@@ -77,3 +77,9 @@ export function only<T, K extends keyof T>(data: T, keys: Array<K>) {
 export function onlyMany<T, K extends keyof T>(data: Array<T>, keys: Array<K>) {
 	return [...data].map((item) => only(item, keys));
 }
+
+export function isMobile(userAgent: string) {
+	return /Android|webOS|iPhone|iPad|Mac|Macintosh|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+		userAgent,
+	);
+}

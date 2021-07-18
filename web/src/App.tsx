@@ -72,7 +72,7 @@ function App() {
 							<Route path={routes.DASHBOARD} component={Dashboard} />
 							<Route component={FourZeroFour} />
 						</Switch>
-						<ReactQueryDevtools position='bottom-right' />
+						{process.env.NODE_ENV !== 'production' ? <ReactQueryDevtools position='bottom-right' /> : null}
 						<Tooltip />
 					</Router>
 				</QueryClientProvider>

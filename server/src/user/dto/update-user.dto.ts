@@ -1,6 +1,5 @@
 import {
 	IsString,
-	IsNotEmpty,
 	IsEmail,
 	IsPhoneNumber,
 	IsIn,

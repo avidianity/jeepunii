@@ -2,7 +2,6 @@ import React, { FC, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useRouteMatch } from 'react-router';
 import { AuthContext } from '../../../contexts';
-import { CooperativeContract } from '../../../contracts/cooperative.contract';
 import { handleError } from '../../../helpers';
 import { useMode } from '../../../hooks';
 import { cooperativeService } from '../../../services/cooperative.service';
@@ -10,10 +9,17 @@ import Card from '../../Shared/Card';
 
 type Props = {};
 
+type Inputs = {
+	name: string;
+	description: string;
+	website: string;
+	approved: boolean;
+};
+
 const Form: FC<Props> = (props) => {
 	const [mode, setMode] = useMode();
 	const [processing, setProcessing] = useState(false);
-	const { register, setValue, handleSubmit } = useForm<CooperativeContract>();
+	const { register, setValue, handleSubmit } = useForm<Inputs>();
 	const history = useHistory();
 	const match = useRouteMatch<{ cooperativeID: string }>();
 
@@ -26,7 +32,7 @@ const Form: FC<Props> = (props) => {
 		try {
 			const user = await cooperativeService.fetchOne(id);
 			for (const [key, value] of Object.entries(user)) {
-				setValue(key, value);
+				setValue(key as any, value);
 			}
 			setProcessing(false);
 		} catch (error) {
@@ -35,7 +41,7 @@ const Form: FC<Props> = (props) => {
 		}
 	};
 
-	const submit = async (payload: CooperativeContract) => {
+	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
 			payload.approved = user?.role === 'Admin';
@@ -68,10 +74,9 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col- col-md-6'>
 							<label htmlFor='name'>Name</label>
 							<input
-								ref={register}
+								{...register('name')}
 								type='text'
 								name='name'
-								id='name'
 								placeholder='Name'
 								className='form-control'
 								disabled={processing}
@@ -80,9 +85,8 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='website'>Website</label>
 							<input
-								ref={register}
+								{...register('website')}
 								type='text'
-								name='website'
 								id='website'
 								placeholder='Website'
 								className='form-control'
@@ -93,8 +97,7 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col-12'>
 							<label htmlFor='description'>Description</label>
 							<textarea
-								ref={register}
-								name='description'
+								{...register('description')}
 								id='description'
 								placeholder='Description'
 								className='form-control'

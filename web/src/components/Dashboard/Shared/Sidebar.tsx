@@ -2,13 +2,36 @@ import React, { FC, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { APP_NAME } from '../../../constants';
 import { AuthContext } from '../../../contexts';
+import { RolesEnum } from '../../../contracts/user.contract';
 import { useURL } from '../../../hooks';
 import { State } from '../../../libraries/State';
 import { routes } from '../../../routes';
 
 type Props = {};
 
-const colors = ['brown', 'deep-orange', 'deep-purple', 'indigo', 'light-blue', 'pink', 'purple', 'red', 'teal', 'blue'];
+type RouteLink = {
+	url: string;
+	icon: string;
+	title: string;
+	show: boolean;
+	text?: string;
+};
+
+const colors = [
+	'brown',
+	'deep-orange',
+	'deep-purple',
+	'indigo',
+	'light-blue',
+	'pink',
+	'purple',
+	'red',
+	'teal',
+	'blue',
+	'green',
+	'black',
+	'white',
+];
 
 const Sidebar: FC<Props> = (props) => {
 	const url = useURL();
@@ -16,32 +39,54 @@ const Sidebar: FC<Props> = (props) => {
 
 	const { user } = useContext(AuthContext);
 
-	const role = user?.role || '';
+	const role = user?.role!;
 
-	const links = [
+	const links: RouteLink[] = [
 		{
-			url: url(routes.USERS),
-			icon: 'ti-user',
-			title: 'Users',
-			show: !['Driver', 'Passenger'].includes(role),
+			url: url(routes.ADMINS),
+			icon: 'material-icons',
+			title: 'Administrators',
+			show: [RolesEnum.ADMIN].includes(role),
+			text: 'admin_panel_settings',
+		},
+		{
+			url: url(routes.OWNERS),
+			icon: 'material-icons',
+			title: 'Cooperative Owners',
+			show: [RolesEnum.ADMIN, RolesEnum.COOPERATIVE].includes(role),
+			text: 'supervised_user_circle',
+		},
+		{
+			url: url(routes.DRIVERS),
+			icon: 'material-icons',
+			title: 'Drivers',
+			show: [RolesEnum.ADMIN, RolesEnum.COOPERATIVE].includes(role),
+			text: 'sports_motorsports',
+		},
+		{
+			url: url(routes.PASSENGERS),
+			icon: 'material-icons',
+			title: 'Passengers',
+			show: [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER].includes(role),
+			text: 'person_off',
 		},
 		{
 			url: url(routes.JEEPS),
 			icon: 'ti-car',
 			title: 'Jeeps',
-			show: user?.role !== 'Passenger',
+			show: role !== RolesEnum.PASSENGER,
 		},
 		{
 			url: url(routes.COOPERATIVES),
 			icon: 'ti-clipboard',
 			title: 'Cooperatives',
-			show: user?.role === 'Admin',
+			show: role === RolesEnum.ADMIN,
 		},
 		{
 			url: url(routes.SALES),
 			icon: 'ti-money',
 			title: 'Sales',
-			show: !['Driver', 'Passenger'].includes(role),
+			show: ![RolesEnum.PASSENGER].includes(role),
 		},
 		{
 			url: url(routes.LOGS),
@@ -130,7 +175,7 @@ const Sidebar: FC<Props> = (props) => {
 							<li className='nav-item' key={index}>
 								<Link className={`sidebar-link`} to={link.url}>
 									<span className='icon-holder'>
-										<i className={`c-${colors[index]}-500 ${link.icon}`}></i>{' '}
+										<i className={`c-${colors[index]}-500 ${link.icon}`}>{link.text}</i>{' '}
 									</span>
 									<span className='title'>{link.title}</span>
 								</Link>

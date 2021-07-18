@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { useHistory, useRouteMatch } from 'react-router';
 import { AuthContext } from '../../../contexts';
-import { JeepContract } from '../../../contracts/jeep.contract';
+import { RolesEnum } from '../../../contracts/user.contract';
 import { handleError } from '../../../helpers';
 import { useMode } from '../../../hooks';
 import { cooperativeService } from '../../../services/cooperative.service';
@@ -13,11 +13,18 @@ import Card from '../../Shared/Card';
 
 type Props = {};
 
+type Inputs = {
+	name: string;
+	plateNumber: string;
+	cooperativeId: number;
+	driverId: number;
+};
+
 const Form: FC<Props> = (props) => {
 	const [mode, setMode] = useMode();
 	const [processing, setProcessing] = useState(false);
 	const [assignDriver, setAssignDriver] = useState(false);
-	const { register, setValue, handleSubmit } = useForm<JeepContract>();
+	const { register, setValue, handleSubmit } = useForm<Inputs>();
 	const history = useHistory();
 	const match = useRouteMatch<{ jeepID: string }>();
 
@@ -40,7 +47,7 @@ const Form: FC<Props> = (props) => {
 		try {
 			const jeep = await jeepService.fetchOne(id);
 			for (const [key, value] of Object.entries(jeep)) {
-				setValue(key, value);
+				setValue(key as any, value);
 			}
 
 			if (jeep.driver) {
@@ -54,11 +61,11 @@ const Form: FC<Props> = (props) => {
 		}
 	};
 
-	const submit = async (payload: JeepContract) => {
+	const submit = async (payload: Inputs) => {
 		setProcessing(true);
 		try {
 			if (user?.role !== 'Admin') {
-				payload.cooperativeId = user!.cooperative!.id!;
+				payload.cooperativeId = user?.cooperative?.id!;
 			}
 
 			if (mode === 'Add') {
@@ -90,9 +97,8 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col- col-md-6'>
 							<label htmlFor='name'>Name</label>
 							<input
-								ref={register}
+								{...register('name')}
 								type='text'
-								name='name'
 								id='name'
 								placeholder='Name'
 								className='form-control'
@@ -102,9 +108,8 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='plateNumber'>Plate Number</label>
 							<input
-								ref={register}
+								{...register('plateNumber')}
 								type='text'
-								name='plateNumber'
 								id='plateNumber'
 								placeholder='Plate Number'
 								className='form-control'
@@ -114,13 +119,18 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='cooperativeId'>Cooperative</label>
 							<select
-								ref={register}
-								name='cooperativeId'
+								{...register('cooperativeId')}
 								id='cooperativeId'
 								placeholder='Cooperative'
 								className='form-control'
 								disabled={processing || user?.role !== 'Admin'}>
-								{user?.role === 'Admin' ? (
+								{user?.role === RolesEnum.ADMIN ? (
+									<option disabled selected>
+										{' '}
+										-- Select --{' '}
+									</option>
+								) : null}
+								{user?.role === RolesEnum.ADMIN ? (
 									cooperatives?.map((cooperative, index) => (
 										<option value={cooperative.id} key={index}>
 											{cooperative.name}
@@ -134,12 +144,17 @@ const Form: FC<Props> = (props) => {
 						<div className='form-group col-12 col-md-6'>
 							<label htmlFor='driverId'>Driver</label>
 							<select
-								ref={register}
-								name='driverId'
+								{...register('driverId')}
 								id='driverId'
 								placeholder='Driver'
 								className='form-control'
 								disabled={processing || !assignDriver}>
+								{assignDriver ? (
+									<option disabled selected>
+										{' '}
+										-- Select --{' '}
+									</option>
+								) : null}
 								{assignDriver ? (
 									drivers?.map((driver, index) => (
 										<option value={driver.id} key={index}>
@@ -161,16 +176,6 @@ const Form: FC<Props> = (props) => {
 									Assign a Driver
 								</label>
 							</div>
-						</div>
-						<div className='form-group col-12'>
-							<label htmlFor='description'>Description</label>
-							<textarea
-								ref={register}
-								name='description'
-								id='description'
-								placeholder='Description'
-								className='form-control'
-								disabled={processing}></textarea>
 						</div>
 						<div className='form-group col-12'>
 							<button type='submit' className='btn btn-primary btn-sm'>

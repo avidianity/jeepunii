@@ -1,5 +1,12 @@
 {
-	"address": "jipuni-api.tk",
-	"port": false,
-	"schema": "https"
+	"dev": {
+		"address": "127.0.0.1",
+		"port": 8000,
+		"schema": "http"
+	},
+	"prod": {
+		"address": "jeepunii.tk",
+		"port": false,
+		"schema": "https"
+	}
 }

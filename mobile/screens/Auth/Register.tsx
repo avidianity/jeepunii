@@ -44,7 +44,7 @@ const Register: FC<Props> = (props) => {
 		try {
 			const {
 				data: { user, token },
-			} = await axios.post<{ user: UserContract; token: string }>('/auth/register', payload);
+			} = await axios.post<{ user: UserContract; token: string }>('/auth/register', { ...payload, context: 'mobile' });
 			Toast.show('Registered successfully!', {
 				duration: Toast.durations.LONG,
 				position: Toast.positions.BOTTOM,

@@ -46,4 +46,8 @@ export class RegisterDTO {
 	@Exists(Cooperative)
 	@IsOptional()
 	cooperativeId: number;
+
+	@IsString()
+	@IsIn(['mobile', 'web'])
+	context: 'mobile' | 'web';
 }

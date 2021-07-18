@@ -1,6 +1,6 @@
 import { RolesEnum } from './contracts/user.contract';
 
-export const APP_NAME = process.env.REACT_APP_NAME || 'Jipuni';
+export const APP_NAME = process.env.REACT_APP_NAME || 'Jeepunii';
 
 export const RoleColorMap = {
 	[RolesEnum.ADMIN]: 'danger',

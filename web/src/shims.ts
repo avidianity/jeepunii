@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 Error.prototype.toJSON = function () {
 	const alt = {} as any;
 

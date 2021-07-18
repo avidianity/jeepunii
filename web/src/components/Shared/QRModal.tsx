@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { FC, useEffect } from 'react';
+import { v4 } from 'uuid';
 import { QRCode } from '../../helpers';
 import { useNullable } from '../../hooks';
 
@@ -11,10 +12,10 @@ type Props = {
 	modalTitle?: string;
 };
 
+const id = v4();
+
 const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) => {
 	const [data, setData] = useNullable<string>();
-
-	const id = String.random();
 
 	const qrCodify = async (url: string) => {
 		try {

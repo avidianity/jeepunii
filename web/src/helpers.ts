@@ -14,6 +14,14 @@ export class Asker {
 	static async danger(message: string, title?: string) {
 		return toBool(await swal({ title, text: message, buttons: ['Cancel', 'Confirm'], dangerMode: true, icon: 'warning' }));
 	}
+
+	static async save(message: string, title?: string) {
+		return toBool(await swal({ title, text: message, buttons: ['Cancel', 'Save'], icon: 'info' }));
+	}
+
+	static async okay(message: string, title?: string) {
+		return toBool(await swal({ title, text: message, icon: 'info' }));
+	}
 }
 export class QRCode {
 	static toDataURL(data: any) {
@@ -48,7 +56,7 @@ export function validURL(url: string) {
 	} catch (_) {
 		valid = false;
 	}
-	return !!pattern.test(url) && valid;
+	return !!pattern.test(url) || valid;
 }
 
 export function ucfirst(string: string) {

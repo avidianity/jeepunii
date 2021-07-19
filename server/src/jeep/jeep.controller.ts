@@ -42,6 +42,17 @@ export class JeepController {
 		return await this.jeep.all();
 	}
 
+	@Get('/current')
+	getCurrent(@Req() request: Request) {
+		const { user: driver } = request;
+
+		if (driver.role !== RolesEnum.DRIVER) {
+			throw new BadRequestException('User is not a driver.');
+		}
+
+		return driver.jeep;
+	}
+
 	@Post('/passenger/in')
 	async passengerIn(@Req() request: Request, @Body() data: PassengerInDTO) {
 		const passenger = request.user;

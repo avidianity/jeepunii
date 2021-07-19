@@ -29,15 +29,15 @@ export class UserController {
 			options.where = {
 				role,
 			};
-		}
+		} else {
+			const user = this.users.getUser();
 
-		const user = this.users.getUser();
-
-		if (!['Admin', 'Passenger'].includes(user.role)) {
-			options.where = {
-				...(options.where as any),
-				cooperative: user.cooperative,
-			};
+			if (!['Admin', 'Passenger'].includes(user.role)) {
+				options.where = {
+					...(options.where as any),
+					cooperative: user.cooperative,
+				};
+			}
 		}
 
 		return await this.users.all(options);

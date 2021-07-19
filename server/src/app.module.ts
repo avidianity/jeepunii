@@ -8,8 +8,8 @@ import { JeepModule } from './jeep/jeep.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { LogsModule } from './logs/logs.module';
 import { DriversModule } from './drivers/drivers.module';
-import { SocketService } from './ws/socket.service';
 import { PointModule } from './session/point/point.module';
+import { SocketModule } from './ws/socket.module';
 
 @Module({
 	imports: [
@@ -32,7 +32,7 @@ import { PointModule } from './session/point/point.module';
 				extra: {
 					decimalNumbers: true,
 				},
-				logger: 'advanced-console',
+				logger: 'file',
 				logging: 'all',
 			}),
 			inject: [ConfigService],
@@ -45,8 +45,10 @@ import { PointModule } from './session/point/point.module';
 		JeepModule,
 		DriversModule,
 		PointModule,
+		SocketModule,
 	],
 	controllers: [],
-	providers: [SocketService],
+	providers: [],
+	exports: [],
 })
 export class AppModule {}

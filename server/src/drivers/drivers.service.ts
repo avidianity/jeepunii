@@ -9,6 +9,7 @@ import { SessionPoint } from 'src/models/session-point.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
 import { UserService } from 'src/user/user.service';
+import { SocketService } from 'src/ws/socket.service';
 
 @Injectable()
 export class DriversService {
@@ -16,6 +17,7 @@ export class DriversService {
 		protected logs: LogsService,
 		protected jeep: JeepService,
 		protected user: UserService,
+		protected socket: SocketService,
 	) {}
 
 	async makeSession(driver: User) {
@@ -95,6 +97,8 @@ export class DriversService {
 			self,
 		);
 
+		this.socket.emit(`user.${user.id}.assign`, { jeep });
+
 		return [user, await jeep.save()];
 	}
 
@@ -120,6 +124,8 @@ export class DriversService {
 			`${self.getFullname()} unassigned ${user.getFullname()} from ${jeep.getDetails()}.`,
 			self,
 		);
+
+		this.socket.emit(`user.${user.id}.unassign`, { jeep });
 
 		return [user, jeep];
 	}

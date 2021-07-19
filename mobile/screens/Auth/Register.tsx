@@ -30,7 +30,7 @@ const Register: FC<Props> = (props) => {
 
 	const state = State.getInstance();
 
-	const { setUser } = useContext(AuthContext);
+	const { setUser, setToken } = useContext(AuthContext);
 
 	const { control, handleSubmit } = useForm<Inputs>();
 
@@ -50,6 +50,7 @@ const Register: FC<Props> = (props) => {
 				position: Toast.positions.BOTTOM,
 			});
 			await Promise.all([state.set('user', user), state.set('token', token)]);
+			setToken(token);
 			setUser(user);
 			navigation.navigate('Home', {
 				screen: 'Menu',

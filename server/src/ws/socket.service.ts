@@ -59,7 +59,20 @@ export class SocketService {
 	init() {
 		this.server.use(async (socket, next) => {
 			try {
-				const header = String(socket.handshake.headers.authorization);
+				let header = '';
+
+				if (
+					socket.handshake.headers['authorization'] ||
+					typeof socket.handshake.headers['authorization'] ===
+						'string'
+				) {
+					header = socket.handshake.headers['authorization'];
+				} else if (
+					socket.request.headers['authorization'] &&
+					typeof socket.request.headers['authorization'] === 'string'
+				) {
+					header = socket.request.headers['authorization'];
+				}
 
 				const fragments = header.split(' ');
 
@@ -67,7 +80,7 @@ export class SocketService {
 					return next(new Error('Malformed authorization header.'));
 				}
 
-				const hash = fragments[2];
+				const hash = fragments[1];
 
 				const user = await this.auth.validateHash(hash);
 

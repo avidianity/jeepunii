@@ -7,54 +7,93 @@ import './boot';
 import { useNullable } from './hooks';
 import { UserContract } from './contracts/user.contract';
 import Splash from './screens/Splash';
-import { AuthContext, ThemeContext } from './contexts';
+import { AuthContext, SocketContext, ThemeContext } from './contexts';
 import Auth from './screens/Auth';
 import Home from './screens/Home';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Colors } from './constants';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { io, Socket } from 'socket.io-client';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { State } from './libraries/State';
 
 const RootStack = createStackNavigator();
 
 export default function App() {
 	const [user, setUser] = useNullable<UserContract>();
+	const [token, setToken] = useState('');
 	const [dark, setDark] = useState(false);
+	const [socket, setSocket] = useNullable<Socket>();
+	const state = State.getInstance();
+
+	const setup = async () => {
+		if (await state.has('token')) {
+			init((await state.get<string>('token'))!);
+		}
+	};
+
+	const init = (token: string) => {
+		const socket = io(axios.defaults.baseURL!, {
+			extraHeaders: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		socket.on('connect', () => {
+			setSocket(socket);
+		});
+	};
+
+	useEffect(() => {
+		const key = state.listen<string>('token', (token) => init(token));
+		setup();
+		return () => {
+			state.unlisten(key);
+		};
+		// eslint-disable-next-line
+	}, []);
 
 	return (
-		<SafeAreaProvider>
-			<RootSiblingParent>
-				<ThemeContext.Provider value={{ dark, setDark }}>
-					<ThemeProvider
-						value={{
-							dark,
-							colors: {
-								primary: Colors.primary,
-								background: Colors.light,
-								card: Colors.info,
-								text: Colors.dark,
-								border: Colors.danger,
-								notification: Colors.success,
-							},
-						}}>
-						<NavigationContainer>
-							<AuthContext.Provider value={{ user, setUser }}>
-								<RootStack.Navigator headerMode='none' initialRouteName={!user ? 'Splash' : 'Home'}>
-									<RootStack.Screen
-										name='Splash'
-										component={Splash}
-										options={{
-											animationEnabled: true,
-										}}
-									/>
-									<RootStack.Screen name='Auth' component={Auth} options={{ animationEnabled: true }} />
-									<RootStack.Screen name='Home' component={Home} options={{ animationEnabled: true }} />
-								</RootStack.Navigator>
-								<StatusBar style='auto' />
-							</AuthContext.Provider>
-						</NavigationContainer>
-					</ThemeProvider>
-				</ThemeContext.Provider>
-			</RootSiblingParent>
-		</SafeAreaProvider>
+		<QueryClientProvider client={new QueryClient()}>
+			<SafeAreaProvider>
+				<RootSiblingParent>
+					<SocketContext.Provider value={{ socket, setSocket }}>
+						<ThemeContext.Provider value={{ dark, setDark }}>
+							<ThemeProvider
+								value={{
+									dark,
+									colors: {
+										primary: Colors.primary,
+										background: Colors.light,
+										card: Colors.info,
+										text: Colors.dark,
+										border: Colors.danger,
+										notification: Colors.success,
+									},
+								}}>
+								<NavigationContainer>
+									<AuthContext.Provider value={{ user, setUser, token, setToken }}>
+										<RootStack.Navigator headerMode='none' initialRouteName={!user ? 'Splash' : 'Home'}>
+											<RootStack.Screen
+												name='Splash'
+												component={Splash}
+												options={{
+													animationEnabled: true,
+												}}
+											/>
+											<RootStack.Screen name='Auth' component={Auth} options={{ animationEnabled: true }} />
+											<RootStack.Screen name='Home' component={Home} options={{ animationEnabled: true }} />
+										</RootStack.Navigator>
+										<StatusBar style='auto' />
+									</AuthContext.Provider>
+								</NavigationContainer>
+							</ThemeProvider>
+						</ThemeContext.Provider>
+					</SocketContext.Provider>
+				</RootSiblingParent>
+			</SafeAreaProvider>
+		</QueryClientProvider>
 	);
 }

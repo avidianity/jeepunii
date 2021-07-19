@@ -3,18 +3,17 @@ import { JeepService } from './jeep.service';
 import { JeepController } from './jeep.controller';
 import { CryptoModule } from 'src/crypto/crypto.module';
 import { LogsModule } from 'src/logs/logs.module';
-import { SocketService } from 'src/ws/socket.service';
-import { AuthModule } from 'src/auth/auth.module';
 import { DriversModule } from 'src/drivers/drivers.module';
+import { SocketModule } from 'src/ws/socket.module';
 
 @Module({
-	providers: [JeepService, SocketService],
+	providers: [JeepService],
 	controllers: [JeepController],
 	imports: [
 		CryptoModule,
 		LogsModule,
-		AuthModule,
 		forwardRef(() => DriversModule),
+		SocketModule,
 	],
 	exports: [JeepService],
 })

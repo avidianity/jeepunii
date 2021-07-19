@@ -5,6 +5,8 @@ import { CryptoModule } from 'src/crypto/crypto.module';
 import { LogsModule } from 'src/logs/logs.module';
 import { UserModule } from 'src/user/user.module';
 import { JeepModule } from 'src/jeep/jeep.module';
+import { AuthModule } from 'src/auth/auth.module';
+import { SocketModule } from 'src/ws/socket.module';
 
 @Module({
 	providers: [DriversService],
@@ -14,6 +16,8 @@ import { JeepModule } from 'src/jeep/jeep.module';
 		LogsModule,
 		UserModule,
 		forwardRef(() => JeepModule),
+		AuthModule,
+		SocketModule,
 	],
 	exports: [DriversService],
 })

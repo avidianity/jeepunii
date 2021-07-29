@@ -14,16 +14,16 @@ export class SessionPassenger extends Model {
 	@Column({ default: false })
 	done: boolean;
 
-	@Column('decimal')
+	@Column('double precision')
 	start_lat: number;
 
-	@Column('decimal')
+	@Column('double precision')
 	start_lon: number;
 
-	@Column('decimal', { nullable: true })
+	@Column('double precision', { nullable: true })
 	end_lat: number;
 
-	@Column('decimal', { nullable: true })
+	@Column('double precision', { nullable: true })
 	end_lon: number;
 
 	@Index()

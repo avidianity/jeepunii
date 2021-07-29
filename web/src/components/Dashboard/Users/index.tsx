@@ -5,6 +5,7 @@ import { RolesEnum } from '../../../contracts/user.contract';
 import { useURL } from '../../../hooks';
 import Form from './Form';
 import List from './List';
+import Verify from './Verify';
 
 interface Props extends RouteComponentProps {
 	type: RolesEnum;
@@ -18,6 +19,7 @@ const Users: FC<Props> = ({ type }) => {
 			<Route path={url('')} exact render={(props) => <List type={type} {...props} />} />
 			<Route path={url('/add')} render={(props) => <Form type={type} {...props} />} />
 			<Route path={url('/:userID/edit')} render={(props) => <Form type={type} {...props} />} />
+			<Route path={url('/:userID/verify')} component={Verify} />
 		</Switch>
 	);
 };

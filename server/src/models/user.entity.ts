@@ -2,11 +2,14 @@ import {
 	BeforeRemove,
 	Column,
 	Entity,
+	JoinTable,
+	ManyToMany,
 	ManyToOne,
 	OneToMany,
 	OneToOne,
 } from 'typeorm';
 import { Cooperative } from './cooperative.entity';
+import { File } from './file.entity';
 import { Jeep } from './jeep.entity';
 import { Model } from './model.entity';
 import { SessionPassenger } from './session-passenger.entity';
@@ -95,5 +98,12 @@ export class User extends Model {
 			.where('userId = :userId', { userId: this.id })
 			.delete()
 			.execute();
+
+		const fresh = await User.findOne(this.id, { relations: ['files'] });
+		await Promise.all(fresh.files.map((file) => file.remove()));
 	}
+
+	@ManyToMany(() => File)
+	@JoinTable()
+	files: File[];
 }

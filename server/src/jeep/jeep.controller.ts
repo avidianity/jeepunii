@@ -112,7 +112,7 @@ export class JeepController {
 		passenger.riding = true;
 		await passenger.save();
 
-		this.socket.emit(`session.${session.id}.passenger.in`, { passenger });
+		this.socket.emit(`session.${session.id}.passenger.in`, passenger);
 
 		return { session, jeep, driver };
 	}
@@ -125,7 +125,7 @@ export class JeepController {
 			throw new BadRequestException('User is not a passenger.');
 		}
 
-		if (passenger.riding) {
+		if (!passenger.riding) {
 			throw new BadRequestException('Passenger is not riding a jeep.');
 		}
 
@@ -155,7 +155,7 @@ export class JeepController {
 			})
 			.where('point.id BETWEEN :start AND :end', {
 				start: sessionPassenger.startId,
-				end: sessionPassenger.endId,
+				end: lastPoint.id,
 			})
 			.getMany();
 
@@ -168,21 +168,21 @@ export class JeepController {
 				return prev;
 			}, 0) * 0.001;
 
-		const fare = 3 + (distance / 4) * 1.5;
+		const fare = (distance / 4) * 1.5;
 
-		passenger.coins -= fare;
+		passenger.coins -= fare >= 10 ? fare : 10;
 		passenger.riding = false;
 		await passenger.save();
 
 		sessionPassenger.done = true;
-		sessionPassenger.start_lat = data.lat;
-		sessionPassenger.start_lon = data.lon;
+		sessionPassenger.end_lat = data.lat;
+		sessionPassenger.end_lon = data.lon;
 		sessionPassenger.endId = lastPoint.id;
 		await sessionPassenger.save();
 
 		this.socket.emit(
 			`session.${sessionPassenger.session.id}.passenger.out`,
-			{ passenger },
+			passenger,
 		);
 
 		return passenger;

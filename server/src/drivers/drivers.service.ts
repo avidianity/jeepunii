@@ -31,7 +31,6 @@ export class DriversService {
 			const session = await Session.createQueryBuilder('session')
 				.where('session.driverID = :driverId', { driverId: driver.id })
 				.where('DATE(session.createdAt) > CURDATE()')
-				.where('session.done = :done', { done: false })
 				.limit(1)
 				.getOneOrFail();
 
@@ -39,6 +38,11 @@ export class DriversService {
 				.relation(Session, 'points')
 				.of(session)
 				.loadMany();
+
+			if (session.done) {
+				session.done = false;
+				await session.save();
+			}
 
 			return session;
 		} catch (_) {

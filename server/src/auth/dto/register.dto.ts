@@ -1,4 +1,5 @@
 import {
+	IsArray,
 	IsEmail,
 	IsIn,
 	IsNotEmpty,
@@ -46,6 +47,10 @@ export class RegisterDTO {
 	@Exists(Cooperative)
 	@IsOptional()
 	cooperativeId: number;
+
+	@IsArray()
+	@IsOptional()
+	files?: any[];
 
 	@IsString()
 	@IsIn(['mobile', 'web'])

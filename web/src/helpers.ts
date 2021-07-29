@@ -9,7 +9,7 @@ dayjs.extend(relativeTime);
 
 export class Asker {
 	static async notice(message: string, title?: string) {
-		return toBool(await swal({ title, text: message, buttons: ['Cancel', 'Confirm'], icon: 'warning' }));
+		return toBool(await swal({ title, text: message, buttons: ['Cancel', 'Confirm'], icon: 'info' }));
 	}
 	static async danger(message: string, title?: string) {
 		return toBool(await swal({ title, text: message, buttons: ['Cancel', 'Confirm'], dangerMode: true, icon: 'warning' }));
@@ -75,6 +75,7 @@ export function ucwords(string: string) {
 let handle: NodeJS.Timeout | null = null;
 
 export function handleError(error: any) {
+	console.log('error gani', error);
 	if (error) {
 		if (error.response) {
 			const response = error.response;

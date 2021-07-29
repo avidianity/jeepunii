@@ -40,7 +40,7 @@ export class DriversController {
 
 		if (!session) {
 			throw new BadRequestException(
-				'Driver has no session currently set.',
+				'Driver has no driving session currently set.',
 			);
 		}
 
@@ -79,8 +79,14 @@ export class DriversController {
 	@Delete('/session')
 	async deleteSession(@Req() request: Request) {
 		const session = await this.drivers.getSession(request.user);
+		if (!session) {
+			throw new BadRequestException(
+				'Driver is currently not in a driving session.',
+			);
+		}
 		session.done = true;
 		await session.save();
+
 		return session;
 	}
 

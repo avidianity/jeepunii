@@ -10,6 +10,11 @@ import { LogsModule } from './logs/logs.module';
 import { DriversModule } from './drivers/drivers.module';
 import { PointModule } from './session/point/point.module';
 import { SocketModule } from './ws/socket.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { Paths } from './constants';
+import { diskStorage } from 'multer';
+import { FileController } from './file/file.controller';
+import mimeTypes from 'mime-types';
 
 @Module({
 	imports: [
@@ -37,6 +42,24 @@ import { SocketModule } from './ws/socket.module';
 			}),
 			inject: [ConfigService],
 		}),
+		MulterModule.register({
+			storage: diskStorage({
+				destination: Paths.storage,
+				filename: (_, { fieldname, mimetype, filename }, callback) => {
+					const extension = mimeTypes.extension(mimetype);
+					if (!extension) {
+						return callback(
+							new Error('Invalid extension.'),
+							filename,
+						);
+					}
+					callback(
+						null,
+						`${fieldname}-${String.random(40)}.${extension}`,
+					);
+				},
+			}),
+		}),
 		AuthModule,
 		CryptoModule,
 		LogsModule,
@@ -47,8 +70,8 @@ import { SocketModule } from './ws/socket.module';
 		PointModule,
 		SocketModule,
 	],
-	controllers: [],
 	providers: [],
 	exports: [],
+	controllers: [FileController],
 })
 export class AppModule {}

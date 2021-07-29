@@ -52,7 +52,6 @@ export function ucwords(string: string) {
 }
 
 export function handleErrors(error: any) {
-	console.error(error instanceof Error ? error.toJSON() : error);
 	const errors = errorToStrings(error);
 	Toast.show(errors.join('\n'), {
 		duration: Toast.durations.LONG,

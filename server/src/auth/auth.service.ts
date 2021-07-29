@@ -47,7 +47,7 @@ export class AuthService {
 			user.cooperative = cooperative;
 		}
 
-		user.approved = ['Passenger', 'Admin'].includes(data.role);
+		user.approved = false;
 
 		return await user.save();
 	}

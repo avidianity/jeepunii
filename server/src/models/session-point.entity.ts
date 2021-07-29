@@ -7,9 +7,9 @@ export class SessionPoint extends Model {
 	@ManyToOne(() => Session, (session) => session.points)
 	session: Session;
 
-	@Column('decimal')
+	@Column('double precision')
 	lat: number;
 
-	@Column('decimal')
+	@Column('double precision')
 	lon: number;
 }

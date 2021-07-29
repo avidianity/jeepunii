@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { routes } from '../../routes';
 import bg from '../../assets/static/images/bg.jpg';
@@ -12,6 +12,9 @@ import { AuthContext } from '../../contexts';
 import { cooperativeService } from '../../services/cooperative.service';
 import { RolesEnum } from '../../contracts/user.contract';
 import InputMask from 'react-input-mask';
+import { useArray } from '../../hooks';
+import { createRef } from 'react';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {};
 
@@ -33,6 +36,8 @@ const Register: FC<Props> = (props) => {
 	const [role, setRole] = useState<RolesEnum | null>(null);
 	const { register, handleSubmit } = useForm<Inputs>();
 	const history = useHistory();
+	const [files, setFiles] = useArray<File>();
+	const fileRef = createRef<HTMLInputElement>();
 
 	const { logged } = useContext(AuthContext);
 
@@ -45,7 +50,27 @@ const Register: FC<Props> = (props) => {
 			if (data.cooperativeId) {
 				data.cooperativeId = Number(data.cooperativeId);
 			}
-			await axios.post('/auth/register', { ...data, context: 'web' });
+
+			if (data.role !== RolesEnum.PASSENGER) {
+				await axios.post('/auth/register', { ...data, context: 'web' });
+			} else {
+				if (files.length === 0) {
+					return toastr.error('Please upload atleast one photo.');
+				}
+
+				const form = new FormData();
+
+				for (const key in data) {
+					form.append(key, (data as any)[key]);
+				}
+
+				files.forEach((file) => form.append('files', file));
+
+				form.append('context', 'web');
+
+				await axios.post('/auth/register/passenger', form);
+			}
+
 			toastr.success(
 				`Registered successfully. ${
 					role !== RolesEnum.PASSENGER ? 'Please wait for approval' : 'Please login using the mobile app'
@@ -66,6 +91,10 @@ const Register: FC<Props> = (props) => {
 	if (logged) {
 		history.push(routes.DASHBOARD);
 	}
+
+	useEffect(() => {
+		ReactTooltip.rebuild();
+	});
 
 	return (
 		<div className='peers ai-s fxw-nw h-100vh'>
@@ -222,7 +251,7 @@ const Register: FC<Props> = (props) => {
 										disabled={processing}
 									/>
 								</div>
-								{role !== 'Passenger' ? (
+								{role !== RolesEnum.PASSENGER ? (
 									<div className='form-group col-12'>
 										<label className='text-normal text-dark'>Cooperative</label>
 										<select
@@ -248,7 +277,7 @@ const Register: FC<Props> = (props) => {
 											))}
 										</select>
 										<small className='form-text text-muted'>
-											~ If you can't find your respective cooperative, please request it to a administrator.
+											If you can't find your respective cooperative, please request it to a administrator.
 										</small>
 									</div>
 								) : null}
@@ -262,6 +291,65 @@ const Register: FC<Props> = (props) => {
 										disabled={processing}
 									/>
 								</div>
+								{role === RolesEnum.PASSENGER ? (
+									<div className='form-group col-12 pb-3'>
+										<p className='form-text text-muted'>
+											For verification purposes, new passengers are required to upload their proof of identity. The
+											following are required:
+											<ol>
+												<li>A valid ID</li>
+												<li>A selfie holding the ID</li>
+											</ol>
+										</p>
+										<input
+											type='file'
+											className='d-none'
+											accept='image/*'
+											multiple
+											ref={fileRef}
+											onChange={(e) => {
+												if (e.target.files && e.target.files.length > 0) {
+													setFiles([...files, ...Array.from(e.target.files)]);
+												}
+											}}
+										/>
+										<div className='mt-2 mb-3 container-fluid row'>
+											{files.map((file, index) => (
+												<div className='col-12 col-md-6 col-lg-4' key={index}>
+													<div className='d-flex border'>
+														<button
+															className='btn btn-link btn-sm text-truncate'
+															onClick={(e) => {
+																e.preventDefault();
+																window.open(URL.createObjectURL(file));
+															}}
+															data-tip={`Preview '${file.name}'`}>
+															{file.name}
+														</button>
+														<button
+															className='btn btn-danger btn-sm ml-auto'
+															onClick={(e) => {
+																e.preventDefault();
+																files.splice(index, 1);
+																setFiles([...files]);
+															}}
+															data-tip='Remove'>
+															<i className='material-icons'>delete</i>
+														</button>
+													</div>
+												</div>
+											))}
+										</div>
+										<button
+											className='btn btn-secondary btn-sm'
+											onClick={(e) => {
+												e.preventDefault();
+												fileRef.current?.click();
+											}}>
+											Upload
+										</button>
+									</div>
+								) : null}
 							</div>
 							<div className='form-group row'>
 								<div className='col-12 col-md-4'>

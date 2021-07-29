@@ -8,9 +8,12 @@ import { useNavigation } from '@react-navigation/core';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import Toast from 'react-native-root-toast';
-import { handleErrors } from '../../helpers';
+import { handleErrors, toBool } from '../../helpers';
 import { State } from '../../libraries/State';
 import { AuthContext } from '../../contexts';
+import * as ImagePicker from 'expo-image-picker';
+import { useNullable } from '../../hooks';
+import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 type Props = {};
 
@@ -24,36 +27,70 @@ type Inputs = {
 	role: RolesEnum;
 };
 
+/**
+ * TODO:
+ *
+ * 1. Files upload
+ */
 const Register: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
 	const navigation = useNavigation<any>();
+	const [image, setImage] = useNullable<ImageInfo>();
 
 	const state = State.getInstance();
 
-	const { setUser, setToken } = useContext(AuthContext);
-
 	const { control, handleSubmit } = useForm<Inputs>();
 
+	const pick = async () => {
+		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+		if (status !== ImagePicker.PermissionStatus.GRANTED) {
+			return Toast.show('Please grant camera permissions.', {
+				duration: Toast.durations.LONG,
+				position: Toast.positions.BOTTOM,
+				shadow: true,
+				animation: true,
+				hideOnPress: true,
+			});
+		}
+
+		const result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+		});
+
+		if (!result.cancelled) {
+			setImage(result);
+		}
+	};
+
 	const submit = async (payload: Inputs) => {
-		if (processing) {
+		if (processing || !image) {
 			return;
 		}
 		setProcessing(true);
 
 		payload.role = RolesEnum.PASSENGER;
 		try {
-			const {
-				data: { user, token },
-			} = await axios.post<{ user: UserContract; token: string }>('/auth/register', { ...payload, context: 'mobile' });
-			Toast.show('Registered successfully!', {
+			const form = new FormData();
+
+			for (const key in payload) {
+				form.append(key, (payload as any)[key]);
+			}
+
+			form.append('context', 'mobile');
+
+			const filename = image.uri.split('/').pop()!;
+
+			const match = /\.(\w+)$/.exec(filename);
+			const type = match ? `image/${match[1]}` : `image`;
+
+			form.append('files', { uri: image.uri, name: filename, type } as any);
+
+			await axios.post<{ user: UserContract }>('/auth/register/passenger', form);
+			setImage(null);
+			Toast.show('Registered successfully! Please wait for approval.', {
 				duration: Toast.durations.LONG,
 				position: Toast.positions.BOTTOM,
-			});
-			await Promise.all([state.set('user', user), state.set('token', token)]);
-			setToken(token);
-			setUser(user);
-			navigation.navigate('Home', {
-				screen: 'Menu',
 			});
 		} catch (error) {
 			handleErrors(error);
@@ -154,6 +191,14 @@ const Register: FC<Props> = (props) => {
 						defaultValue=''
 					/>
 					<Button
+						title={toBool(image) ? 'Uploaded' : 'Upload'}
+						style={styles.button}
+						type='outline'
+						onPress={() => pick()}
+						disabled={toBool(image)}
+					/>
+					<Text style={styles.note}>Note: A selfie holding a valid ID is required to register.</Text>
+					<Button
 						title={!processing ? 'Register' : <ActivityIndicator size='small' color={Colors.light} />}
 						buttonStyle={styles.button}
 						onPress={handleSubmit(submit)}
@@ -191,6 +236,11 @@ const styles = StyleSheet.create({
 		fontWeight: '600',
 		color: Colors.primary,
 		marginLeft: 12,
+	},
+	note: {
+		fontSize: 14,
+		marginTop: 4,
+		marginBottom: 12,
 	},
 });
 

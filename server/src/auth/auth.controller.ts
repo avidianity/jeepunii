@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Get,
+	Post,
+	Req,
+	UploadedFiles,
+	UseGuards,
+	UseInterceptors,
+} from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import md5 from 'md5';
+import { File } from 'src/models/file.entity';
 import { Token } from 'src/models/token.entity';
 import { RolesEnum } from 'src/models/user.entity';
 import { AuthService } from './auth.service';
@@ -30,6 +41,23 @@ export class AuthController {
 			user,
 			token: text,
 		};
+	}
+
+	@Post('/register/passenger')
+	@UseInterceptors(FilesInterceptor('files'))
+	async registerPassenger(
+		@Body() data: RegisterDTO,
+		@UploadedFiles() files: Express.Multer.File[],
+	) {
+		data.role = RolesEnum.PASSENGER;
+
+		const user = await this.auth.register(data);
+
+		user.files = await Promise.all(files.map((file) => File.process(file)));
+
+		await user.save();
+
+		return { user };
 	}
 
 	@Post('/login')

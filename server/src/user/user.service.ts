@@ -4,7 +4,7 @@ import { EntityServiceContract } from 'src/interfaces/entity-service-contract.in
 import { LogsService } from 'src/logs/logs.service';
 import { Cooperative } from 'src/models/cooperative.entity';
 import { User } from 'src/models/user.entity';
-import { FindManyOptions } from 'typeorm';
+import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 
@@ -20,9 +20,9 @@ export class UserService implements EntityServiceContract<User> {
 		return User.find({ ...options, relations: ['cooperative', 'jeep'] });
 	}
 
-	async find(id: number) {
+	async find(id: number, options?: FindOneOptions<User>) {
 		const user = await User.findOne(id, {
-			relations: ['cooperative', 'jeep'],
+			relations: ['cooperative', 'jeep', 'files'],
 		});
 
 		if (!user) {

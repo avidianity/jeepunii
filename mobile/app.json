@@ -22,7 +22,7 @@
 				"foregroundImage": "./assets/adaptive-icon.png",
 				"backgroundColor": "#FFFFFF"
 			},
-			"permissions": ["CAMERA"]
+			"permissions": ["CAMERA", "LOCATION"]
 		},
 		"web": {
 			"favicon": "./assets/favicon.png"

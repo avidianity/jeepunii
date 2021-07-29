@@ -94,15 +94,24 @@ const List: FC<Props> = ({ type }) => {
 					self?.id !== user.id ? (
 						<div className='d-flex'>
 							{!user.approved ? (
-								<button
-									className='btn btn-success btn-sm btn-icon mx-1'
-									data-tip={`Approve ${type}`}
-									onClick={(e) => {
-										e.preventDefault();
-										approveUser(user.id);
-									}}>
-									<i className='material-icons'>check</i>
-								</button>
+								type !== RolesEnum.PASSENGER ? (
+									<button
+										className='btn btn-success btn-sm btn-icon mx-1'
+										data-tip={`Approve ${type}`}
+										onClick={(e) => {
+											e.preventDefault();
+											approveUser(user.id);
+										}}>
+										<i className='material-icons'>check</i>
+									</button>
+								) : (
+									<Link
+										className='btn btn-success btn-sm btn-icon mx-1'
+										data-tip={`Verify ${type}`}
+										to={url(`/${user.id}/verify`)}>
+										<i className='material-icons'>verified</i>
+									</Link>
+								)
 							) : null}
 							<Link
 								to={`${url(`/${user.id}/edit`)}`}

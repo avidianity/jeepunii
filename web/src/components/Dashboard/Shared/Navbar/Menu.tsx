@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SERVER_URL } from '../../../../constants';
 import { AuthContext, EventContext } from '../../../../contexts';
 import { Asker, outIf } from '../../../../helpers';
+import { useURL } from '../../../../hooks';
 import { State } from '../../../../libraries/State';
 import { routes } from '../../../../routes';
 
@@ -11,6 +13,8 @@ type Props = {};
 const Menu: FC<Props> = (props) => {
 	const [show, setShow] = useState(false);
 	const state = State.getInstance();
+
+	const url = useURL();
 
 	const { AuthBus } = useContext(EventContext);
 	const { user } = useContext(AuthContext);
@@ -48,7 +52,15 @@ const Menu: FC<Props> = (props) => {
 					setShow(!show);
 				}}>
 				<div className='peer mR-10'>
-					<img className='w-2r bdrs-50p' src='https://randomuser.me/api/portraits/men/10.jpg' alt='Profile' />
+					<img
+						className='w-2r bdrs-50p'
+						src={user?.picture ? `${SERVER_URL}${user.picture.url}` : 'https://randomuser.me/api/portraits/men/10.jpg'}
+						alt='Profile'
+						style={{
+							width: '2rem',
+							height: '2rem',
+						}}
+					/>
 				</div>
 				<div className='peer'>
 					<span className='fsz-sm c-grey-900 hide-on-mobile'>{user?.firstName}</span>
@@ -56,16 +68,10 @@ const Menu: FC<Props> = (props) => {
 			</a>
 			<ul className={`dropdown-menu fsz-sm ${outIf(show, 'show')}`}>
 				<li>
-					<a href='/' className='d-b td-n pY-5 bgcH-grey-100 c-grey-700'>
-						<i className='ti-user mR-10'></i> <span>Profile</span>
-					</a>
-				</li>
-				<li>
-					<Link to={routes.SETTINGS} className='d-b td-n pY-5 bgcH-grey-100 c-grey-700'>
+					<Link to={url(routes.SETTINGS)} className='d-b td-n pY-5 bgcH-grey-100 c-grey-700'>
 						<i className='ti-settings mR-10'></i> <span>Settings</span>
 					</Link>
 				</li>
-				<li role='separator' className='divider'></li>
 				<li>
 					<a
 						href='/'

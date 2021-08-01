@@ -4,7 +4,6 @@ import { existsSync, unlinkSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { Paths } from 'src/constants';
 import { join } from 'path';
-import md5 from 'md5';
 import { extension } from 'mime-types';
 
 @Entity()
@@ -35,23 +34,20 @@ export class File extends Model {
 	}
 
 	static async process(file: Express.Multer.File) {
-		const fragments = file.originalname.split('.');
-		let name = '';
-		if (fragments.length === 2) {
-			name = file.originalname;
-		} else {
-			name = `${file.originalname}.${extension(file.mimetype)}`;
-		}
-
-		const path = join(Paths.storage, md5(name));
+		const path = join(
+			Paths.storage,
+			`${String.random(40)}.${
+				extension(file.mimetype) || file.originalname.split('.').pop()
+			}`,
+		);
 
 		await writeFile(path, file.buffer);
 
 		return await new this()
 			.fill({
 				type: file.mimetype,
-				name,
-				path,
+				name: file.originalname,
+				path: path.replace(/\\/g, '\\\\'),
 				size: file.size,
 			})
 			.save();

@@ -30,8 +30,8 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
 
-	await app.listen(process.env.PORT || 3000, () =>
-		console.log(`Listenting to ${process.env.PORT || 3000}`),
+	await app.listen(process.env.PORT || 8000, async () =>
+		console.log(`Listening to ${await app.getUrl()}`),
 	);
 }
 bootstrap().catch((error) => console.error(error));

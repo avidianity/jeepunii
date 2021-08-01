@@ -7,7 +7,7 @@ import './boot';
 import { useNullable } from './hooks';
 import { UserContract } from './contracts/user.contract';
 import Splash from './screens/Splash';
-import { AuthContext, SocketContext, ThemeContext } from './contexts';
+import { AuthContext, NetContext, SocketContext, ThemeContext } from './contexts';
 import Auth from './screens/Auth';
 import Home from './screens/Home';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { State } from './libraries/State';
+import NetInfo, { useNetInfo } from '@react-native-community/netinfo';
 
 const RootStack = createStackNavigator();
 
@@ -27,6 +28,7 @@ export default function App() {
 	const [dark, setDark] = useState(false);
 	const [socket, setSocket] = useNullable<Socket>();
 	const state = State.getInstance();
+	const info = useNetInfo();
 
 	const setup = async () => {
 		if (await state.has('token')) {
@@ -48,6 +50,13 @@ export default function App() {
 
 	useEffect(() => {
 		const key = state.listen<string>('token', (token) => init(token));
+		axios
+			.get('/auth/check')
+			.then(({ data: user }) => {
+				state.set('user', user);
+				setUser(user);
+			})
+			.catch(console.log);
 		setup();
 		return () => {
 			state.unlisten(key);
@@ -59,39 +68,41 @@ export default function App() {
 		<QueryClientProvider client={new QueryClient()}>
 			<SafeAreaProvider>
 				<RootSiblingParent>
-					<SocketContext.Provider value={{ socket, setSocket }}>
-						<ThemeContext.Provider value={{ dark, setDark }}>
-							<ThemeProvider
-								value={{
-									dark,
-									colors: {
-										primary: Colors.primary,
-										background: Colors.light,
-										card: Colors.info,
-										text: Colors.dark,
-										border: Colors.danger,
-										notification: Colors.success,
-									},
-								}}>
-								<NavigationContainer>
-									<AuthContext.Provider value={{ user, setUser, token, setToken }}>
-										<RootStack.Navigator headerMode='none' initialRouteName={!user ? 'Splash' : 'Home'}>
-											<RootStack.Screen
-												name='Splash'
-												component={Splash}
-												options={{
-													animationEnabled: true,
-												}}
-											/>
-											<RootStack.Screen name='Auth' component={Auth} options={{ animationEnabled: true }} />
-											<RootStack.Screen name='Home' component={Home} options={{ animationEnabled: true }} />
-										</RootStack.Navigator>
-										<StatusBar style='auto' />
-									</AuthContext.Provider>
-								</NavigationContainer>
-							</ThemeProvider>
-						</ThemeContext.Provider>
-					</SocketContext.Provider>
+					<NetContext.Provider value={{ online: info.isConnected! }}>
+						<SocketContext.Provider value={{ socket, setSocket }}>
+							<ThemeContext.Provider value={{ dark, setDark }}>
+								<ThemeProvider
+									value={{
+										dark,
+										colors: {
+											primary: Colors.primary,
+											background: Colors.light,
+											card: Colors.info,
+											text: Colors.dark,
+											border: Colors.danger,
+											notification: Colors.success,
+										},
+									}}>
+									<NavigationContainer>
+										<AuthContext.Provider value={{ user, setUser, token, setToken }}>
+											<RootStack.Navigator headerMode='none' initialRouteName={!user ? 'Splash' : 'Home'}>
+												<RootStack.Screen
+													name='Splash'
+													component={Splash}
+													options={{
+														animationEnabled: true,
+													}}
+												/>
+												<RootStack.Screen name='Auth' component={Auth} options={{ animationEnabled: true }} />
+												<RootStack.Screen name='Home' component={Home} options={{ animationEnabled: true }} />
+											</RootStack.Navigator>
+											<StatusBar style='auto' />
+										</AuthContext.Provider>
+									</NavigationContainer>
+								</ThemeProvider>
+							</ThemeContext.Provider>
+						</SocketContext.Provider>
+					</NetContext.Provider>
 				</RootSiblingParent>
 			</SafeAreaProvider>
 		</QueryClientProvider>

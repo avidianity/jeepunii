@@ -144,7 +144,14 @@ export class JeepController {
 					},
 				},
 			},
-			{ relations: ['session.points'] },
+			{
+				relations: [
+					'session',
+					'session.points',
+					'session.driver',
+					'session.driver.jeep',
+				],
+			},
 		);
 
 		const lastPoint = last(sessionPassenger.session.points);
@@ -178,6 +185,7 @@ export class JeepController {
 		sessionPassenger.end_lat = data.lat;
 		sessionPassenger.end_lon = data.lon;
 		sessionPassenger.endId = lastPoint.id;
+		sessionPassenger.fee = fare >= 10 ? fare : 10;
 		await sessionPassenger.save();
 
 		this.socket.emit(

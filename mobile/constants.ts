@@ -1,4 +1,7 @@
 import { RolesEnum } from './contracts/user.contract';
+import config from './localconfig.json';
+
+const vars = __DEV__ ? config.dev : config.prod;
 
 export const APP_NAME = process.env.REACT_APP_NAME || 'Paymento';
 
@@ -8,6 +11,8 @@ export const RoleColorMap = {
 	[RolesEnum.DRIVER]: 'success',
 	[RolesEnum.PASSENGER]: 'warning',
 };
+
+export const SERVER_URL = `${vars.schema}://${vars.address}${vars.port ? `:${vars.port}` : ''}`;
 
 export const Roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER, RolesEnum.PASSENGER];
 

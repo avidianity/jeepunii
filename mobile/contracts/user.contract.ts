@@ -1,4 +1,5 @@
 import { CooperativeContract } from './cooperative.contract';
+import { FileContract } from './file.contract';
 import { JeepContract } from './jeep.contract';
 import { ModelContract } from './model.contract';
 
@@ -19,6 +20,9 @@ export interface UserContract extends ModelContract {
 	coins: number;
 	role: RolesEnum;
 	approved: boolean;
+	riding: boolean;
 	cooperative?: CooperativeContract;
 	jeep?: JeepContract;
+	files?: FileContract[];
+	picture?: FileContract;
 }

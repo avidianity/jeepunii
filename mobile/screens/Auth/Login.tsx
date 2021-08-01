@@ -65,7 +65,15 @@ const Login: FC<Props> = (props) => {
 			<Controller
 				control={control}
 				render={({ field: { onChange, onBlur, value } }) => (
-					<Input label='Email' autoCompleteType='email' onBlur={onBlur} onChangeText={(value) => onChange(value)} value={value} />
+					<Input
+						label='Email'
+						autoCapitalize='none'
+						autoCorrect={false}
+						autoCompleteType='email'
+						onBlur={onBlur}
+						onChangeText={(value) => onChange(value)}
+						value={value}
+					/>
 				)}
 				name='email'
 				defaultValue=''

@@ -24,3 +24,7 @@ export const SocketContext = createContext({
 	socket: {} as Socket | null,
 	setSocket(socket: Socket) {},
 });
+
+export const NetContext = createContext({
+	online: true,
+});

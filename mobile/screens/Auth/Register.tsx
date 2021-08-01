@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Input, Image, Button, Text } from 'react-native-elements';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
@@ -9,8 +9,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import Toast from 'react-native-root-toast';
 import { handleErrors, toBool } from '../../helpers';
-import { State } from '../../libraries/State';
-import { AuthContext } from '../../contexts';
 import * as ImagePicker from 'expo-image-picker';
 import { useNullable } from '../../hooks';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
@@ -27,19 +25,12 @@ type Inputs = {
 	role: RolesEnum;
 };
 
-/**
- * TODO:
- *
- * 1. Files upload
- */
 const Register: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);
 	const navigation = useNavigation<any>();
 	const [image, setImage] = useNullable<ImageInfo>();
 
-	const state = State.getInstance();
-
-	const { control, handleSubmit } = useForm<Inputs>();
+	const { control, handleSubmit, reset } = useForm<Inputs>();
 
 	const pick = async () => {
 		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -87,11 +78,15 @@ const Register: FC<Props> = (props) => {
 			form.append('files', { uri: image.uri, name: filename, type } as any);
 
 			await axios.post<{ user: UserContract }>('/auth/register/passenger', form);
+
 			setImage(null);
+
 			Toast.show('Registered successfully! Please wait for approval.', {
 				duration: Toast.durations.LONG,
 				position: Toast.positions.BOTTOM,
 			});
+
+			reset();
 		} catch (error) {
 			handleErrors(error);
 		} finally {
@@ -167,6 +162,8 @@ const Register: FC<Props> = (props) => {
 						render={({ field: { onChange, onBlur, value } }) => (
 							<Input
 								label='Email'
+								autoCapitalize='none'
+								autoCorrect={false}
 								autoCompleteType='email'
 								onBlur={onBlur}
 								onChangeText={(value) => onChange(value)}

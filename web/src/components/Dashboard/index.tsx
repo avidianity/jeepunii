@@ -10,6 +10,7 @@ import Jeeps from './Jeeps';
 import Logs from './Logs';
 import Footer from './Shared/Footer';
 import Navbar from './Shared/Navbar';
+import Settings from './Shared/Settings';
 import Sidebar from './Shared/Sidebar';
 import Users from './Users';
 
@@ -66,6 +67,7 @@ const Dashboard: FC<Props> = (props) => {
 								<Route path={url(routes.OWNERS)} render={(props) => <Users type={RolesEnum.COOPERATIVE} {...props} />} />
 								<Route path={url(routes.DRIVERS)} render={(props) => <Users type={RolesEnum.DRIVER} {...props} />} />
 								<Route path={url(routes.PASSENGERS)} render={(props) => <Users type={RolesEnum.PASSENGER} {...props} />} />
+								<Route path={url(routes.SETTINGS)} component={Settings} />
 							</Switch>
 						</div>
 					</div>

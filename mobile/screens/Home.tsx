@@ -6,10 +6,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Travel from './Passenger/Travel';
 import DriverHome from './Driver/Home';
 import { useContext } from 'react';
-import { AuthContext } from '../contexts';
+import { AuthContext, NetContext } from '../contexts';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { RolesEnum } from '../contracts/user.contract';
+import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-elements';
 
 type Props = {};
 
@@ -18,6 +20,8 @@ const Tab = createBottomTabNavigator();
 const Home: FC<Props> = (props) => {
 	const { user } = useContext(AuthContext);
 	const navigation = useNavigation();
+
+	const { online } = useContext(NetContext);
 
 	useEffect(() => {
 		if (!user) {
@@ -29,6 +33,14 @@ const Home: FC<Props> = (props) => {
 
 	if (!user) {
 		return null;
+	}
+
+	if (!online) {
+		return (
+			<View style={styles.center}>
+				<Text style={styles.text}>You are offline. Please turn on your mobile data to use the app.</Text>
+			</View>
+		);
 	}
 
 	return (
@@ -66,5 +78,16 @@ const Home: FC<Props> = (props) => {
 		</Tab.Navigator>
 	);
 };
+
+const styles = StyleSheet.create({
+	center: {
+		flex: 1,
+		justifyContent: 'center',
+		alignContent: 'center',
+	},
+	text: {
+		textAlign: 'center',
+	},
+});
 
 export default Home;

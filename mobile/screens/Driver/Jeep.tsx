@@ -19,7 +19,7 @@ import { UserContract } from '../../contracts/user.contract';
 
 type Props = {};
 
-type Passenger = {
+export type Passenger = {
 	data: UserContract;
 	online: boolean;
 };
@@ -50,6 +50,12 @@ const Jeep: FC<Props> = (props) => {
 			const { data: session } = await axios.get<SessionContract | null>('/drivers/session');
 			if (typeof session === 'object' && session !== null) {
 				socket?.on(`session.${session.id}.passenger.in`, (passenger) => {
+					const exists = passengers.find((item) => item.data.id === passenger.id);
+
+					if (exists) {
+						return;
+					}
+
 					passengers.push({
 						data: passenger,
 						online: true,
@@ -112,7 +118,7 @@ const Jeep: FC<Props> = (props) => {
 
 	const ask = async () => {
 		try {
-			const response = await Location.requestPermissionsAsync();
+			const response = await Location.requestForegroundPermissionsAsync();
 			if (response.status === Location.PermissionStatus.GRANTED && !granted) {
 				setGranted(true);
 			}
@@ -170,7 +176,7 @@ const Jeep: FC<Props> = (props) => {
 					<Text style={{ fontSize: 16 }}>Assigned: {dayjs(jeep?.updatedAt).fromNow()}</Text>
 					<View style={{ marginTop: 20 }}>
 						{session ? (
-							<Current session={session} stop={stop} />
+							<Current passengers={passengers} session={session} stop={stop} />
 						) : (
 							<StartButton
 								start={async () => {

@@ -11,6 +11,12 @@ export class SessionPassenger extends Model {
 	@ManyToOne(() => Session, (session) => session.passengers)
 	session: Session;
 
+	@Column({
+		type: 'decimal',
+		default: 0,
+	})
+	fee: number;
+
 	@Column({ default: false })
 	done: boolean;
 

@@ -52,6 +52,7 @@ export function ucwords(string: string) {
 }
 
 export function handleErrors(error: any) {
+	console.error(error, error.response?.data);
 	const errors = errorToStrings(error);
 	Toast.show(errors.join('\n'), {
 		duration: Toast.durations.LONG,
@@ -72,6 +73,8 @@ export function errorToStrings(error: any) {
 				} else if (isString(response.data.message)) {
 					return [sentencify(response.data.message)];
 				}
+			} else if (response.data.errors) {
+				return (response.data.errors as string[]).map((message) => sentencify(message));
 			}
 		} else if (error.message) {
 			if (error.message.includes('Network Error')) {

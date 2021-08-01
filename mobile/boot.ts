@@ -3,11 +3,9 @@ import './shims';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import { State } from './libraries/State';
-import config from './localconfig.json';
+import { SERVER_URL } from './constants';
 
-const vars = process.env.NODE_ENV === 'production' ? config.prod : config.dev;
-
-axios.defaults.baseURL = `${vars.schema}://${vars.address}${vars.port ? `:${vars.port}` : ''}`;
+axios.defaults.baseURL = SERVER_URL;
 
 axios.defaults.headers.common['Accept'] = 'application/json';
 

@@ -4,11 +4,12 @@ import {
 	Get,
 	Post,
 	Req,
+	UploadedFile,
 	UploadedFiles,
 	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import md5 from 'md5';
 import { File } from 'src/models/file.entity';
@@ -22,6 +23,32 @@ import { HttpBearerGuard } from './http-bearer.guard';
 @Controller('auth')
 export class AuthController {
 	constructor(protected auth: AuthService) {}
+
+	@Post('/picture')
+	@UseInterceptors(FileInterceptor('file'))
+	@UseGuards(HttpBearerGuard)
+	async savePicture(
+		@Req() request: Request,
+		@UploadedFile() file: Express.Multer.File,
+	) {
+		const user = request.user!;
+
+		let old: File | null = null;
+
+		if (user.picture) {
+			old = user.picture;
+		}
+
+		user.picture = await File.process(file);
+
+		await user.save();
+
+		if (old) {
+			await old.remove();
+		}
+
+		return user;
+	}
 
 	@Post('/register')
 	async register(@Body() data: RegisterDTO) {

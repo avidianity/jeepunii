@@ -2,6 +2,7 @@ import {
 	BeforeRemove,
 	Column,
 	Entity,
+	JoinColumn,
 	JoinTable,
 	ManyToMany,
 	ManyToOne,
@@ -86,6 +87,14 @@ export class User extends Model {
 	@Column({ default: false })
 	riding: boolean;
 
+	@OneToOne(() => File)
+	@JoinColumn()
+	picture: File;
+
+	@ManyToMany(() => File)
+	@JoinTable()
+	files: File[];
+
 	currentToken: Token;
 
 	getFullname() {
@@ -93,17 +102,18 @@ export class User extends Model {
 	}
 
 	@BeforeRemove()
-	async remoteTokens() {
+	async removeRelations() {
 		await Token.createQueryBuilder('token')
 			.where('userId = :userId', { userId: this.id })
 			.delete()
 			.execute();
 
-		const fresh = await User.findOne(this.id, { relations: ['files'] });
+		const fresh = await User.findOne(this.id, {
+			relations: ['files', 'picture'],
+		});
+
+		await fresh.picture.remove();
+
 		await Promise.all(fresh.files.map((file) => file.remove()));
 	}
-
-	@ManyToMany(() => File)
-	@JoinTable()
-	files: File[];
 }

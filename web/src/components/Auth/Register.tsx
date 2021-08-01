@@ -49,6 +49,8 @@ const Register: FC<Props> = (props) => {
 			data.role = role!;
 			if (data.cooperativeId) {
 				data.cooperativeId = Number(data.cooperativeId);
+			} else {
+				delete (data as any).cooperativeId;
 			}
 
 			if (data.role !== RolesEnum.PASSENGER) {
@@ -73,7 +75,7 @@ const Register: FC<Props> = (props) => {
 
 			toastr.success(
 				`Registered successfully. ${
-					role !== RolesEnum.PASSENGER ? 'Please wait for approval' : 'Please login using the mobile app'
+					role !== RolesEnum.PASSENGER ? 'Please wait for approval' : 'Please wait for approval then login using the mobile app'
 				}.`
 			);
 			if (role !== RolesEnum.PASSENGER) {

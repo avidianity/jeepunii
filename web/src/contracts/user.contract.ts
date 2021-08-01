@@ -20,9 +20,11 @@ export interface UserContract extends ModelContract {
 	coins: number;
 	role: RolesEnum;
 	approved: boolean;
-	cooperativeId: number;
+	cooperativeId?: number;
+	pictureId?: number;
 	riding: boolean;
 	cooperative?: CooperativeContract;
 	jeep?: JeepContract;
 	files?: FileContract[];
+	picture?: FileContract;
 }

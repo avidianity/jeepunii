@@ -11,7 +11,7 @@ export type ChangeEvent<T> = (value: T) => void;
 export class State {
 	protected static instance = new State();
 	protected storage = AsyncStorage;
-	protected key = 'paymento-state-key';
+	protected key = 'jeepunii-state-key';
 	protected bus: EventBus;
 
 	constructor(key?: string) {

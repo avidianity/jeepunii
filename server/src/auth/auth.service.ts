@@ -59,7 +59,7 @@ export class AuthService {
 				role: In(data.roles),
 			},
 			{
-				relations: ['cooperative'],
+				relations: ['cooperative', 'picture'],
 			},
 		);
 
@@ -84,7 +84,12 @@ export class AuthService {
 				hash: md5(hash),
 			},
 			{
-				relations: ['user', 'user.cooperative', 'user.jeep'],
+				relations: [
+					'user',
+					'user.cooperative',
+					'user.jeep',
+					'user.picture',
+				],
 			},
 		);
 		if (!token) {

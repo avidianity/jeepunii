@@ -75,7 +75,7 @@ export function ucwords(string: string) {
 let handle: NodeJS.Timeout | null = null;
 
 export function handleError(error: any) {
-	console.log('error gani', error);
+	console.log(error.toJSON ? error.toJSON() : error);
 	if (error) {
 		if (error.response) {
 			const response = error.response;
@@ -127,6 +127,8 @@ export function errorToStrings(error: any) {
 				} else if (isString(response.data.message)) {
 					return [sentencify(response.data.message)];
 				}
+			} else if (response.data.errors) {
+				return (response.data.errors as string[]).map((message) => sentencify(message));
 			}
 		} else if (error.message) {
 			if (error.message.includes('Network Error')) {

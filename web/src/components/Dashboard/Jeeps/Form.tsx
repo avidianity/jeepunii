@@ -50,6 +50,10 @@ const Form: FC<Props> = (props) => {
 				setValue(key as any, value);
 			}
 
+			if (jeep.cooperative) {
+				setValue('cooperativeId', jeep.cooperative.id!);
+			}
+
 			if (jeep.driver) {
 				setAssignDriver(true);
 			}

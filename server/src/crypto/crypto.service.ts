@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import CryptoJS from 'crypto-js';
 
 @Injectable()
 export class CryptoService {
@@ -11,14 +10,10 @@ export class CryptoService {
 	}
 
 	encrypt(data: any) {
-		return CryptoJS.AES.encrypt(
-			JSON.stringify(data),
-			this.getKey(),
-		).toString();
+		return JSON.stringify(data);
 	}
 
 	decrypt<T = any>(data: any): T {
-		const bytes = CryptoJS.AES.decrypt(data, this.getKey());
-		return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+		return JSON.parse(data);
 	}
 }

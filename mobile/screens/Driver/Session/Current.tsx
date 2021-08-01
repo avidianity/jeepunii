@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
 	},
 	item: {
 		width: '50%',
+		paddingHorizontal: 2,
 	},
 });
 

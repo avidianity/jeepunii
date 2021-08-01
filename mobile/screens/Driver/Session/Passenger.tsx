@@ -18,9 +18,13 @@ const Passenger: FC<Props> = ({ style, passenger }) => {
 			<View style={styles.imageContainer}>
 				<View style={styles.imageWrapper}>
 					<Image
-						source={{
-							uri: user?.picture ? `${SERVER_URL}${user.picture.url}` : require('../../../assets/logo-full.png'),
-						}}
+						source={
+							user?.picture
+								? {
+										uri: `${SERVER_URL}${user.picture.url}`,
+								  }
+								: require('../../../assets/logo-full.png')
+						}
 						style={styles.image}
 					/>
 				</View>
@@ -37,8 +41,8 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	image: {
-		height: 80,
-		width: 80,
+		height: 70,
+		width: 70,
 		borderRadius: 150,
 	},
 	imageWrapper: {

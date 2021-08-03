@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { Socket } from 'socket.io-client';
 import { UserContract } from './contracts/user.contract';
 import { EventBus } from './libraries/EventBus';
 
@@ -11,4 +12,9 @@ export const AuthContext = createContext<{
 	setLogged: (value: boolean) => void;
 	user: UserContract | null;
 	setUser: (user: UserContract | null) => void;
+}>(null as any);
+
+export const SocketContext = createContext<{
+	socket: Socket | null;
+	setSocket: (socket: Socket | null) => void;
 }>(null as any);

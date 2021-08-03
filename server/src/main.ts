@@ -2,7 +2,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { Paths } from './constants';
 import './shims';
 import { SocketService } from './ws/socket.service';
 
@@ -30,7 +29,9 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
 
-	await app.listen(process.env.PORT || 8000, async () =>
+	const port = process.env.PORT || 8000;
+
+	await app.listen(port, async () =>
 		console.log(`Listening to ${await app.getUrl()}`),
 	);
 }

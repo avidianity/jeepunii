@@ -1,4 +1,4 @@
-import { hashSync, compareSync } from 'bcrypt';
+import { hashSync, compareSync, compare, hash } from 'bcrypt';
 
 export class Hash {
 	static make(data: string) {
@@ -7,6 +7,14 @@ export class Hash {
 
 	static check(value: string, hash: string) {
 		return compareSync(value, hash);
+	}
+
+	static async makeAsync(data: string) {
+		return await hash(data, 8);
+	}
+
+	static async checkAsync(value: string, hash: string) {
+		return await compare(value, hash);
 	}
 }
 

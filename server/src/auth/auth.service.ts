@@ -34,7 +34,7 @@ export class AuthService {
 
 		user.fill({
 			...data,
-			password: Hash.make(data.password),
+			password: await Hash.makeAsync(data.password),
 		});
 
 		if (data.cooperativeId) {
@@ -72,6 +72,12 @@ export class AuthService {
 		if (!user.approved) {
 			throw new ForbiddenException({
 				message: 'Your account is not approved yet.',
+			});
+		}
+
+		if (!(await Hash.checkAsync(data.password, user.password))) {
+			throw new ForbiddenException({
+				message: 'The password entered is incorrect.',
 			});
 		}
 

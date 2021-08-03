@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SERVER_URL } from '../../../../constants';
-import { AuthContext, EventContext } from '../../../../contexts';
+import { AuthContext, EventContext, SocketContext } from '../../../../contexts';
 import { Asker, outIf } from '../../../../helpers';
 import { useURL } from '../../../../hooks';
 import { State } from '../../../../libraries/State';
@@ -18,15 +18,18 @@ const Menu: FC<Props> = (props) => {
 
 	const { AuthBus } = useContext(EventContext);
 	const { user } = useContext(AuthContext);
+	const { setSocket, socket } = useContext(SocketContext);
 
 	const logout = async () => {
 		if (await Asker.notice('Are you sure you want to logout?')) {
 			try {
 				await axios.post('/auth/logout');
 			} catch (error) {
-				console.log(error.toJSON());
+				console.log((error as any).toJSON());
 			} finally {
 				state.remove('user').remove('token');
+				socket?.disconnect();
+				setSocket(null);
 				toastr.info('Logged out successfully.', 'Notice');
 				window.location.href = routes.LOGIN;
 			}

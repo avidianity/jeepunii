@@ -4,12 +4,13 @@ import './shims';
 import { State } from './libraries/State';
 import $ from 'jquery';
 import 'bootstrap';
+import { SERVER_URL } from './constants';
 
 window.toastr = toastr;
 window.$ = $;
 window.jQuery = $;
 
-axios.defaults.baseURL = `${process.env.REACT_APP_SERVER_URL || 'http://localhost:8000'}`;
+axios.defaults.baseURL = SERVER_URL;
 
 axios.defaults.headers.common['Accept'] = 'application/json';
 

@@ -11,14 +11,14 @@ import { AuthContext, NetContext, SocketContext, ThemeContext } from './contexts
 import Auth from './screens/Auth';
 import Home from './screens/Home';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Colors } from './constants';
+import { Colors, SERVER_URL } from './constants';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { State } from './libraries/State';
-import NetInfo, { useNetInfo } from '@react-native-community/netinfo';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 const RootStack = createStackNavigator();
 
@@ -37,7 +37,7 @@ export default function App() {
 	};
 
 	const init = (token: string) => {
-		const socket = io(axios.defaults.baseURL!, {
+		const socket = io(SERVER_URL, {
 			extraHeaders: {
 				Authorization: `Bearer ${token}`,
 			},
@@ -49,7 +49,11 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		const key = state.listen<string>('token', (token) => init(token));
+		const key = state.listen<string>('token', (token) => {
+			if (!socket) {
+				init(token);
+			}
+		});
 		axios
 			.get('/auth/check')
 			.then(({ data: user }) => {

@@ -31,6 +31,12 @@ export class SocketService {
 		return this.server;
 	}
 
+	hasUser(user: User) {
+		const exists = this.users.find((item) => item.user.id === user.id);
+
+		return exists ? true : false;
+	}
+
 	setup(httpServer: any) {
 		const io = new Server(httpServer, {
 			cors: {
@@ -88,6 +94,9 @@ export class SocketService {
 					return next(new Error('Invalid token.'));
 				}
 
+				user.online = true;
+				await user.save();
+
 				socket.user = user;
 
 				return next();
@@ -101,12 +110,18 @@ export class SocketService {
 			this.users.push({ user: socket.user, id: socket.id });
 			this.server.emit(`connect.${socket.user.id}`);
 
-			socket.on('disconnect', () => {
+			socket.on('disconnect', async () => {
 				this.connections--;
 
 				const index = this.users.findIndex(
 					(item) => item.id === socket.id,
 				);
+
+				const user = this.users[index].user;
+
+				user.online = false;
+				await user.save();
+
 				this.users.splice(index, 1);
 
 				this.server.emit(`disconnect.${socket.user.id}`);

@@ -53,6 +53,32 @@ export class JeepController {
 		return driver.jeep;
 	}
 
+	@Get('/passengers')
+	async getPassengers(@Req() request: Request) {
+		const { user: driver } = request;
+
+		if (driver.role !== RolesEnum.DRIVER) {
+			throw new BadRequestException('User is not a driver.');
+		}
+
+		const session = await this.driver.getSession(driver);
+
+		if (!session) {
+			throw new BadRequestException(
+				'Jeep currently is not on a driving session.',
+			);
+		}
+
+		const passengers = session.passengers.map(
+			(passenger) => passenger.passenger,
+		);
+
+		return passengers.map((passenger) => ({
+			passenger,
+			online: passenger.online,
+		}));
+	}
+
 	@Post('/passenger/in')
 	async passengerIn(@Req() request: Request, @Body() data: PassengerInDTO) {
 		const passenger = request.user;

@@ -42,15 +42,13 @@ export class UserService implements EntityServiceContract<User> {
 			user.cooperative = cooperative;
 		}
 
-		data.password = Hash.make(data.password);
+		user.password = await Hash.makeAsync(data.password);
 
 		user = await user.save();
 
-		const self = this.logs.getUser();
-
 		this.logs.log(
 			`${this.logs.getUser().getFullname()} created a user.`,
-			self.role === 'Admin' ? user : user.cooperative,
+			user,
 		);
 
 		return user;
@@ -60,7 +58,7 @@ export class UserService implements EntityServiceContract<User> {
 		const user = await this.find(id);
 
 		if (data.password) {
-			data.password = Hash.make(data.password);
+			user.password = await Hash.makeAsync(data.password);
 		}
 
 		user.fill(data);

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JeepService } from 'src/jeep/jeep.service';
 import { LogsService } from 'src/logs/logs.service';
+import { SessionPassenger } from 'src/models/session-passenger.entity';
 import { SessionPoint } from 'src/models/session-point.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
@@ -70,6 +71,14 @@ export class DriversService {
 
 			session.points = await SessionPoint.createQueryBuilder('point')
 				.relation(Session, 'points')
+				.of(session)
+				.loadMany();
+
+			session.passengers = await SessionPassenger.createQueryBuilder(
+				'session_passenger',
+			)
+				.where('session_passenger.done = :done', { done: false })
+				.relation(Session, 'passengers')
 				.of(session)
 				.loadMany();
 

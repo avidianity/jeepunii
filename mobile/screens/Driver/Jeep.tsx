@@ -42,6 +42,7 @@ const Jeep: FC<Props> = (props) => {
 	const [session, setSession] = useNullable<SessionContract>();
 	const [handle, setHandle] = useNullable<NodeJS.Timeout>();
 	const [refreshHandle, setRefreshHandle] = useNullable<NodeJS.Timeout>();
+	const [passengerHandle, setPassengerHandle] = useNullable<NodeJS.Timeout>();
 	const [granted, setGranted] = useState(false);
 	const [passengers, setPassengers] = useArray<Passenger>();
 
@@ -136,30 +137,47 @@ const Jeep: FC<Props> = (props) => {
 			});
 		} catch (error) {
 			handleErrors(error);
-			if (error?.response?.status === 400) {
+			if ((error as any)?.response?.status === 400) {
 				stop();
 			}
+		}
+	};
+
+	const fetchPassengers = async () => {
+		try {
+			const { data } = await axios.get<{ passenger: UserContract; online: boolean }[]>('/jeeps/passengers');
+
+			setPassengers(
+				data.map((item) => ({
+					data: item.passenger,
+					online: item.online,
+				}))
+			);
+		} catch (error) {
+			console.error(error);
 		}
 	};
 
 	const start = () => {
 		setHandle(setInterval(() => record(), 5000));
 		setRefreshHandle(setInterval(() => current(), 15000));
+		setPassengerHandle(setInterval(() => fetchPassengers(), 1000 * 60));
 	};
 
 	const stop = () => {
 		clearInterval(handle!);
 		clearInterval(refreshHandle!);
+		clearInterval(passengerHandle!);
 		setHandle(null);
 		setRefreshHandle(null);
+		setPassengerHandle(null);
 
 		if (session) {
 			socket?.off(`session.${session.id}.passenger.in`);
 			socket?.off(`session.${session.id}.passenger.out`);
 			axios.delete('/drivers/session').catch(handleErrors);
+			setSession(null);
 		}
-
-		setSession(null);
 	};
 
 	useEffect(() => {

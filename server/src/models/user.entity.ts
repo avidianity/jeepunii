@@ -95,6 +95,9 @@ export class User extends Model {
 	@JoinTable()
 	files: File[];
 
+	@Column({ default: false })
+	online: boolean;
+
 	currentToken: Token;
 
 	getFullname() {

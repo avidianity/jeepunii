@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Rabbit as Crypto, enc } from 'crypto-js';
 
 @Injectable()
 export class CryptoService {
@@ -10,10 +11,12 @@ export class CryptoService {
 	}
 
 	encrypt(data: any) {
-		return JSON.stringify(data);
+		return Crypto.encrypt(JSON.stringify(data), this.getKey()).toString();
 	}
 
 	decrypt<T = any>(data: any): T {
-		return JSON.parse(data);
+		return JSON.parse(
+			Crypto.decrypt(data, this.getKey()).toString(enc.Utf8),
+		);
 	}
 }

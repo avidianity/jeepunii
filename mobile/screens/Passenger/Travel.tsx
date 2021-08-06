@@ -1,12 +1,10 @@
 import React, { FC, useState } from 'react';
 import { Button, Icon, Text } from 'react-native-elements';
 import Container from '../../components/Container';
-import { usePermissions, CAMERA } from 'expo-permissions';
 import { StyleSheet, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
 import { JeepContract } from '../../contracts/jeep.contract';
-import Toast from 'react-native-root-toast';
 import { useNullable } from '../../hooks';
 import { PermissionStatus } from 'expo-modules-core';
 import { SessionContract } from '../../contracts/session.contract';
@@ -16,6 +14,7 @@ import * as Location from 'expo-location';
 import { useEffect } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts';
+import haversine from 'haversine-distance';
 
 type Props = {};
 
@@ -83,8 +82,40 @@ const Travel: FC<Props> = (props) => {
 		}
 	};
 
+	const watch = async () => {
+		if (session) {
+			const { data } = await axios.get<SessionContract>(`/sessions/${session.id}`);
+			setSession(data);
+		}
+	};
+
+	const calculate = () => {
+		if (session?.points) {
+			const distance =
+				session.points.reduce((prev, point, index, points) => {
+					const next = points[index + 1];
+					if (next) {
+						return prev + haversine(point, next);
+					}
+					return prev;
+				}, 0) * 0.001;
+
+			const fare = (distance / 4) * 1.5;
+
+			return fare >= 10 ? fare : 10;
+		} else {
+			return 10;
+		}
+	};
+
 	useEffect(() => {
 		askLocation();
+
+		const handle = setInterval(watch, 5000);
+
+		return () => {
+			clearInterval(handle);
+		};
 		// eslint-disable-next-line
 	}, []);
 
@@ -129,6 +160,7 @@ const Travel: FC<Props> = (props) => {
 					<Text>Cooperative: {jeep.cooperative?.name}</Text>
 					<Text>Driver: {driver ? `${driver.firstName} ${driver.lastName}` : 'N/A'}</Text>
 					<Text>Plate Number: {jeep.plateNumber}</Text>
+					<Text>Estimated Fare: ₱{calculate()}</Text>
 				</View>
 			) : null}
 		</Container>

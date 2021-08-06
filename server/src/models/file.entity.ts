@@ -20,7 +20,7 @@ export class File extends Model {
 	@Column('text')
 	name: string;
 
-	@Column('bigint')
+	@Column()
 	size: number;
 
 	@Column()

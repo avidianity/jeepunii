@@ -8,12 +8,12 @@ import { JeepModule } from './jeep/jeep.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { LogsModule } from './logs/logs.module';
 import { DriversModule } from './drivers/drivers.module';
-import { PointModule } from './session/point/point.module';
 import { SocketModule } from './ws/socket.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { Paths } from './constants';
 import { diskStorage } from 'multer';
 import { FileController } from './file/file.controller';
+import { SessionModule } from './session/session.module';
 import mimeTypes from 'mime-types';
 
 @Module({
@@ -67,8 +67,8 @@ import mimeTypes from 'mime-types';
 		CooperativeModule,
 		JeepModule,
 		DriversModule,
-		PointModule,
 		SocketModule,
+		SessionModule,
 	],
 	providers: [],
 	exports: [],

@@ -3,7 +3,7 @@ import config from './localconfig.json';
 
 const vars = __DEV__ ? config.dev : config.prod;
 
-export const APP_NAME = process.env.REACT_APP_NAME || 'Paymento';
+export const APP_NAME = process.env.REACT_APP_NAME || 'Jeepunii';
 
 export const RoleColorMap = {
 	[RolesEnum.ADMIN]: 'danger',
@@ -12,7 +12,7 @@ export const RoleColorMap = {
 	[RolesEnum.PASSENGER]: 'warning',
 };
 
-export const SERVER_URL = `${vars.schema}://${vars.address}${vars.port ? `:${vars.port}` : ''}`;
+export const SERVER_URL = `${vars.schema}://${vars.address}${vars.port !== false ? `:${vars.port}` : ''}`;
 
 export const Roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER, RolesEnum.PASSENGER];
 

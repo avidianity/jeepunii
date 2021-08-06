@@ -5,8 +5,6 @@ import {
 } from '@nestjs/common';
 import { JeepService } from 'src/jeep/jeep.service';
 import { LogsService } from 'src/logs/logs.service';
-import { SessionPassenger } from 'src/models/session-passenger.entity';
-import { SessionPoint } from 'src/models/session-point.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -31,14 +29,21 @@ export class DriversService {
 		try {
 			const session = await Session.createQueryBuilder('session')
 				.where('session.driverID = :driverId', { driverId: driver.id })
-				.where('DATE(session.createdAt) > CURDATE()')
-				.limit(1)
+				.where('DATE(session.createdAt) >= CURDATE()')
+				.leftJoinAndSelect('session.points', 'point')
+				.leftJoinAndSelect(
+					'session.passengers',
+					'session_passenger',
+					'session_passenger.done = :done',
+					{
+						done: false,
+					},
+				)
+				.leftJoinAndSelect('session_passenger.passenger', 'passenger')
+				.leftJoinAndSelect('session.driver', 'driver')
+				.leftJoinAndSelect('driver.picture', 'picture')
+				.leftJoinAndSelect('driver.jeep', 'jeep')
 				.getOneOrFail();
-
-			session.points = await SessionPoint.createQueryBuilder('point')
-				.relation(Session, 'points')
-				.of(session)
-				.loadMany();
 
 			if (session.done) {
 				session.done = false;
@@ -50,6 +55,7 @@ export class DriversService {
 			return await Session.create({
 				driver,
 				points: [],
+				passengers: [],
 			}).save();
 		}
 	}
@@ -64,23 +70,22 @@ export class DriversService {
 		try {
 			const session = await Session.createQueryBuilder('session')
 				.where('session.driverID = :driverId', { driverId: driver.id })
-				.where('DATE(session.createdAt) > CURDATE()')
+				.where('DATE(session.createdAt) >= CURDATE()')
 				.where('session.done = :done', { done: false })
-				.limit(1)
+				.leftJoinAndSelect('session.points', 'point')
+				.leftJoinAndSelect(
+					'session.passengers',
+					'session_passenger',
+					'session_passenger.done = :done',
+					{
+						done: false,
+					},
+				)
+				.leftJoinAndSelect('session_passenger.passenger', 'passenger')
+				.leftJoinAndSelect('session.driver', 'driver')
+				.leftJoinAndSelect('driver.picture', 'picture')
+				.leftJoinAndSelect('driver.jeep', 'jeep')
 				.getOneOrFail();
-
-			session.points = await SessionPoint.createQueryBuilder('point')
-				.relation(Session, 'points')
-				.of(session)
-				.loadMany();
-
-			session.passengers = await SessionPassenger.createQueryBuilder(
-				'session_passenger',
-			)
-				.where('session_passenger.done = :done', { done: false })
-				.relation(Session, 'passengers')
-				.of(session)
-				.loadMany();
 
 			return session;
 		} catch (_) {

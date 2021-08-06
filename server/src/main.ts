@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
 import './shims';
 import { SocketService } from './ws/socket.service';
@@ -14,6 +15,8 @@ async function bootstrap() {
 
 	socketService.setup(server);
 
+	app.use(urlencoded({ extended: true }));
+	app.use(json());
 	app.useGlobalPipes(new ValidationPipe({ transform: true }));
 	app.enableCors({
 		credentials: true,

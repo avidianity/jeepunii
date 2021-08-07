@@ -4,7 +4,6 @@ import {
 	NotFoundException,
 	UnprocessableEntityException,
 } from '@nestjs/common';
-import md5 from 'md5';
 import { Hash } from 'src/helpers';
 import { Cooperative } from 'src/models/cooperative.entity';
 import { Token } from 'src/models/token.entity';
@@ -12,6 +11,7 @@ import { User } from 'src/models/user.entity';
 import { In } from 'typeorm';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
+import { MD5, enc } from 'crypto-js';
 
 @Injectable()
 export class AuthService {
@@ -87,7 +87,7 @@ export class AuthService {
 	async validateHash(hash: string) {
 		const token = await Token.findOne(
 			{
-				hash: md5(hash),
+				hash: MD5(hash).toString(enc.Utf8),
 			},
 			{
 				relations: [

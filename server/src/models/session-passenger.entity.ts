@@ -1,4 +1,5 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Location } from './location.entity';
 import { Model } from './model.entity';
 import { Session } from './session.entity';
 import { User } from './user.entity';
@@ -32,10 +33,15 @@ export class SessionPassenger extends Model {
 	@Column('double precision', { nullable: true })
 	end_lon: number;
 
-	@Index()
 	@Column()
+	@Index()
 	startId: number;
 
 	@Column({ nullable: true })
 	endId: number | null;
+
+	@ManyToOne(() => Location, (location) => location.passengers, {
+		nullable: true,
+	})
+	location: Location;
 }

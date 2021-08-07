@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { Model } from './model.entity';
 import { Session } from './session.entity';
 
@@ -8,8 +8,10 @@ export class SessionPoint extends Model {
 	session: Session;
 
 	@Column('double precision')
+	@Index()
 	lat: number;
 
 	@Column('double precision')
+	@Index()
 	lon: number;
 }

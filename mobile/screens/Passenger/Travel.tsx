@@ -91,14 +91,13 @@ const Travel: FC<Props> = (props) => {
 
 	const calculate = () => {
 		if (session?.points) {
-			const distance =
-				session.points.reduce((prev, point, index, points) => {
-					const next = points[index + 1];
-					if (next) {
-						return prev + haversine(point, next);
-					}
-					return prev;
-				}, 0) * 0.001;
+			const distance = session.points.reduce((prev, point, index, points) => {
+				const next = points[index + 1];
+				if (next) {
+					return prev + haversine(point, next) / 1000;
+				}
+				return prev;
+			}, 0);
 
 			const fare = (distance / 4) * 1.5;
 

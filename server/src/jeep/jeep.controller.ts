@@ -26,6 +26,7 @@ import { PassengerOutDTO } from './dto/passenger-out.dto';
 import { UpdateJeepDTO } from './dto/update-jeep.dto';
 import { JeepService } from './jeep.service';
 import haversine from 'haversine-distance';
+import { LocationService } from 'src/location/location.service';
 
 @Controller('jeeps')
 @UseGuards(HttpBearerGuard)
@@ -35,6 +36,7 @@ export class JeepController {
 		protected crypto: CryptoService,
 		protected socket: SocketService,
 		protected driver: DriversService,
+		protected location: LocationService,
 	) {}
 
 	@Get()
@@ -192,14 +194,13 @@ export class JeepController {
 			})
 			.getMany();
 
-		const distance =
-			points.reduce((prev, point, index, points) => {
-				const next = points[index + 1];
-				if (next) {
-					return prev + haversine(point, next);
-				}
-				return prev;
-			}, 0) * 0.001;
+		const distance = points.reduce((prev, point, index, points) => {
+			const next = points[index + 1];
+			if (next) {
+				return prev + haversine(point, next) / 1000;
+			}
+			return prev;
+		}, 0);
 
 		const fare = (distance / 4) * 1.5;
 
@@ -207,6 +208,9 @@ export class JeepController {
 		passenger.riding = false;
 		await passenger.save();
 
+		const location = await this.location.make(data.lat, data.lon);
+
+		sessionPassenger.location = location;
 		sessionPassenger.done = true;
 		sessionPassenger.end_lat = data.lat;
 		sessionPassenger.end_lon = data.lon;

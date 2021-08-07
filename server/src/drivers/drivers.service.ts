@@ -82,6 +82,7 @@ export class DriversService {
 					},
 				)
 				.leftJoinAndSelect('session_passenger.passenger', 'passenger')
+				.leftJoinAndSelect('session_passenger.location', 'location')
 				.leftJoinAndSelect('session.driver', 'driver')
 				.leftJoinAndSelect('driver.picture', 'picture')
 				.leftJoinAndSelect('driver.jeep', 'jeep')

@@ -23,11 +23,7 @@ export class PointService implements EntityServiceContract<SessionPoint> {
 	}
 
 	async create(data: any) {
-		let sessionPoint = new SessionPoint(data);
-
-		sessionPoint = await sessionPoint.save();
-
-		return sessionPoint;
+		return await new SessionPoint(data).save();
 	}
 
 	async update(id: number, data: any) {

@@ -14,6 +14,7 @@ import { Paths } from './constants';
 import { diskStorage } from 'multer';
 import { FileController } from './file/file.controller';
 import { SessionModule } from './session/session.module';
+import { LocationModule } from './location/location.module';
 import mimeTypes from 'mime-types';
 
 @Module({
@@ -33,7 +34,7 @@ import mimeTypes from 'mime-types';
 				database: config.get<string>('DB_NAME'),
 				entities: ['{dist, src}/models/*.entity.{js, ts}'],
 				synchronize: config.get('ENV') !== 'production',
-				cache: true,
+				cache: config.get('ENV') === 'production',
 				extra: {
 					decimalNumbers: true,
 				},
@@ -69,6 +70,7 @@ import mimeTypes from 'mime-types';
 		DriversModule,
 		SocketModule,
 		SessionModule,
+		LocationModule,
 	],
 	providers: [],
 	exports: [],

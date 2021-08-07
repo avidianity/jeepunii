@@ -7,6 +7,6 @@ export class SessionController {
 
 	@Get('/:id')
 	async show(@Param('id') id: number) {
-		return await this.session.show(id);
+		return await this.session.find(id);
 	}
 }

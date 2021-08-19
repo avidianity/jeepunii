@@ -28,7 +28,7 @@ const Menu: FC<Props> = (props) => {
 	const logout = async () => {
 		try {
 			await axios.post('/auth/logout');
-		} catch (error) {
+		} catch (error: any) {
 			console.log(error.toJSON());
 		} finally {
 			await Promise.all([state.remove('user'), state.remove('token')]);

@@ -72,7 +72,7 @@ export default function App() {
 		<QueryClientProvider client={new QueryClient()}>
 			<SafeAreaProvider>
 				<RootSiblingParent>
-					<NetContext.Provider value={{ online: info.isConnected! }}>
+					<NetContext.Provider value={{ online: info.isConnected || false }}>
 						<SocketContext.Provider value={{ socket, setSocket }}>
 							<ThemeContext.Provider value={{ dark, setDark }}>
 								<ThemeProvider

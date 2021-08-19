@@ -20,10 +20,10 @@
 
 #### Driver
 
-- [ ] Track LOC with GPS
-- [ ] Time-in jeep session
-- [ ] Time-out jeep session
-- [ ] Monitor number of paying passengers in realtime
+- [x] Track LOC with GPS
+- [x] Time-in jeep session
+- [x] Time-out jeep session
+- [x] Monitor number of paying passengers in realtime
 - [ ] Statistics and Analytics of sales and earnings (daily, weekly, monthly)
 
 ### Web

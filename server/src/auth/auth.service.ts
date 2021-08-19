@@ -11,7 +11,7 @@ import { User } from 'src/models/user.entity';
 import { In } from 'typeorm';
 import { LoginDTO } from './dto/login.dto';
 import { RegisterDTO } from './dto/register.dto';
-import { MD5, enc } from 'crypto-js';
+import { MD5 } from 'crypto-js';
 
 @Injectable()
 export class AuthService {
@@ -87,7 +87,7 @@ export class AuthService {
 	async validateHash(hash: string) {
 		const token = await Token.findOne(
 			{
-				hash: MD5(hash).toString(enc.Utf8),
+				hash: MD5(hash).toString(),
 			},
 			{
 				relations: [

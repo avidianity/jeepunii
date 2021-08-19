@@ -25,15 +25,15 @@ export type Passenger = {
 };
 
 /**
- * TODO:
+ * TODOS
  *
- * 1. Get Location permissions ✅
- * 2. Create component for non-granted location permission ✅
- * 3. Track lat/long points upon session start ✅
- * 4. Cancel session ✅
- * 5. Save points to server ✅
- * 6. Detect passenger in/out ✅
- * 7. Diff online/offline passengers ✅
+ * 1. Get Location permissions
+ * 2. Create component for non-granted location permission
+ * 3. Track lat/long points upon session start
+ * 4. Cancel session
+ * 5. Save points to server
+ * 6. Detect passenger in/out
+ * 7. Diff online/offline passengers
  * 8. UI for passengers
  */
 const Jeep: FC<Props> = (props) => {
@@ -45,70 +45,75 @@ const Jeep: FC<Props> = (props) => {
 	const [passengerHandle, setPassengerHandle] = useNullable<NodeJS.Timeout>();
 	const [granted, setGranted] = useState(false);
 	const [passengers, setPassengers] = useArray<Passenger>();
+	const [passengerSocketsListening, setPassengerSocketsListening] = useState(false);
 
 	const current = async () => {
 		try {
 			const { data: session } = await axios.get<SessionContract | null>('/drivers/session');
 			if (typeof session === 'object' && session !== null) {
-				socket?.on(`session.${session.id}.passenger.in`, (passenger) => {
-					const exists = passengers.find((item) => item.data.id === passenger.id);
+				if (!passengerSocketsListening) {
+					socket?.on(`session.${session.id}.passenger.in`, (passenger) => {
+						const exists = passengers.find((item) => item.data.id === passenger.id);
 
-					if (exists) {
-						return;
-					}
-
-					passengers.push({
-						data: passenger,
-						online: true,
-					});
-
-					socket?.on(`disconnect.${passenger.id}`, () => {
-						const index = passengers.findIndex((item) => item.data.id === passenger.id);
-						const item = passengers[index];
-
-						if (!item || !item.online) {
+						if (exists) {
 							return;
 						}
 
-						item.online = false;
-						passengers.splice(index, 1, item);
+						passengers.push({
+							data: passenger,
+							online: true,
+						});
+
+						socket?.on(`disconnect.${passenger.id}`, () => {
+							const index = passengers.findIndex((item) => item.data.id === passenger.id);
+							const item = passengers[index];
+
+							if (!item || !item.online) {
+								return;
+							}
+
+							item.online = false;
+							passengers.splice(index, 1, item);
+
+							setPassengers([...passengers]);
+						});
+
+						socket?.on(`connect.${passenger.id}`, () => {
+							const index = passengers.findIndex((item) => item.data.id === passenger.id);
+							const item = passengers[index];
+
+							if (!item || item.online) {
+								return;
+							}
+
+							item.online = true;
+							passengers.splice(index, 1, item);
+
+							setPassengers([...passengers]);
+						});
 
 						setPassengers([...passengers]);
 					});
 
-					socket?.on(`connect.${passenger.id}`, () => {
+					socket?.on(`session.${session.id}.passenger.out`, (passenger) => {
 						const index = passengers.findIndex((item) => item.data.id === passenger.id);
 						const item = passengers[index];
 
-						if (!item || item.online) {
+						if (!item) {
 							return;
 						}
 
-						item.online = true;
-						passengers.splice(index, 1, item);
+						passengers.splice(index, 1);
+
+						socket?.off(`connect.${item.data.id}`);
+						socket?.off(`disconnect.${item.data.id}`);
 
 						setPassengers([...passengers]);
 					});
-
-					setPassengers([...passengers]);
-				});
-
-				socket?.on(`session.${session.id}.passenger.out`, (passenger) => {
-					const index = passengers.findIndex((item) => item.data.id === passenger.id);
-					const item = passengers[index];
-
-					if (!item) {
-						return;
-					}
-
-					passengers.splice(index, 1);
-
-					socket?.off(`connect.${item.data.id}`);
-					socket?.off(`disconnect.${item.data.id}`);
-
-					setPassengers([...passengers]);
-				});
+					setPassengerSocketsListening(true);
+				}
 				setSession(session);
+				start();
 			} else {
 				setSession(null);
 			}
@@ -135,9 +140,9 @@ const Jeep: FC<Props> = (props) => {
 				lat: location.coords.latitude,
 				lon: location.coords.longitude,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			handleErrors(error);
-			if ((error as any)?.response?.status === 400) {
+			if (error?.response?.status === 400) {
 				stop();
 			}
 		}
@@ -160,29 +165,48 @@ const Jeep: FC<Props> = (props) => {
 
 	const start = () => {
 		setHandle(setInterval(() => record(), 5000));
-		setRefreshHandle(setInterval(() => current(), 15000));
-		setPassengerHandle(setInterval(() => fetchPassengers(), 1000 * 60));
+		setPassengerHandle(setInterval(() => fetchPassengers(), 300000));
 	};
 
 	const stop = () => {
-		clearInterval(handle!);
-		clearInterval(refreshHandle!);
-		clearInterval(passengerHandle!);
-		setHandle(null);
-		setRefreshHandle(null);
-		setPassengerHandle(null);
+		if (handle) {
+			clearInterval(handle);
+			setHandle(null);
+		}
+
+		if (refreshHandle) {
+			clearInterval(refreshHandle);
+			setRefreshHandle(null);
+		}
+
+		if (passengerHandle) {
+			clearInterval(passengerHandle);
+			setPassengerHandle(null);
+		}
 
 		if (session) {
-			socket?.off(`session.${session.id}.passenger.in`);
-			socket?.off(`session.${session.id}.passenger.out`);
+			destroySessionSockets(session);
 			axios.delete('/drivers/session').catch(handleErrors);
 			setSession(null);
 		}
 	};
 
+	const destroySessionSockets = (session: SessionContract) => {
+		socket?.off(`session.${session.id}.passenger.in`);
+		socket?.off(`session.${session.id}.passenger.out`);
+		passengers.forEach((passenger) => socket?.off(`connect.${passenger.data.id}`));
+		setPassengerSocketsListening(false);
+	};
+
 	useEffect(() => {
 		ask();
 		current();
+
+		return () => {
+			if (session) {
+				destroySessionSockets(session);
+			}
+		};
 		// eslint-disable-next-line
 	}, []);
 

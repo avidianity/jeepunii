@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import { MD5, enc } from 'crypto-js';
+import { MD5 } from 'crypto-js';
 import { File } from 'src/models/file.entity';
 import { Token } from 'src/models/token.entity';
 import { RolesEnum } from 'src/models/user.entity';
@@ -60,7 +60,7 @@ export class AuthController {
 
 		const text = String.random();
 		const token = new Token();
-		token.hash = MD5(text).toString(enc.Utf8);
+		token.hash = MD5(text).toString();
 		token.user = user;
 		await token.save();
 
@@ -92,7 +92,7 @@ export class AuthController {
 		const user = await this.auth.login(data);
 		const text = String.random(20);
 		const token = new Token();
-		token.hash = MD5(text).toString(enc.Utf8);
+		token.hash = MD5(text).toString();
 		token.user = user;
 		await token.save();
 		return {

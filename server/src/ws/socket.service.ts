@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
-import { RolesEnum, User } from 'src/models/user.entity';
+import { User } from 'src/models/user.entity';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
 import { ConfigService } from '@nestjs/config';

@@ -1,6 +1,5 @@
 import axios from 'axios';
-import React, { FC, useEffect } from 'react';
-import { v4 } from 'uuid';
+import React, { createRef, FC, useEffect } from 'react';
 import { QRCode } from '../../helpers';
 import { useNullable } from '../../hooks';
 
@@ -12,10 +11,10 @@ type Props = {
 	modalTitle?: string;
 };
 
-const id = v4();
-
 const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) => {
 	const [data, setData] = useNullable<string>();
+	const [modal, setModal] = useNullable<JQuery<HTMLDivElement>>();
+	const ref = createRef<HTMLDivElement>();
 
 	const qrCodify = async (url: string) => {
 		try {
@@ -34,20 +33,26 @@ const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) 
 
 	const toggleModal = (event: React.MouseEvent<Element, MouseEvent>) => {
 		event.preventDefault();
-		$(`#${id}`).modal('toggle');
+		modal?.modal('toggle');
 	};
 
 	const dismissModal = (event: React.MouseEvent<Element, MouseEvent>) => {
 		event.preventDefault();
-		$(`#${id}`).modal('hide');
+		modal?.modal('hide');
 	};
+
+	useEffect(() => {
+		if (ref.current && !modal) {
+			setModal($(ref.current));
+		}
+	}, [ref, setModal, modal]);
 
 	return (
 		<>
-			<button type='button' className={`${buttonClassName}`} onClick={toggleModal} data-target={`#${id}`} {...props}>
+			<button type='button' className={`${buttonClassName}`} onClick={toggleModal} {...props}>
 				{title}
 			</button>
-			<div id={id} className='modal fade' tabIndex={-1}>
+			<div ref={ref} className='modal fade' tabIndex={-1}>
 				<div className='modal-dialog modal-dialog-centered'>
 					<div className='modal-content'>
 						<div className='modal-header'>
@@ -65,11 +70,12 @@ const QRModal: FC<Props> = ({ url, title, buttonClassName, props, modalTitle }) 
 									className='btn btn-primary btn-sm btn-icon'
 									onClick={() => {
 										const link = document.createElement('a');
-										link.download = `${modalTitle || `qrcode-${id}`}.png`;
+										link.download = `${modalTitle || `qrcode`}.png`;
 										link.href = data;
 										document.body.appendChild(link);
 										link.click();
 										document.body.removeChild(link);
+										link.remove();
 									}}>
 									<i className='material-icons'>download</i>
 								</button>

@@ -99,13 +99,13 @@ const Verify: FC<Props> = (props) => {
 				</div>
 				<div className='d-flex'>
 					<button
-						className='btn btn-primary btn-sm ml-auto'
+						className='btn btn-success btn-sm ml-auto'
 						data-tip='Confirm Verification'
 						onClick={(e) => {
 							e.preventDefault();
 							approveUser();
 						}}>
-						<i className='material-icons'>verified</i>
+						<i className='material-icons'>check</i>
 					</button>
 					<button
 						className='btn btn-danger btn-sm ml-1'

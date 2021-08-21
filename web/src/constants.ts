@@ -12,3 +12,9 @@ export const RoleColorMap = {
 };
 
 export const Roles = [RolesEnum.ADMIN, RolesEnum.COOPERATIVE, RolesEnum.DRIVER, RolesEnum.PASSENGER];
+
+export const DEVELOPMENT = process.env.NODE_ENV === 'development';
+
+export const PRODUCTION = process.env.NODE_ENV === 'production';
+
+export const TESTING = process.env.NODE_ENV === 'test';

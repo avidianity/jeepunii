@@ -1,3 +1,4 @@
+import '@avidian/extras';
 import toastr from 'toastr';
 import axios from 'axios';
 import './shims';

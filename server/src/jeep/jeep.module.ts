@@ -6,6 +6,7 @@ import { LogsModule } from 'src/logs/logs.module';
 import { DriversModule } from 'src/drivers/drivers.module';
 import { SocketModule } from 'src/ws/socket.module';
 import { LocationModule } from 'src/location/location.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
 	providers: [JeepService],
@@ -16,6 +17,7 @@ import { LocationModule } from 'src/location/location.module';
 		forwardRef(() => DriversModule),
 		SocketModule,
 		LocationModule,
+		UserModule,
 	],
 	exports: [JeepService],
 })

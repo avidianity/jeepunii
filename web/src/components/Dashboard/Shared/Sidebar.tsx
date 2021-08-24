@@ -94,12 +94,12 @@ const Sidebar: FC<Props> = (props) => {
 			title: 'Logs',
 			show: true,
 		},
-		{
-			url: url(routes.CHATS),
-			icon: 'ti-comment',
-			title: 'Chats',
-			show: true,
-		},
+		// {
+		// 	url: url(routes.CHATS),
+		// 	icon: 'ti-comment',
+		// 	title: 'Chats',
+		// 	show: true,
+		// },
 		{
 			url: url(routes.ROUTES),
 			icon: 'ti-stats-up',

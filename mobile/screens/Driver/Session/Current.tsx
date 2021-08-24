@@ -13,9 +13,9 @@ type Props = {
 	passengers: PassengerContract[];
 };
 
-const Current: FC<Props> = ({ stop, passengers }) => {
+const Current: FC<Props> = ({ stop, passengers, session }) => {
 	return (
-		<Container>
+		<Container style={{ width: '100%' }}>
 			<Button
 				title='Stop Driving'
 				icon={<Icon name='logout' type='material' color='#fff' />}
@@ -38,7 +38,7 @@ const Current: FC<Props> = ({ stop, passengers }) => {
 			/>
 			<View style={styles.list}>
 				{passengers.map((passenger, index) => (
-					<Passenger passenger={passenger} key={index} style={styles.item} />
+					<Passenger session={session} passenger={passenger} key={index} style={styles.item} />
 				))}
 			</View>
 		</Container>
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 		alignItems: 'flex-start',
 		marginTop: 10,
+		width: '100%',
 	},
 	item: {
 		width: '50%',

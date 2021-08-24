@@ -6,6 +6,8 @@ import { State } from './libraries/State';
 import $ from 'jquery';
 import 'bootstrap';
 import { SERVER_URL } from './constants';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet-src.esm';
 
 window.toastr = toastr;
 window.$ = $;

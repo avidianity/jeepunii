@@ -1,14 +1,44 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { LocationIQResponse } from 'src/interfaces/location-iq-response.interface';
 import { Location } from 'src/models/location.entity';
-import { Brackets } from 'typeorm';
+import { Brackets, FindManyOptions, FindOneOptions } from 'typeorm';
 
 @Injectable()
 export class LocationService {
 	constructor(protected http: HttpService, protected config: ConfigService) {}
+
+	async all(options?: FindManyOptions<Location>) {
+		return await Location.find({
+			...options,
+			relations: [
+				'passengers',
+				'passengers.session',
+				'passengers.passenger',
+				'passengers.session.driver',
+			],
+		});
+	}
+
+	async get(id: number, options?: FindOneOptions<Location>) {
+		const location = await Location.findOne(id, {
+			...options,
+			relations: [
+				'passengers',
+				'passengers.session',
+				'passengers.passenger',
+				'passengers.session.driver',
+			],
+		});
+
+		if (!location) {
+			throw new NotFoundException('Route does not exist.');
+		}
+
+		return location;
+	}
 
 	async find(lat: number, lon: number) {
 		return await Location.createQueryBuilder('location')

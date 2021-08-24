@@ -22,6 +22,25 @@
 	}
 }
 
+#loader {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	position: fixed !important;
+	height: 100vh !important;
+	width: 100vw !important;
+	top: 0 !important;
+	left: 0 !important;
+	z-index: 99999 !important;
+}
+
+#loader img {
+	height: 200px;
+	width: 200px;
+	border-radius: 50%;
+	border: 1px solid rgba(50, 50, 50, 0.25);
+}
+
 .h-100vh {
 	height: 100vh;
 }

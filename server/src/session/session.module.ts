@@ -7,6 +7,6 @@ import { SessionService } from './session.service';
 	controllers: [SessionController],
 	providers: [SessionService],
 	imports: [PointModule],
-	exports: [PointModule],
+	exports: [PointModule, SessionService],
 })
 export class SessionModule {}

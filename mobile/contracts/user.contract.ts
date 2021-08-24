@@ -21,6 +21,7 @@ export interface UserContract extends ModelContract {
 	role: RolesEnum;
 	approved: boolean;
 	riding: boolean;
+	online: boolean;
 	cooperative?: CooperativeContract;
 	jeep?: JeepContract;
 	files?: FileContract[];

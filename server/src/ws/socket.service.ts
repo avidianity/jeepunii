@@ -94,9 +94,6 @@ export class SocketService {
 					return next(new Error('Invalid token.'));
 				}
 
-				user.online = true;
-				await user.save();
-
 				socket.user = user;
 
 				return next();
@@ -105,10 +102,13 @@ export class SocketService {
 			}
 		});
 
-		this.server.on('connection', (socket) => {
+		this.server.on('connection', async (socket) => {
 			this.connections++;
 			this.users.push({ user: socket.user, id: socket.id });
 			this.server.emit(`connect.${socket.user.id}`);
+
+			socket.user.online = true;
+			await socket.user.save();
 
 			socket.on('disconnect', async () => {
 				this.connections--;

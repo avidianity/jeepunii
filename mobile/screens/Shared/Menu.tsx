@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/core';
 import axios from 'axios';
 import React, { FC, useContext, useMemo } from 'react';
-import { Platform } from 'react-native';
+import { Platform, TouchableHighlight } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Button, Divider, Icon, Image, Text } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
 import Container from '../../components/Container';
 import { Colors, SERVER_URL } from '../../constants';
-import { AuthContext } from '../../contexts';
+import { AuthContext, NetContext } from '../../contexts';
 import { RolesEnum, UserContract } from '../../contracts/user.contract';
 import { State } from '../../libraries/State';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,6 +22,7 @@ const Menu: FC<Props> = (props) => {
 	const navigation = useNavigation();
 
 	const { user, setUser } = useContext(AuthContext);
+	const { online } = useContext(NetContext);
 
 	const items = [() => <Button icon={<Icon name='logout' type='material' color='#fff' />} title='Logout' onPress={() => logout()} />];
 
@@ -93,7 +94,7 @@ const Menu: FC<Props> = (props) => {
 	return (
 		<Container style={styles.container}>
 			<View style={styles.imageContainer}>
-				<View style={styles.imageWrapper}>
+				<TouchableHighlight style={[styles.imageWrapper, online ? styles.online : styles.offline]}>
 					<Image
 						source={
 							user?.picture
@@ -105,7 +106,7 @@ const Menu: FC<Props> = (props) => {
 						style={styles.image}
 						onPress={() => pick()}
 					/>
-				</View>
+				</TouchableHighlight>
 				<Text>
 					{user?.firstName} {user?.lastName}
 				</Text>
@@ -154,9 +155,17 @@ const styles = StyleSheet.create({
 		}),
 		borderRadius: 150,
 		marginBottom: 10,
+		borderWidth: 1,
+		marginTop: 40,
 	},
 	item: {
 		marginVertical: 4,
+	},
+	online: {
+		borderColor: 'green',
+	},
+	offline: {
+		borderColor: 'rgb(60, 60, 60)',
 	},
 });
 

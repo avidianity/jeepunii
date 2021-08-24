@@ -10,6 +10,7 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
+import { only } from 'src/helpers';
 import { RolesEnum, User } from 'src/models/user.entity';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -59,6 +60,17 @@ export class UserController {
 	@Post()
 	async create(@Body() data: CreateUserDTO) {
 		return await this.users.create(data);
+	}
+
+	@Put(':id/coins')
+	async addCoins(@Param('id') id: number, @Body() data: UpdateUserDTO) {
+		const user = await this.users.find(id, {
+			where: { role: RolesEnum.PASSENGER },
+		});
+
+		user.coins += data?.coins || 0;
+
+		return await user.save();
 	}
 
 	@Put(':id')

@@ -165,7 +165,7 @@ const Jeep: FC<Props> = (props) => {
 
 	const start = () => {
 		setHandle(setInterval(() => record(), 5000));
-		setPassengerHandle(setInterval(() => fetchPassengers(), 300000));
+		setPassengerHandle(setInterval(() => fetchPassengers(), 30000));
 	};
 
 	const stop = () => {

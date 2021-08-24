@@ -17,23 +17,29 @@ import axios from 'axios';
 import Tooltip from './components/Shared/Tooltip';
 import { useNullable } from './hooks';
 import { io, Socket } from 'socket.io-client';
-import { SERVER_URL } from './constants';
+import { APP_NAME, SERVER_URL } from './constants';
+import logo from './assets/logo-full.svg';
+import { outIf } from './helpers';
+
+const id = String.random(20);
 
 function App() {
 	const state = State.getInstance();
 	const [logged, setLogged] = useState(state.has('user') && state.has('token'));
 	const [user, setUser] = useState<UserContract | null>(state.has('user') ? state.get('user') : null);
 	const [socket, setSocket] = useNullable<Socket>();
+	const [loaded, setLoaded] = useState(false);
 
 	const EventBuses = {
 		AuthBus: new EventBus(),
 	};
 
 	const fetchRequirements = () => {
-		['/loader.js', '/bundle.js'].forEach((url) => {
+		['/bundle.js'].forEach((url) => {
 			const script = document.createElement('script');
 			script.src = `${process.env.PUBLIC_URL}${url}`;
 			script.defer = true;
+			script.id = id;
 			script.type = 'text/javascript';
 			document.body.append(script);
 		});
@@ -68,11 +74,11 @@ function App() {
 	useEffect(() => {
 		fetchRequirements();
 
-		if (state.has('token')) {
-			const token = state.get<string>('token');
-			axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-			initSocket(token);
-		}
+        if (state.has('token')) {
+            const token = state.get<string>('token');
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            initSocket(token);
+        }
 
 		const key = state.listen<string>('token', (token) => {
 			if (!socket) {
@@ -80,34 +86,42 @@ function App() {
 			}
 		});
 
-		checkAuth();
+		checkAuth().then(() => {
+			setLoaded(true);
+		});
 
 		return () => {
 			state.unlisten(key);
+			$(`#${id}`).remove();
 		};
 		// eslint-disable-next-line
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ logged, setLogged, user, setUser }}>
-			<SocketContext.Provider value={{ socket, setSocket }}>
-				<EventContext.Provider value={EventBuses}>
-					<QueryClientProvider client={new QueryClient()}>
-						<Router>
-							<Switch>
-								<Route path={routes.LANDING} exact component={Landing} />
-								<Route path={routes.LOGIN} component={Login} />
-								<Route path={routes.REGISTER} component={Register} />
-								<Route path={routes.DASHBOARD} component={Dashboard} />
-								<Route component={FourZeroFour} />
-							</Switch>
-							{process.env.NODE_ENV !== 'production' ? <ReactQueryDevtools position='bottom-right' /> : null}
-							<Tooltip />
-						</Router>
-					</QueryClientProvider>
-				</EventContext.Provider>
-			</SocketContext.Provider>
-		</AuthContext.Provider>
+		<>
+			<div id='loader' className={outIf(loaded, 'fadeOut')}>
+				<img src={logo} alt={APP_NAME} />
+			</div>
+			<AuthContext.Provider value={{ logged, setLogged, user, setUser }}>
+				<SocketContext.Provider value={{ socket, setSocket }}>
+					<EventContext.Provider value={EventBuses}>
+						<QueryClientProvider client={new QueryClient()}>
+							<Router>
+								<Switch>
+									<Route path={routes.LANDING} exact component={Landing} />
+									<Route path={routes.LOGIN} component={Login} />
+									<Route path={routes.REGISTER} component={Register} />
+									<Route path={routes.DASHBOARD} component={Dashboard} />
+									<Route component={FourZeroFour} />
+								</Switch>
+								{process.env.NODE_ENV !== 'production' ? <ReactQueryDevtools position='bottom-right' /> : null}
+								<Tooltip />
+							</Router>
+						</QueryClientProvider>
+					</EventContext.Provider>
+				</SocketContext.Provider>
+			</AuthContext.Provider>
+		</>
 	);
 }
 

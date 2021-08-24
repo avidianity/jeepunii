@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import qrcode from 'qrcode';
 import Toast from 'react-native-root-toast';
+import { SessionPointContract } from './contracts/session-point.contract';
+import haversine from 'haversine-distance';
 
 dayjs.extend(relativeTime);
 
@@ -26,6 +28,20 @@ export function toBool(data: any) {
 	return data ? true : false;
 }
 
+export function calculateFromPoints(points: SessionPointContract[]) {
+	const distance = points.reduce((prev, point, index, points) => {
+		const next = points[index + 1];
+		if (next) {
+			return prev + haversine(point, next) / 1000;
+		}
+		return prev;
+	}, 0);
+
+	const fare = (distance / 4) * 1.5;
+
+	return fare >= 10 ? fare : 10;
+}
+
 export function validURL(url: string) {
 	let valid = false;
 	var pattern = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!-/]))?/;
@@ -40,7 +56,9 @@ export function validURL(url: string) {
 
 export function ucfirst(string: string) {
 	const array = string.split('');
-	array[0] = array[0].toUpperCase();
+	if (array.length > 0) {
+		array[0] = array[0].toUpperCase();
+	}
 	return array.join('');
 }
 

@@ -9,12 +9,11 @@ import { useNullable } from '../../hooks';
 import { PermissionStatus } from 'expo-modules-core';
 import { SessionContract } from '../../contracts/session.contract';
 import { UserContract } from '../../contracts/user.contract';
-import { handleErrors } from '../../helpers';
+import { calculateFromPoints, handleErrors } from '../../helpers';
 import * as Location from 'expo-location';
 import { useEffect } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts';
-import haversine from 'haversine-distance';
 
 type Props = {};
 
@@ -91,17 +90,7 @@ const Travel: FC<Props> = (props) => {
 
 	const calculate = () => {
 		if (session?.points) {
-			const distance = session.points.reduce((prev, point, index, points) => {
-				const next = points[index + 1];
-				if (next) {
-					return prev + haversine(point, next) / 1000;
-				}
-				return prev;
-			}, 0);
-
-			const fare = (distance / 4) * 1.5;
-
-			return fare >= 10 ? fare : 10;
+			return calculateFromPoints(session.points);
 		} else {
 			return 10;
 		}

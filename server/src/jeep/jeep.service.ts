@@ -61,7 +61,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 	async create(data: CreateJeepDTO) {
 		const cooperative = await Cooperative.findOneOrFail(data.cooperativeId);
 
-		const jeep = new Jeep(data);
+		let jeep = new Jeep(data);
 
 		jeep.cooperative = cooperative;
 
@@ -75,7 +75,13 @@ export class JeepService implements EntityServiceContract<Jeep> {
 			cooperative,
 		);
 
-		return await jeep.save();
+		jeep = await jeep.save();
+
+		if (jeep.driver && data.driverId) {
+			this.socket.emit(`user.${jeep.driver.id}.assign`, { jeep });
+		}
+
+		return jeep;
 	}
 
 	async update(id: number, data: UpdateJeepDTO) {

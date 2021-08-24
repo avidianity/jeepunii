@@ -27,6 +27,8 @@ import { UpdateJeepDTO } from './dto/update-jeep.dto';
 import { JeepService } from './jeep.service';
 import haversine from 'haversine-distance';
 import { LocationService } from 'src/location/location.service';
+import { UserService } from 'src/user/user.service';
+import { MoreThanOrEqual } from 'typeorm';
 
 @Controller('jeeps')
 @UseGuards(HttpBearerGuard)
@@ -37,6 +39,7 @@ export class JeepController {
 		protected socket: SocketService,
 		protected driver: DriversService,
 		protected location: LocationService,
+		protected user: UserService,
 	) {}
 
 	@Get()
@@ -71,14 +74,47 @@ export class JeepController {
 			);
 		}
 
-		const passengers = session.passengers.map(
-			(passenger) => passenger.passenger,
-		);
+		const passengers = session.passengers.map((passenger) => {
+			if (
+				passenger.passenger.online &&
+				!this.socket.hasUser(passenger.passenger)
+			) {
+				passenger.passenger.online = false;
+				passenger.passenger.save().catch(console.error);
+			}
+			return passenger.passenger;
+		});
 
 		return passengers.map((passenger) => ({
 			passenger,
 			online: passenger.online,
 		}));
+	}
+
+	@Get('/passenger/:id/:sessionID/points')
+	async getPassengerPoints(
+		@Param('id') id: number,
+		@Param('sessionID') sessionID: number,
+	) {
+		const passenger = await this.user.find(id, {
+			where: { role: RolesEnum.PASSENGER },
+		});
+
+		const session = await SessionPassenger.findOne({
+			done: false,
+			session: {
+				id: sessionID,
+			},
+			passenger: {
+				id: passenger.id,
+			},
+		});
+
+		const points = await SessionPoint.find({
+			id: MoreThanOrEqual(session.startId),
+		});
+
+		return points;
 	}
 
 	@Post('/passenger/in')

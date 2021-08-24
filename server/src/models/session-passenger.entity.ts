@@ -1,4 +1,5 @@
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { Jeep } from './jeep.entity';
 import { Location } from './location.entity';
 import { Model } from './model.entity';
 import { Session } from './session.entity';
@@ -39,6 +40,9 @@ export class SessionPassenger extends Model {
 
 	@Column({ nullable: true })
 	endId: number | null;
+
+	@ManyToOne(() => Jeep, (jeep) => jeep.passengers)
+	jeep: Jeep;
 
 	@ManyToOne(() => Location, (location) => location.passengers, {
 		nullable: true,

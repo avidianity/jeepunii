@@ -10,6 +10,7 @@ import { Jeep } from 'src/models/jeep.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
 import { SocketService } from 'src/ws/socket.service';
+import { FindManyOptions } from 'typeorm';
 import { CreateJeepDTO } from './dto/create-jeep.dto';
 import { UpdateJeepDTO } from './dto/update-jeep.dto';
 
@@ -17,19 +18,31 @@ import { UpdateJeepDTO } from './dto/update-jeep.dto';
 export class JeepService implements EntityServiceContract<Jeep> {
 	constructor(protected logs: LogsService, protected socket: SocketService) {}
 
-	async all() {
+	async all(options?: FindManyOptions<Jeep>) {
 		const user = this.logs.getUser();
 
 		if (!['Admin', 'Passenger'].includes(user.role)) {
 			return await Jeep.find({
-				relations: ['cooperative', 'driver'],
+				...options,
+				relations: [
+					...(options.relations ? options.relations : []),
+					'cooperative',
+					'driver',
+				],
 				where: {
 					cooperative: user.cooperative,
 				},
 			});
 		}
 
-		return await Jeep.find({ relations: ['cooperative', 'driver'] });
+		return await Jeep.find({
+			...options,
+			relations: [
+				...(options.relations ? options.relations : []),
+				'cooperative',
+				'driver',
+			],
+		});
 	}
 
 	async find(id: number) {

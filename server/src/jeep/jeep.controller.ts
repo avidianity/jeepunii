@@ -171,6 +171,7 @@ export class JeepController {
 			start_lat: data.lat,
 			start_lon: data.lon,
 			startId: lastPoint.id,
+			jeep,
 		}).save();
 
 		passenger.riding = true;
@@ -253,6 +254,10 @@ export class JeepController {
 		sessionPassenger.endId = lastPoint.id;
 		sessionPassenger.fee = fare >= 10 ? fare : 10;
 		await sessionPassenger.save();
+
+		location.stops++;
+
+		await location.save();
 
 		this.socket.emit(
 			`session.${sessionPassenger.session.id}.passenger.out`,

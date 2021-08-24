@@ -15,6 +15,7 @@ import { diskStorage } from 'multer';
 import { FileController } from './file/file.controller';
 import { SessionModule } from './session/session.module';
 import { LocationModule } from './location/location.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 import mimeTypes from 'mime-types';
 
 @Module({
@@ -71,6 +72,7 @@ import mimeTypes from 'mime-types';
 		SocketModule,
 		SessionModule,
 		LocationModule,
+		AnalyticsModule,
 	],
 	providers: [],
 	exports: [],

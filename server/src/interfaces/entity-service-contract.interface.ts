@@ -1,10 +1,12 @@
 import { Model } from 'src/models/model.entity';
+import { FindManyOptions } from 'typeorm';
 
 export interface EntityServiceContract<T extends Model> {
 	/**
 	 * Fetch a collection of models.
+	 * @param options
 	 */
-	all(): Promise<T[]>;
+	all(options?: FindManyOptions<T>): Promise<T[]>;
 
 	/**
 	 * Fetch a single model.

@@ -1,3 +1,4 @@
+import { JeepContract } from './jeep.contract';
 import { ModelContract } from './model.contract';
 import { SessionContract } from './session.contract';
 import { UserContract } from './user.contract';
@@ -12,6 +13,8 @@ export interface SessionPassengerContract extends ModelContract {
 	endId?: number;
 	passengerId: number;
 	sessionId: number;
+	fee: number;
 	passenger?: UserContract;
 	session?: SessionContract;
+	jeep?: JeepContract;
 }

@@ -2,8 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
-import { AppModule } from './app.module';
 import './shims';
+import { AppModule } from './app.module';
 import { SocketService } from './ws/socket.service';
 
 async function bootstrap() {

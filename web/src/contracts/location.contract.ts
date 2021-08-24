@@ -17,5 +17,6 @@ export interface LocationContract extends ModelContract {
 	lat_bound_end: number;
 	lon_bound_start: number;
 	lon_bound_end: number;
+	stops: number;
 	passengers?: SessionPassengerContract[];
 }

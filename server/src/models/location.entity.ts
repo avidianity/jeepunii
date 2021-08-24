@@ -76,6 +76,9 @@ export class Location extends Model {
 	@Index()
 	lon_bound_end: number;
 
+	@Column({ default: 0 })
+	stops: number;
+
 	@OneToMany(() => SessionPassenger, (passenger) => passenger.location, {
 		nullable: true,
 	})

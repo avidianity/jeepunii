@@ -1,4 +1,5 @@
-import { Column, Entity, Index, ManyToOne } from 'typeorm';
+import { BeforeInsert, Column, Entity, Index, ManyToOne } from 'typeorm';
+import { v1 } from 'uuid';
 import { Jeep } from './jeep.entity';
 import { Location } from './location.entity';
 import { Model } from './model.entity';
@@ -18,6 +19,9 @@ export class SessionPassenger extends Model {
 		default: 0,
 	})
 	fee: number;
+
+	@Column('uuid')
+	uuid: string;
 
 	@Column({ default: false })
 	done: boolean;
@@ -48,4 +52,9 @@ export class SessionPassenger extends Model {
 		nullable: true,
 	})
 	location: Location;
+
+	@BeforeInsert()
+	protected generateUUID() {
+		this.uuid = v1();
+	}
 }

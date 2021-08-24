@@ -264,7 +264,7 @@ export class JeepController {
 			passenger,
 		);
 
-		return passenger;
+		return { passenger, sessionPassenger };
 	}
 
 	@Post('/crypto')

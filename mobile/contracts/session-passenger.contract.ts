@@ -1,3 +1,4 @@
+import { LocationContract } from './location.contract';
 import { ModelContract } from './model.contract';
 import { SessionContract } from './session.contract';
 import { UserContract } from './user.contract';
@@ -12,6 +13,9 @@ export interface SessionPassengerContract extends ModelContract {
 	endId?: number;
 	passengerId: number;
 	sessionId: number;
+	uuid: string;
+	fee: number;
 	passenger?: UserContract;
 	session?: SessionContract;
+	location?: LocationContract;
 }

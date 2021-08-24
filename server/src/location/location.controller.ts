@@ -1,5 +1,6 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
+import { InfoDTO } from './dto/info.dto';
 import { LocationService } from './location.service';
 
 @Controller('locations')
@@ -9,6 +10,11 @@ export class LocationController {
 	@Get('')
 	async all() {
 		return await this.location.all();
+	}
+
+	@Post('/info')
+	async getInfo(@Body() data: InfoDTO) {
+		return await this.location.make(data.lat, data.lon);
 	}
 
 	@Get(':id')

@@ -11,11 +11,11 @@
 
 - [x] Register
 - [x] Payment Transaction
-- [ ] Proof of Identity
+- [x] Proof of Identity
 - [ ] History of Transactions and Payments
 - [ ] History of Routes
 - [ ] History of Jeeps
-- [ ] Proof of Payment
+- [x] Proof of Payment
 - [x] Wallet
 
 #### Driver
@@ -24,7 +24,7 @@
 - [x] Time-in jeep session
 - [x] Time-out jeep session
 - [x] Monitor number of paying passengers in realtime
-- [ ] Statistics and Analytics of sales and earnings (daily, weekly, monthly)
+- [ ] Statistics and Analytics of sales and earnings (monthly, yearly)
 
 ### Web
 
@@ -34,7 +34,7 @@
 - [x] Management of Jeep Drivers (CRUD)
 - [x] Management of Jeep Inventory
 - [x] Assignment of Drivers to Jeep
-- [ ] Statistics and Analytics of sales, earnings, jeep, passengers, driver, common locations (daily, weekly, monthly)
+- [x] Statistics and Analytics of sales, jeep, passengers, common locations (monthly, yearly)
 - [x] Input Routes with Fare
 
 #### Administrator

@@ -107,7 +107,7 @@ const Travel: FC<Props> = (props) => {
 	useEffect(() => {
 		askLocation();
 
-		const handle = setInterval(watch, 5000);
+		const handle = setInterval(watch, 10000);
 
 		return () => {
 			clearInterval(handle);

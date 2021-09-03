@@ -105,24 +105,6 @@ const Sales: FC<Props> = (props) => {
 								</AreaChart>
 							</ResponsiveContainer>
 						</div>
-						<div className='col-12 w-100' style={{ minHeight: '300px' }}>
-							<ResponsiveContainer>
-								<AreaChart
-									data={sales}
-									margin={{
-										top: 10,
-										right: 30,
-										left: 0,
-										bottom: 0,
-									}}>
-									<CartesianGrid strokeDasharray='3 3' />
-									<XAxis dataKey='year' />
-									<YAxis />
-									<Tooltip />
-									<Area type='monotone' dataKey='sale' stroke='#8884d8' fill='#8884d8' />
-								</AreaChart>
-							</ResponsiveContainer>
-						</div>
 					</div>
 				</div>
 			</Card>

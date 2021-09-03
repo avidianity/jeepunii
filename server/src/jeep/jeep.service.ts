@@ -51,7 +51,12 @@ export class JeepService implements EntityServiceContract<Jeep> {
 
 		if (!['Admin', 'Passenger'].includes(user.role)) {
 			jeep = await Jeep.findOne(id, {
-				relations: ['cooperative', 'driver'],
+				relations: [
+					'cooperative',
+					'driver',
+					'passengers',
+					'passengers.location',
+				],
 				where: {
 					cooperative: user.cooperative,
 				},
@@ -60,7 +65,12 @@ export class JeepService implements EntityServiceContract<Jeep> {
 
 		if (!jeep) {
 			jeep = await Jeep.findOne(id, {
-				relations: ['cooperative', 'driver'],
+				relations: [
+					'cooperative',
+					'driver',
+					'passengers',
+					'passengers.location',
+				],
 			});
 		}
 

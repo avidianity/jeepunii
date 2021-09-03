@@ -13,8 +13,8 @@
 - [x] Payment Transaction
 - [x] Proof of Identity
 - [ ] History of Transactions and Payments
-- [ ] History of Routes
-- [ ] History of Jeeps
+- [x] History of Routes
+- [x] History of Jeeps
 - [x] Proof of Payment
 - [x] Wallet
 

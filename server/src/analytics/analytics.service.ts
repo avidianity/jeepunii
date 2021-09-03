@@ -76,7 +76,11 @@ export class AnalyticsService {
 	}
 
 	async sales() {
-		const sessions = await SessionPassenger.find();
+		const sessions = await SessionPassenger.find({
+			order: {
+				createdAt: 'DESC',
+			},
+		});
 
 		if ([RolesEnum.DRIVER, RolesEnum.PASSENGER].includes(this.user.role)) {
 			return await SessionPassenger.find({
@@ -90,6 +94,9 @@ export class AnalyticsService {
 					'passenger',
 					'passenger.picture',
 				],
+				order: {
+					createdAt: 'DESC',
+				},
 			});
 		}
 

@@ -12,7 +12,7 @@
 - [x] Register
 - [x] Payment Transaction
 - [x] Proof of Identity
-- [ ] History of Transactions and Payments
+- [x] History of Transactions and Payments
 - [x] History of Routes
 - [x] History of Jeeps
 - [x] Proof of Payment
@@ -24,7 +24,7 @@
 - [x] Time-in jeep session
 - [x] Time-out jeep session
 - [x] Monitor number of paying passengers in realtime
-- [ ] Statistics and Analytics of sales and earnings (monthly, yearly)
+- [x] Analytic list of sales and earnings
 
 ### Web
 

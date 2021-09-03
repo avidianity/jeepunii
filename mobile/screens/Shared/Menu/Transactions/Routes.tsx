@@ -26,6 +26,10 @@ const Routes: FC<Props> = (props) => {
 
 	useEffect(() => {
 		fetch();
+		const handle = setInterval(() => fetch(), 15000);
+		return () => {
+			clearInterval(handle);
+		};
 		// eslint-disable-next-line
 	}, []);
 

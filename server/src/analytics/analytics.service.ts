@@ -77,6 +77,22 @@ export class AnalyticsService {
 
 	async sales() {
 		const sessions = await SessionPassenger.find();
+
+		if ([RolesEnum.DRIVER, RolesEnum.PASSENGER].includes(this.user.role)) {
+			return await SessionPassenger.find({
+				where: {
+					done: true,
+				},
+				relations: [
+					'jeep',
+					'jeep.driver',
+					'location',
+					'passenger',
+					'passenger.picture',
+				],
+			});
+		}
+
 		return {
 			yearly: sessions
 				.map((session) => ({

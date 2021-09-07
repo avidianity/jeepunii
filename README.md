@@ -61,7 +61,7 @@ This will install any dependency that each module needs.
 
 ### Server
 
-- Copy `.env.example` to a new `.env.` file.
+- Copy `.env.example` to a new `.env` file.
 - `LOCATION_IQ_TOKEN` can be acquired by signing up for a free tier account at [LocationIQ](https://locationiq.com/). This is used by the server internally to improve location searching capabilities.
 - Setup database credentials
 - Put `KEY` (it can be any combination of letters and numbers)

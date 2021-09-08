@@ -17,12 +17,17 @@ import { SessionModule } from './session/session.module';
 import { LocationModule } from './location/location.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import mimeTypes from 'mime-types';
+import { resolve } from 'path';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
 			cache: true,
+			envFilePath:
+				process.env.MODE === 'container'
+					? resolve(__dirname, '.env.container')
+					: undefined,
 		}),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],

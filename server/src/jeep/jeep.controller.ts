@@ -101,7 +101,7 @@ export class JeepController {
 			where: { role: RolesEnum.PASSENGER },
 		});
 
-		const session = await SessionPassenger.findOne({
+		const session = await SessionPassenger.findOneOrFail({
 			done: false,
 			session: {
 				id: sessionID,
@@ -157,9 +157,11 @@ export class JeepController {
 			);
 		}
 
-		const lastPoint = await SessionPoint.findOne({
+		const lastPoint = await SessionPoint.findOneOrFail({
 			where: {
-				session,
+				session: {
+					id: session.id,
+				},
 			},
 			order: {
 				createdAt: 'DESC',

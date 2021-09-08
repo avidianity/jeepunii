@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import axios from 'axios';
 import { JeepContract } from '../../contracts/jeep.contract';
-import { useNullable } from '../../hooks';
+import { useArray, useNullable } from '../../hooks';
 import { PermissionStatus } from 'expo-modules-core';
 import { SessionContract } from '../../contracts/session.contract';
 import { UserContract } from '../../contracts/user.contract';
@@ -16,6 +16,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts';
 import { SessionPassengerContract } from '../../contracts/session-passenger.contract';
 import Done from './Done';
+import { SessionPointContract } from '../../contracts/session-point.contract';
 
 type Props = {};
 
@@ -33,6 +34,7 @@ const Travel: FC<Props> = (props) => {
 	const [driver, setDriver] = useNullable<UserContract>();
 	const [done, setDone] = useState(false);
 	const [sessionPassenger, setSessionPassenger] = useNullable<SessionPassengerContract>();
+	const [points, setPoints] = useArray<SessionPointContract>();
 
 	const askScanner = async () => {
 		const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -92,13 +94,15 @@ const Travel: FC<Props> = (props) => {
 	const watch = async () => {
 		if (session) {
 			const { data } = await axios.get<SessionContract>(`/sessions/${session.id}`);
+			const { data: points } = await axios.get(`/passenger/${user?.id}/${session.id}/points`);
+			setPoints(points);
 			setSession(data);
 		}
 	};
 
 	const calculate = () => {
-		if (session?.points) {
-			return calculateFromPoints(session.points);
+		if (points.length > 0) {
+			return calculateFromPoints(points);
 		} else {
 			return 10;
 		}

@@ -1,0 +1,32 @@
+version: '3'
+
+services: 
+  server:
+    container_name: jeepunii-server
+    build:  .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    command: "npm install -g yarn && yarn"
+  database:
+    container_name: jeepunii-db
+    image: postgres:11.4
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: jeepunii
+      TZ: "Asia/Manila"
+      PGTZ: "Asia/Manila"
+    ports:
+    - "5432:5432"
+    volumes:
+    - ./db:/var/lib/postgresql/data
+  queue:
+    image: redis:6.0
+    container_name: jeepunii-queue
+    restart: unless-stopped
+    ports: 
+      - "6379:6379"

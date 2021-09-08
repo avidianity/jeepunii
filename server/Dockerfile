@@ -1,7 +1,12 @@
 FROM node:16
 
-ENV MODE=container
+WORKDIR /app
 
-EXPOSE 8000
+COPY . .
 
-CMD [ "npm", "start:dev" ]
+RUN yarn
+
+RUN yarn prebuild \
+	&& yarn build
+
+CMD [ "yarn", "start:prod" ]

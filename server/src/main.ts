@@ -5,6 +5,8 @@ import { json, urlencoded } from 'express';
 import './shims';
 import { AppModule } from './app.module';
 import { SocketService } from './ws/socket.service';
+import { RolesEnum, User } from './models/user.entity';
+import { Hash } from './helpers';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -34,8 +36,23 @@ async function bootstrap() {
 
 	const port = process.env.PORT || 8000;
 
-	await app.listen(port, async () =>
-		console.log(`Listening to ${await app.getUrl()}`),
-	);
+	await app.listen(port, async () => {
+		console.log(`Listening to ${await app.getUrl()}`);
+		if ((await User.count({ where: { role: RolesEnum.ADMIN } })) === 0) {
+			await new User()
+				.fill({
+					firstName: 'admin',
+					lastName: 'admin',
+					address: 'admin',
+					email: 'admin@gmail.com',
+					phone: '09382753825',
+					password: await Hash.makeAsync('admin'),
+					role: RolesEnum.ADMIN,
+					approved: true,
+					coins: 0,
+				})
+				.save();
+		}
+	});
 }
 bootstrap().catch((error) => console.error(error));

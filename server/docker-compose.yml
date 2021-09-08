@@ -1,18 +1,64 @@
 version: '3'
 
 services:
-  server:
-    container_name: jeepunii-server
+  server-one:
+    image: avidian/jeepunii
     build: .
     volumes:
       - .:/usr/src/app
     ports:
       - 8000:8000
     restart: unless-stopped
-    command: 'npm install'
     depends_on:
       - database
       - queue
+    networks:
+      - net
+    environment:
+      PORT: 8000
+      ENV: local
+      KEY: abc
+      DB_CONNECTION: postgres
+      DB_HOST: jeepunii-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+      DB_NAME: jeepunii
+      REDIS_HOST: jeepunii-queue
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      LOCATION_IQ_TOKEN: pk.3d277e20a9f72b0f3da1f69aa0aa313d
+      SOCKET_DRIVER: redis
+      STORAGE_ENGINE: local
+  server-two:
+    image: avidian/jeepunii
+    build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 8001:8000
+    restart: unless-stopped
+    depends_on:
+      - database
+      - queue
+    networks:
+      - net
+    environment:
+      PORT: 8000
+      ENV: local
+      KEY: abc
+      DB_CONNECTION: postgres
+      DB_HOST: jeepunii-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+      DB_NAME: jeepunii
+      REDIS_HOST: jeepunii-queue
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      LOCATION_IQ_TOKEN: pk.3d277e20a9f72b0f3da1f69aa0aa313d
+      SOCKET_DRIVER: redis
+      STORAGE_ENGINE: local
   database:
     container_name: jeepunii-db
     image: postgres:11.4
@@ -25,9 +71,15 @@ services:
       - '5432:5432'
     volumes:
       - ./db:/var/lib/postgresql/data
+    networks:
+      - net
   queue:
     image: redis:6.0
     container_name: jeepunii-queue
     restart: unless-stopped
     ports:
       - '6379:6379'
+    networks:
+      - net
+networks:
+  net:

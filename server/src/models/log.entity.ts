@@ -30,7 +30,7 @@ export class Log extends Model {
 	 *
 	 * 4 - Administrator
 	 */
-	@Column('tinyint')
+	@Column()
 	level: number;
 
 	@Column()

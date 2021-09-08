@@ -24,10 +24,6 @@ import { resolve } from 'path';
 		ConfigModule.forRoot({
 			isGlobal: true,
 			cache: true,
-			envFilePath:
-				process.env.MODE === 'container'
-					? resolve(__dirname, '.env.container')
-					: undefined,
 		}),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],

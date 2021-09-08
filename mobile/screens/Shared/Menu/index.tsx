@@ -19,7 +19,7 @@ const Menu: FC<Props> = (props) => {
 	return (
 		<MenuStack.Navigator initialRouteName='Main' headerMode='none'>
 			<MenuStack.Screen name='Main' component={Main} />
-			{user.role === RolesEnum.PASSENGER ? <MenuStack.Screen name='Transactions' component={Transactions} /> : null}
+			<MenuStack.Screen name='Transactions' component={Transactions} />
 		</MenuStack.Navigator>
 	);
 };

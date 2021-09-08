@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { FC, useEffect } from 'react';
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Avatar, ListItem, Text } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
 import { JeepContract } from '../../../../contracts/jeep.contract';
@@ -40,19 +40,23 @@ const Jeeps: FC<Props> = (props) => {
 					No Jeeps Scanned
 				</Text>
 			) : null}
-			{jeeps.map((jeep, index) => (
-				<ListItem key={index} bottomDivider>
-					<Avatar source={{ uri: jeep.driver?.picture ? jeep.driver.picture.url : 'https://via.placeholder.com/200' }} />
-					<ListItem.Content>
-						<ListItem.Title>
-							{jeep.driver?.firstName} {jeep.driver?.lastName}
-						</ListItem.Title>
-						<ListItem.Subtitle>
-							{jeep.name} - {jeep.plateNumber}
-						</ListItem.Subtitle>
-					</ListItem.Content>
-				</ListItem>
-			))}
+			<FlatList
+				keyExtractor={(_, index) => index.toString()}
+				data={jeeps}
+				renderItem={({ item: jeep }) => (
+					<ListItem bottomDivider>
+						<Avatar source={{ uri: jeep.driver?.picture ? jeep.driver.picture.url : 'https://via.placeholder.com/200' }} />
+						<ListItem.Content>
+							<ListItem.Title>
+								{jeep.driver?.firstName} {jeep.driver?.lastName}
+							</ListItem.Title>
+							<ListItem.Subtitle>
+								{jeep.name} - {jeep.plateNumber}
+							</ListItem.Subtitle>
+						</ListItem.Content>
+					</ListItem>
+				)}
+			/>
 		</View>
 	);
 };

@@ -238,7 +238,7 @@ export class JeepController {
 			return prev;
 		}, 0);
 
-		const fare = (distance / 4) * 1.5;
+		const fare = (distance / 4) * 1.5 + 10;
 
 		passenger.coins -= fare >= 10 ? fare : 10;
 		passenger.riding = false;

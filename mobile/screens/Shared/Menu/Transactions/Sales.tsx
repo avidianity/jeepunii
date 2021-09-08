@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { FC, useEffect } from 'react';
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { Avatar, ListItem, Text } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
 import { SessionPassengerContract } from '../../../../contracts/session-passenger.contract';
@@ -43,17 +43,21 @@ const Sales: FC<Props> = (props) => {
 				</Text>
 			) : null}
 			<Text>Total: ₱{Number.isInteger(total) ? total : total.toFixed(2)}</Text>
-			{sales.map((sale, index) => (
-				<ListItem key={index} bottomDivider>
-					<Avatar source={{ uri: sale.passenger?.picture?.url || 'https://via.placeholder.com/200' }} />
-					<ListItem.Content>
-						<ListItem.Title>
-							{sale.passenger?.lastName}, {sale.passenger?.firstName} - ₱{sale.fee}
-						</ListItem.Title>
-						<ListItem.Subtitle>{sale.location?.name}</ListItem.Subtitle>
-					</ListItem.Content>
-				</ListItem>
-			))}
+			<FlatList
+				keyExtractor={(_, index) => index.toString()}
+				data={sales}
+				renderItem={({ item: sale }) => (
+					<ListItem bottomDivider>
+						<Avatar source={{ uri: sale.passenger?.picture?.url || 'https://via.placeholder.com/200' }} />
+						<ListItem.Content>
+							<ListItem.Title>
+								{sale.passenger?.lastName}, {sale.passenger?.firstName} - ₱{sale.fee}
+							</ListItem.Title>
+							<ListItem.Subtitle>{sale.location?.name}</ListItem.Subtitle>
+						</ListItem.Content>
+					</ListItem>
+				)}
+			/>
 		</View>
 	);
 };

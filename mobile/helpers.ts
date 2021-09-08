@@ -37,7 +37,7 @@ export function calculateFromPoints(points: SessionPointContract[]) {
 		return prev;
 	}, 0);
 
-	const fare = (distance / 4) * 1.5;
+	const fare = (distance / 4) * 1.5 + 10;
 
 	return fare >= 10 ? fare : 10;
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { FC, useEffect } from 'react';
-import { View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { ListItem, Text } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
 import { LocationContract } from '../../../../contracts/location.contract';
@@ -40,16 +40,20 @@ const Routes: FC<Props> = (props) => {
 					No Routes Available
 				</Text>
 			) : null}
-			{routes.map((route, index) => (
-				<ListItem key={index} bottomDivider>
-					<ListItem.Content>
-						<ListItem.Title>{route.name}</ListItem.Title>
-						<ListItem.Subtitle>
-							{route.address_city_district} - {route.address_road}
-						</ListItem.Subtitle>
-					</ListItem.Content>
-				</ListItem>
-			))}
+			<FlatList
+				keyExtractor={(_, index) => index.toString()}
+				data={routes}
+				renderItem={({ item: route }) => (
+					<ListItem bottomDivider>
+						<ListItem.Content>
+							<ListItem.Title>{route.name}</ListItem.Title>
+							<ListItem.Subtitle>
+								{route.address_city_district} - {route.address_road}
+							</ListItem.Subtitle>
+						</ListItem.Content>
+					</ListItem>
+				)}
+			/>
 		</View>
 	);
 };

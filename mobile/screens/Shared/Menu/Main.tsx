@@ -12,7 +12,7 @@ import { RolesEnum, UserContract } from '../../../contracts/user.contract';
 import { State } from '../../../libraries/State';
 import * as ImagePicker from 'expo-image-picker';
 import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
-import { handleErrors } from '../../../helpers';
+import { formatCurrency, handleErrors } from '../../../helpers';
 
 type Props = {};
 
@@ -120,7 +120,7 @@ const Main: FC<Props> = (props) => {
 					{user?.firstName} {user?.lastName}
 				</Text>
 				{user?.role === RolesEnum.DRIVER ? <Text>{user?.cooperative?.name}</Text> : null}
-				{user?.role === RolesEnum.PASSENGER ? <Text>₱{user?.coins}</Text> : null}
+				{user?.role === RolesEnum.PASSENGER ? <Text>{formatCurrency(user?.coins)}</Text> : null}
 				<Text>ID Number: #{`${user?.id}`.padStart(5, '0')}</Text>
 			</View>
 			<Divider style={{ backgroundColor: Colors.dark, height: 1, width: '75%', marginVertical: 12 }} />

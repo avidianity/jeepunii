@@ -5,6 +5,7 @@ import { Button, Text } from 'react-native-elements';
 import Container from '../../components/Container';
 import { LocationContract } from '../../contracts/location.contract';
 import { SessionPassengerContract } from '../../contracts/session-passenger.contract';
+import { formatCurrency } from '../../helpers';
 import { useNullable } from '../../hooks';
 
 type Props = {
@@ -29,11 +30,11 @@ const Done: FC<Props> = ({ session, done }) => {
 	}, []);
 
 	return (
-		<Container style={{ paddingTop: 80 }}>
+		<Container style={{ paddingTop: 80, paddingHorizontal: 4 }}>
 			<Text style={styles.heading}>RECEIPT</Text>
 			<Text>Start: {start?.name}</Text>
 			<Text>Stop: {session?.location?.name}</Text>
-			<Text>Amount: ₱{session?.fee}</Text>
+			<Text>Amount: {formatCurrency(session?.fee || 0)}</Text>
 			<Text>Ref: {session?.uuid}</Text>
 			<Button
 				title='Done'

@@ -6,7 +6,7 @@ import { Image } from 'react-native-elements/dist/image/Image';
 import { SERVER_URL } from '../../../constants';
 import { SessionPointContract } from '../../../contracts/session-point.contract';
 import { SessionContract } from '../../../contracts/session.contract';
-import { calculateFromPoints } from '../../../helpers';
+import { calculateFromPoints, formatCurrency } from '../../../helpers';
 import { useArray, useNullable } from '../../../hooks';
 import { Passenger as PassengerContract } from '../Jeep';
 
@@ -53,7 +53,7 @@ const Passenger: FC<Props> = ({ style, passenger, session }) => {
 				</TouchableHighlight>
 			</View>
 			<Text style={styles.text}>
-				{user.firstName} ₱{calculateFromPoints(points)}
+				{user.firstName} {formatCurrency(calculateFromPoints(points))}
 			</Text>
 		</View>
 	);

@@ -132,7 +132,7 @@ export class JeepController {
 			);
 		}
 
-		if (passenger.coins < 50) {
+		if (passenger.coins < 15) {
 			throw new BadRequestException(
 				'Passenger does not have enough credits.',
 			);

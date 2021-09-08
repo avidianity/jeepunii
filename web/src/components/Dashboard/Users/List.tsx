@@ -138,7 +138,7 @@ const List: FC<Props> = ({ type }) => {
 										</Link>
 									)
 								) : null}
-								{self?.role === RolesEnum.ADMIN && type === RolesEnum.PASSENGER ? (
+								{[RolesEnum.ADMIN, RolesEnum.COOPERATIVE].includes(self?.role!) && type === RolesEnum.PASSENGER ? (
 									<button
 										className='btn btn-info btn-sm btn-icon mx-1'
 										data-tip={`Add Coins`}

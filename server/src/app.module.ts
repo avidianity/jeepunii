@@ -44,23 +44,63 @@ import mimeTypes from 'mime-types';
 			}),
 			inject: [ConfigService],
 		}),
-		MulterModule.register({
-			storage: diskStorage({
-				destination: Paths.storage,
-				filename: (_, { fieldname, mimetype, filename }, callback) => {
-					const extension = mimeTypes.extension(mimetype);
-					if (!extension) {
-						return callback(
-							new Error('Invalid extension.'),
-							filename,
-						);
+		MulterModule.registerAsync({
+			imports: [ConfigModule],
+			useFactory: (config: ConfigService) => ({
+				storage: (() => {
+					switch (config.get('STORAGE_ENGINE')) {
+						case 'local':
+							return diskStorage({
+								destination: Paths.storage,
+								filename: (
+									_,
+									{ fieldname, mimetype, filename },
+									callback,
+								) => {
+									const extension =
+										mimeTypes.extension(mimetype);
+									if (!extension) {
+										return callback(
+											new Error('Invalid extension.'),
+											filename,
+										);
+									}
+									callback(
+										null,
+										`${fieldname}-${String.random(
+											40,
+										)}.${extension}`,
+									);
+								},
+							});
+						default:
+							return diskStorage({
+								destination: Paths.storage,
+								filename: (
+									_,
+									{ fieldname, mimetype, filename },
+									callback,
+								) => {
+									const extension =
+										mimeTypes.extension(mimetype);
+									if (!extension) {
+										return callback(
+											new Error('Invalid extension.'),
+											filename,
+										);
+									}
+									callback(
+										null,
+										`${fieldname}-${String.random(
+											40,
+										)}.${extension}`,
+									);
+								},
+							});
 					}
-					callback(
-						null,
-						`${fieldname}-${String.random(40)}.${extension}`,
-					);
-				},
+				})(),
 			}),
+			inject: [ConfigService],
 		}),
 		AuthModule,
 		CryptoModule,

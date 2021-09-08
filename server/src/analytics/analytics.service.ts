@@ -38,6 +38,7 @@ export class AnalyticsService {
 			const jeep = await this.jeep.find(this.user.jeep.id);
 
 			return jeep.passengers
+				.filter((passenger) => passenger.location instanceof Location)
 				.map((passenger) => passenger.location)
 				.sort(sorter);
 		} else if (this.user.role === RolesEnum.PASSENGER) {
@@ -46,7 +47,9 @@ export class AnalyticsService {
 			});
 
 			return user.rides
-				.filter((ride) => ride.done)
+				.filter(
+					(ride) => ride.done && ride.location instanceof Location,
+				)
 				.map((ride) => ride.location)
 				.sort(sorter);
 		}

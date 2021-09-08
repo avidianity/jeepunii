@@ -74,21 +74,22 @@ export class JeepController {
 			);
 		}
 
-		const passengers = session.passengers.map((passenger) => {
-			if (
-				passenger.passenger.online &&
-				!this.socket.hasUser(passenger.passenger)
-			) {
-				passenger.passenger.online = false;
-				passenger.passenger.save().catch(console.error);
-			}
-			return passenger.passenger;
-		});
+		const passengers = session.passengers.map(
+			(passenger) => passenger.passenger,
+		);
 
-		return passengers.map((passenger) => ({
-			passenger,
-			online: passenger.online,
-		}));
+		const ids: number[] = [];
+
+		return passengers
+			.filter((passenger) => !ids.includes(passenger.id))
+			.map((passenger) => {
+				ids.push(passenger.id);
+
+				return {
+					passenger,
+					online: passenger.online,
+				};
+			});
 	}
 
 	@Get('/passenger/:id/:sessionID/points')
@@ -203,12 +204,8 @@ export class JeepController {
 					id: passenger.id,
 				},
 				done: false,
-				session: {
-					driver: {
-						jeep: {
-							id: jeep.id,
-						},
-					},
+				jeep: {
+					id: jeep.id,
 				},
 			},
 			{

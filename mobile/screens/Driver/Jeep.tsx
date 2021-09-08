@@ -55,14 +55,12 @@ const Jeep: FC<Props> = (props) => {
 					socket?.on(`session.${session.id}.passenger.in`, (passenger) => {
 						const exists = passengers.find((item) => item.data.id === passenger.id);
 
-						if (exists) {
-							return;
+						if (!exists) {
+							passengers.push({
+								data: passenger,
+								online: true,
+							});
 						}
-
-						passengers.push({
-							data: passenger,
-							online: true,
-						});
 
 						socket?.on(`disconnect.${passenger.id}`, () => {
 							const index = passengers.findIndex((item) => item.data.id === passenger.id);

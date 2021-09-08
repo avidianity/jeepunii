@@ -25,6 +25,8 @@
 - [x] Time-out jeep session
 - [x] Monitor number of paying passengers in realtime
 - [x] Analytic list of sales and earnings
+- [ ] Add coins
+- [ ] Add origin before destination (location api)
 
 ### Web
 

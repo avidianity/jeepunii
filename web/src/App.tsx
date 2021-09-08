@@ -55,7 +55,7 @@ function App() {
 			}
 		} catch (error) {
 			console.log((error as any).toJSON());
-			EventBuses.AuthBus.dispatch('logout');
+			EventBuses.AuthBus.dispatch('logout', 'force');
 		}
 	};
 
@@ -74,11 +74,11 @@ function App() {
 	useEffect(() => {
 		fetchRequirements();
 
-        if (state.has('token')) {
-            const token = state.get<string>('token');
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            initSocket(token);
-        }
+		if (state.has('token')) {
+			const token = state.get<string>('token');
+			axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+			initSocket(token);
+		}
 
 		const key = state.listen<string>('token', (token) => {
 			if (!socket) {

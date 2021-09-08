@@ -20,8 +20,9 @@ const Menu: FC<Props> = (props) => {
 	const { user } = useContext(AuthContext);
 	const { setSocket, socket } = useContext(SocketContext);
 
-	const logout = async () => {
-		if (await Asker.notice('Are you sure you want to logout?')) {
+	const logout = async (force: any) => {
+		const prompt = force === 'force' ? true : await Asker.notice('Are you sure you want to logout?');
+		if (prompt) {
 			try {
 				await axios.post('/auth/logout');
 			} catch (error) {
@@ -37,7 +38,7 @@ const Menu: FC<Props> = (props) => {
 	};
 
 	useEffect(() => {
-		const key = AuthBus.listen('logout', () => logout());
+		const key = AuthBus.listen('logout', (force) => logout(force));
 
 		return () => {
 			AuthBus.unlisten(key);

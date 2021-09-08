@@ -104,27 +104,30 @@ export class SocketService {
 
 		this.server.on('connection', async (socket) => {
 			this.connections++;
-			this.users.push({ user: socket.user, id: socket.id });
-			this.server.emit(`connect.${socket.user.id}`);
 
-			socket.user.online = true;
-			await socket.user.save();
+			const { user } = socket;
+
+			this.users.push({ user: user, id: socket.id });
+			this.server.emit(`connect.${user.id}`);
+
+			user.online = true;
+			await user.save();
 
 			socket.on('disconnect', async () => {
 				this.connections--;
 
-				const index = this.users.findIndex(
-					(item) => item.id === socket.id,
-				);
-
-				const user = this.users[index].user;
-
 				user.online = false;
 				await user.save();
 
-				this.users.splice(index, 1);
+				const index = this.users.findIndex(
+					(item) => item.user.id === user.id,
+				);
 
-				this.server.emit(`disconnect.${socket.user.id}`);
+				if (index > 0) {
+					this.users.splice(index, 1);
+				}
+
+				this.server.emit(`disconnect.${user.id}`);
 			});
 		});
 	}

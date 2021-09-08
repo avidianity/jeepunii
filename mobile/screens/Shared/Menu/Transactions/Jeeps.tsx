@@ -14,6 +14,7 @@ const Jeeps: FC<Props> = (props) => {
 	const fetch = async () => {
 		try {
 			const { data } = await axios.get('/analytics/jeeps');
+
 			setJeeps(data);
 		} catch (error) {
 			console.log(error);
@@ -34,7 +35,7 @@ const Jeeps: FC<Props> = (props) => {
 	}, []);
 
 	return (
-		<View style={{ paddingTop: 20 }}>
+		<View style={{ paddingTop: 20, paddingHorizontal: 40 }}>
 			{jeeps.length === 0 ? (
 				<Text h4 style={{ textAlign: 'center' }}>
 					No Jeeps Scanned
@@ -45,7 +46,10 @@ const Jeeps: FC<Props> = (props) => {
 				data={jeeps}
 				renderItem={({ item: jeep }) => (
 					<ListItem bottomDivider>
-						<Avatar source={{ uri: jeep.driver?.picture ? jeep.driver.picture.url : 'https://via.placeholder.com/200' }} />
+						<Avatar
+							rounded
+							source={{ uri: jeep.driver?.picture ? jeep.driver.picture.url : 'https://via.placeholder.com/200' }}
+						/>
 						<ListItem.Content>
 							<ListItem.Title>
 								{jeep.driver?.firstName} {jeep.driver?.lastName}

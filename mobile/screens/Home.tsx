@@ -35,13 +35,13 @@ const Home: FC<Props> = (props) => {
 		return null;
 	}
 
-	if (!online) {
-		return (
-			<View style={styles.center}>
-				<Text style={styles.text}>You are offline. Please turn on your mobile data to use the app.</Text>
-			</View>
-		);
-	}
+	// if (!online) {
+	// 	return (
+	// 		<View style={styles.center}>
+	// 			<Text style={styles.text}>You are offline. Please turn on your mobile data to use the app.</Text>
+	// 		</View>
+	// 	);
+	// }
 
 	return (
 		<Tab.Navigator

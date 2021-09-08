@@ -82,25 +82,31 @@ export class LocationService {
 
 		const response = await this.request(lat, lon);
 
-		const location = new Location({
-			place_id: response.place_id,
-			lat: response.lat.toNumber(),
-			lon: response.lon.toNumber(),
-			name: response.display_name,
-			address_road: response.address?.road || 'N/A',
-			address_city_district: response.address?.city_district || 'N/A',
-			address_state: response.address?.state || 'N/A',
-			address_region: response.address?.region || 'N/A',
-			postal_code: response.address?.postcode || 'N/A',
-			country: response.address?.country || 'N/A',
-			country_code: response.address?.country_code || 'N/A',
-			lat_bound_start: response.boundingbox[0].toNumber(),
-			lat_bound_end: response.boundingbox[1].toNumber(),
-			lon_bound_start: response.boundingbox[2].toNumber(),
-			lon_bound_end: response.boundingbox[3].toNumber(),
+		let location = await Location.findOne({
+			where: { name: response.display_name },
 		});
 
-		return await location.save();
+		if (!location) {
+			location = await new Location({
+				place_id: response.place_id,
+				lat: response.lat.toNumber(),
+				lon: response.lon.toNumber(),
+				name: response.display_name,
+				address_road: response.address?.road || 'N/A',
+				address_city_district: response.address?.city_district || 'N/A',
+				address_state: response.address?.state || 'N/A',
+				address_region: response.address?.region || 'N/A',
+				postal_code: response.address?.postcode || 'N/A',
+				country: response.address?.country || 'N/A',
+				country_code: response.address?.country_code || 'N/A',
+				lat_bound_start: response.boundingbox[0].toNumber(),
+				lat_bound_end: response.boundingbox[1].toNumber(),
+				lon_bound_start: response.boundingbox[2].toNumber(),
+				lon_bound_end: response.boundingbox[3].toNumber(),
+			}).save();
+		}
+
+		return location;
 	}
 
 	async request(lat: number, lon: number) {

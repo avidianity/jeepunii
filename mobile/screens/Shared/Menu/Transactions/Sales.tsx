@@ -42,13 +42,13 @@ const Sales: FC<Props> = (props) => {
 					No Routes Available
 				</Text>
 			) : null}
-			<Text>Total: ₱{Number.isInteger(total) ? total : total.toFixed(2)}</Text>
+			<Text style={{ paddingLeft: 16 }}>Total: ₱{Number.isInteger(total) ? total : total.toFixed(2)}</Text>
 			<FlatList
 				keyExtractor={(_, index) => index.toString()}
 				data={sales}
 				renderItem={({ item: sale }) => (
 					<ListItem bottomDivider>
-						<Avatar source={{ uri: sale.passenger?.picture?.url || 'https://via.placeholder.com/200' }} />
+						<Avatar rounded source={{ uri: sale.passenger?.picture?.url || 'https://via.placeholder.com/200' }} />
 						<ListItem.Content>
 							<ListItem.Title>
 								{sale.passenger?.lastName}, {sale.passenger?.firstName} - ₱{sale.fee}

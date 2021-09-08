@@ -12,7 +12,7 @@ const Transactions: FC<Props> = (props) => {
 	const [index, setIndex] = useState(0);
 
 	return (
-		<View style={{ paddingTop: 60, backgroundColor: Colors.light }}>
+		<View style={{ paddingTop: 40, backgroundColor: Colors.light, height: '100%' }}>
 			<Tab value={index} onChange={setIndex}>
 				<Tab.Item title='Routes' />
 				<Tab.Item title='Jeeps' />

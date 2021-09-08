@@ -68,8 +68,18 @@ export class AnalyticsService {
 				],
 			});
 
+			const ids: number[] = [];
+
 			return user.rides
-				.filter((ride) => ride.done)
+				.filter((ride) => {
+					if (ids.includes(ride.jeep.id)) {
+						return false;
+					}
+
+					ids.push(ride.jeep.id);
+
+					return ride.done;
+				})
 				.map((ride) => ride.jeep);
 		}
 

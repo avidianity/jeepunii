@@ -69,24 +69,24 @@ export default function App() {
 	}, []);
 
 	return (
-		<QueryClientProvider client={new QueryClient()}>
-			<SafeAreaProvider>
-				<RootSiblingParent>
-					<NetContext.Provider value={{ online: info.isConnected || false }}>
-						<SocketContext.Provider value={{ socket, setSocket }}>
-							<ThemeContext.Provider value={{ dark, setDark }}>
-								<ThemeProvider
-									value={{
-										dark,
-										colors: {
-											primary: Colors.primary,
-											background: Colors.light,
-											card: Colors.info,
-											text: Colors.dark,
-											border: Colors.danger,
-											notification: Colors.success,
-										},
-									}}>
+		<ThemeProvider
+			value={{
+				dark,
+				colors: {
+					primary: Colors.primary,
+					background: Colors.light,
+					card: Colors.info,
+					text: Colors.dark,
+					border: Colors.danger,
+					notification: Colors.success,
+				},
+			}}>
+			<QueryClientProvider client={new QueryClient()}>
+				<SafeAreaProvider>
+					<RootSiblingParent>
+						<NetContext.Provider value={{ online: info.isConnected || false }}>
+							<SocketContext.Provider value={{ socket, setSocket }}>
+								<ThemeContext.Provider value={{ dark, setDark }}>
 									<NavigationContainer>
 										<AuthContext.Provider value={{ user, setUser, token, setToken }}>
 											<RootStack.Navigator headerMode='none' initialRouteName={!user ? 'Splash' : 'Home'}>
@@ -103,12 +103,12 @@ export default function App() {
 											<StatusBar style='auto' />
 										</AuthContext.Provider>
 									</NavigationContainer>
-								</ThemeProvider>
-							</ThemeContext.Provider>
-						</SocketContext.Provider>
-					</NetContext.Provider>
-				</RootSiblingParent>
-			</SafeAreaProvider>
-		</QueryClientProvider>
+								</ThemeContext.Provider>
+							</SocketContext.Provider>
+						</NetContext.Provider>
+					</RootSiblingParent>
+				</SafeAreaProvider>
+			</QueryClientProvider>
+		</ThemeProvider>
 	);
 }

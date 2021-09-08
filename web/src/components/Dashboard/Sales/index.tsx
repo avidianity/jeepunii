@@ -53,7 +53,7 @@ const Sales: FC<Props> = (props) => {
 			<Card title='Sales'>
 				<div className='container-fluid'>
 					<div className='row'>
-						<div className='col-12 col-md-6 w-100' style={{ minHeight: '300px' }}>
+						<div className='col-12 w-100' style={{ minHeight: '300px' }}>
 							<ResponsiveContainer>
 								<LineChart
 									data={routes}
@@ -71,7 +71,7 @@ const Sales: FC<Props> = (props) => {
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
-						<div className='col-12 col-md-6 w-100' style={{ minHeight: '300px' }}>
+						<div className='col-12 w-100' style={{ minHeight: '300px' }}>
 							<ResponsiveContainer>
 								<BarChart
 									data={jeeps?.map((jeep) => ({

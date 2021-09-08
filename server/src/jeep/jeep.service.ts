@@ -25,7 +25,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 			return await Jeep.find({
 				...options,
 				relations: [
-					...(options.relations ? options.relations : []),
+					...(options?.relations ? options.relations : []),
 					'cooperative',
 					'driver',
 				],
@@ -38,7 +38,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		return await Jeep.find({
 			...options,
 			relations: [
-				...(options.relations ? options.relations : []),
+				...(options?.relations ? options.relations : []),
 				'cooperative',
 				'driver',
 			],

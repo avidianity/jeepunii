@@ -111,12 +111,21 @@ export class User extends Model {
 			.delete()
 			.execute();
 
-		const fresh = await User.findOne(this.id, {
-			relations: ['files', 'picture'],
+		const fresh = await User.findOneOrFail(this.id, {
+			relations: ['files', 'picture', 'rides', 'sessions', 'jeep'],
 		});
 
-		await fresh.picture.remove();
+		if (fresh.jeep) {
+			fresh.jeep.driver = null;
+			await fresh.jeep.save();
+		}
+
+		await fresh.picture?.remove();
 
 		await Promise.all(fresh.files.map((file) => file.remove()));
+
+		await Promise.all(fresh.rides.map((ride) => ride.remove()));
+
+		await Promise.all(fresh.sessions.map((session) => session.remove()));
 	}
 }

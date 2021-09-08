@@ -5,7 +5,7 @@
 		"schema": "http"
 	},
 	"prod": {
-		"address": "jeepunii.tk",
+		"address": "jeepunii-api.tk",
 		"port": false,
 		"schema": "https"
 	}

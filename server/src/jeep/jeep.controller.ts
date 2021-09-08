@@ -199,7 +199,9 @@ export class JeepController {
 
 		const sessionPassenger = await SessionPassenger.findOneOrFail(
 			{
-				passenger,
+				passenger: {
+					id: passenger.id,
+				},
 				done: false,
 				session: {
 					driver: {

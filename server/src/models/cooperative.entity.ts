@@ -28,18 +28,13 @@ export class Cooperative extends Model {
 	jeeps: Jeep[];
 
 	@BeforeRemove()
-	async removeUsers() {
-		await User.createQueryBuilder('user')
-			.where('cooperativeId = :cooperativeId', { cooperativeId: this.id })
-			.delete()
-			.execute();
-	}
+	async removeRelations() {
+		const fresh = await Cooperative.findOneOrFail(this.id, {
+			relations: ['users', 'jeeps'],
+		});
 
-	@BeforeRemove()
-	async removeJeeps() {
-		await Jeep.createQueryBuilder('jeep')
-			.where('cooperativeId = :cooperativeId', { cooperativeId: this.id })
-			.delete()
-			.execute();
+		await Promise.all(fresh.users.map((user) => user.remove()));
+
+		await Promise.all(fresh.jeeps.map((jeep) => jeep.remove()));
 	}
 }

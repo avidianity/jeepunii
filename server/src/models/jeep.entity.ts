@@ -1,4 +1,5 @@
 import {
+	BeforeRemove,
 	Column,
 	Entity,
 	JoinColumn,
@@ -35,5 +36,16 @@ export class Jeep extends Model {
 
 	getDetails() {
 		return `${this.name} - ${this.plateNumber}`;
+	}
+
+	@BeforeRemove()
+	async removeRelations() {
+		const fresh = await Jeep.findOneOrFail(this.id, {
+			relations: ['passengers'],
+		});
+
+		await Promise.all(
+			fresh.passengers.map((passenger) => passenger.remove()),
+		);
 	}
 }

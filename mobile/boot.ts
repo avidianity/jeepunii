@@ -21,3 +21,8 @@ state.listen<string>('token', (token) => {
 		axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 	}
 })();
+
+axios.interceptors.response.use(
+	(r) => r,
+	(e) => console.log(e)
+);

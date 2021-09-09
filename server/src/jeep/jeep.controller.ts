@@ -4,6 +4,7 @@ import {
 	Controller,
 	Delete,
 	Get,
+	NotFoundException,
 	Param,
 	Post,
 	Put,
@@ -118,6 +119,42 @@ export class JeepController {
 		return points;
 	}
 
+	@Get('/passenger/current')
+	async getPassengerCurrent(@Req() request: Request) {
+		const passenger = request.user;
+
+		if (passenger.role !== RolesEnum.PASSENGER) {
+			throw new BadRequestException('User is not a passenger.');
+		}
+
+		if (!passenger.riding) {
+			throw new BadRequestException(
+				'Passenger is not currently riding a jeep.',
+			);
+		}
+
+		const sessionPassenger = await SessionPassenger.findOneOrFail({
+			where: {
+				passenger: {
+					id: passenger.id,
+				},
+				done: false,
+			},
+			relations: ['jeep', 'jeep.driver', 'jeep.driver.picture'],
+		});
+
+		const { jeep } = sessionPassenger;
+		const { driver } = jeep;
+
+		const session = await this.driver.getSession(driver);
+
+		if (!session) {
+			throw new NotFoundException('Passenger has no current session.');
+		}
+
+		return { session, jeep, driver };
+	}
+
 	@Post('/passenger/in')
 	async passengerIn(@Req() request: Request, @Body() data: PassengerInDTO) {
 		const passenger = request.user;
@@ -157,30 +194,47 @@ export class JeepController {
 			);
 		}
 
-		const lastPoint = await SessionPoint.findOneOrFail({
-			where: {
-				session: {
-					id: session.id,
+		if (
+			(await SessionPassenger.count({
+				where: {
+					passenger: {
+						id: passenger.id,
+					},
+					session: {
+						id: session.id,
+					},
+					jeep: {
+						id: jeep.id,
+					},
+					done: false,
 				},
-			},
-			order: {
-				createdAt: 'DESC',
-			},
-		});
+			})) === 0
+		) {
+			const lastPoint = await SessionPoint.findOneOrFail({
+				where: {
+					session: {
+						id: session.id,
+					},
+				},
+				order: {
+					createdAt: 'DESC',
+				},
+			});
 
-		await SessionPassenger.create({
-			passenger,
-			session,
-			start_lat: data.lat,
-			start_lon: data.lon,
-			startId: lastPoint.id,
-			jeep,
-		}).save();
+			await SessionPassenger.create({
+				passenger,
+				session,
+				start_lat: data.lat,
+				start_lon: data.lon,
+				startId: lastPoint.id,
+				jeep,
+			}).save();
+
+			this.socket.emit(`session.${session.id}.passenger.in`, passenger);
+		}
 
 		passenger.riding = true;
 		await passenger.save();
-
-		this.socket.emit(`session.${session.id}.passenger.in`, passenger);
 
 		return { session, jeep, driver };
 	}

@@ -108,7 +108,7 @@ export class SocketService {
 			const { user } = socket;
 
 			this.users.push({ user: user, id: socket.id });
-			this.server.emit(`connect.${user.id}`);
+			this.emit(`connect.${user.id}`);
 
 			user.online = true;
 			await user.save();
@@ -127,7 +127,7 @@ export class SocketService {
 					this.users.splice(index, 1);
 				}
 
-				this.server.emit(`disconnect.${user.id}`);
+				this.emit(`disconnect.${user.id}`);
 			});
 		});
 	}

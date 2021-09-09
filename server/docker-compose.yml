@@ -2,6 +2,7 @@ version: '3'
 
 services:
   server-one:
+    container_name: server-one
     image: avidian/jeepunii
     build: .
     volumes:
@@ -31,12 +32,13 @@ services:
       SOCKET_DRIVER: redis
       STORAGE_ENGINE: local
   server-two:
+    container_name: server-two
     image: avidian/jeepunii
     build: .
     volumes:
       - .:/usr/src/app
     ports:
-      - 8001:8000
+      - 8001:8001
     restart: unless-stopped
     depends_on:
       - database
@@ -44,7 +46,7 @@ services:
     networks:
       - net
     environment:
-      PORT: 8000
+      PORT: 8001
       ENV: local
       KEY: abc
       DB_CONNECTION: postgres
@@ -67,10 +69,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: jeepunii
-    ports:
-      - '5432:5432'
     volumes:
       - ./db:/var/lib/postgresql/data
+    ports:
+      - 2158:5432
     networks:
       - net
   queue:
@@ -78,8 +80,9 @@ services:
     container_name: jeepunii-queue
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      - 8725:6379
     networks:
       - net
 networks:
   net:
+    internal: false

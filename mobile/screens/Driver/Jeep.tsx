@@ -166,7 +166,7 @@ const Jeep: FC<Props> = (props) => {
 		setPassengerHandle(setInterval(() => fetchPassengers(), 30000));
 	};
 
-	const stop = () => {
+	const clearHandles = () => {
 		if (handle) {
 			clearInterval(handle);
 			setHandle(null);
@@ -181,6 +181,10 @@ const Jeep: FC<Props> = (props) => {
 			clearInterval(passengerHandle);
 			setPassengerHandle(null);
 		}
+	};
+
+	const stop = () => {
+		clearHandles();
 
 		if (session) {
 			destroySessionSockets(session);
@@ -193,6 +197,7 @@ const Jeep: FC<Props> = (props) => {
 		socket?.off(`session.${session.id}.passenger.in`);
 		socket?.off(`session.${session.id}.passenger.out`);
 		passengers.forEach((passenger) => socket?.off(`connect.${passenger.data.id}`));
+		passengers.forEach((passenger) => socket?.off(`disconnect.${passenger.data.id}`));
 		setPassengerSocketsListening(false);
 	};
 
@@ -201,6 +206,8 @@ const Jeep: FC<Props> = (props) => {
 		current();
 
 		return () => {
+			clearHandles();
+
 			if (session) {
 				destroySessionSockets(session);
 			}

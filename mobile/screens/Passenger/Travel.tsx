@@ -91,12 +91,24 @@ const Travel: FC<Props> = (props) => {
 		}
 	};
 
+	const check = async () => {
+		try {
+			const {
+				data: { driver, jeep, session },
+			} = await axios.get('/jeeps/passenger/current');
+			setDriver(driver);
+			setJeep(jeep);
+			setSession(session);
+			setRiding(true);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const watch = async () => {
 		if (session) {
-			const { data } = await axios.get<SessionContract>(`/sessions/${session.id}`);
 			const { data: points } = await axios.get(`/passenger/${user?.id}/${session.id}/points`);
 			setPoints(points);
-			setSession(data);
 		}
 	};
 
@@ -110,6 +122,7 @@ const Travel: FC<Props> = (props) => {
 
 	useEffect(() => {
 		askLocation();
+		check();
 
 		const handle = setInterval(watch, 10000);
 

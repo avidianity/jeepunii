@@ -58,6 +58,10 @@ const Form: FC<Props> = ({ type }) => {
 				setValue(key as any, value);
 			}
 
+			if (editable.cooperative) {
+				setValue('cooperativeId', editable.cooperative.id!);
+			}
+
 			if (editable.role !== RolesEnum.ADMIN && user?.role === RolesEnum.ADMIN) {
 				setDisableCooperative(false);
 			}

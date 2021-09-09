@@ -24,11 +24,13 @@ state.listen<string>('token', (token) => {
 
 axios.interceptors.response.use(
 	(r) => r,
-	(e: AxiosError) =>
+	(e: AxiosError) => {
 		console.log({
-			url: e.config.url,
+			url: e.config?.url,
 			headers: e.response?.headers,
 			response: e.response?.data,
 			status: e.response?.status,
-		})
+		});
+		return Promise.reject(e);
+	}
 );

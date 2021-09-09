@@ -57,8 +57,10 @@ export default function App() {
 		axios
 			.get<UserContract>('/auth/check')
 			.then((response) => {
-				state.set('user', response.data);
-				setUser(response.data);
+				if (response) {
+					state.set('user', response.data);
+					setUser(response.data);
+				}
 			})
 			.catch(console.log);
 		setup();

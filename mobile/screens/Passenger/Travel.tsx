@@ -66,30 +66,32 @@ const Travel: FC<Props> = (props) => {
 	const parseQr = async (payload: string) => {
 		try {
 			const data = await record();
-			if (riding && data) {
-				const {
-					data: { sessionPassenger },
-				} = await axios.post<{ passenger: UserContract; sessionPassenger: SessionPassengerContract }>('/jeeps/passenger/out', {
-					...data,
-					payload,
-				});
-				setSession(null);
-				setJeep(null);
-				setDriver(null);
-				setRiding(false);
-				setSessionPassenger(sessionPassenger);
-				setDone(true);
-			} else if (data) {
-				const {
-					data: { driver, jeep, session },
-				} = await axios.post('/jeeps/passenger/in', {
-					...data,
-					payload,
-				});
-				setDriver(driver);
-				setJeep(jeep);
-				setSession(session);
-				setRiding(true);
+			if (data) {
+				if (riding) {
+					const {
+						data: { sessionPassenger },
+					} = await axios.post<{ passenger: UserContract; sessionPassenger: SessionPassengerContract }>('/jeeps/passenger/out', {
+						...data,
+						payload,
+					});
+					setSession(null);
+					setJeep(null);
+					setDriver(null);
+					setRiding(false);
+					setSessionPassenger(sessionPassenger);
+					setDone(true);
+				} else {
+					const {
+						data: { driver, jeep, session },
+					} = await axios.post('/jeeps/passenger/in', {
+						...data,
+						payload,
+					});
+					setDriver(driver);
+					setJeep(jeep);
+					setSession(session);
+					setRiding(true);
+				}
 			}
 		} catch (error) {
 			handleErrors(error);
@@ -98,13 +100,20 @@ const Travel: FC<Props> = (props) => {
 
 	const check = async () => {
 		try {
-			const {
-				data: { driver, jeep, session },
-			} = await axios.get('/jeeps/passenger/current');
-			setDriver(driver);
-			setJeep(jeep);
-			setSession(session);
-			setRiding(true);
+			if (user?.riding) {
+				const {
+					data: { driver, jeep, session },
+				} = await axios.get('/jeeps/passenger/current');
+				setDriver(driver);
+				setJeep(jeep);
+				setSession(session);
+				setRiding(true);
+			} else {
+				setSession(null);
+				setJeep(null);
+				setDriver(null);
+				setRiding(false);
+			}
 		} catch (error) {
 			console.log(error);
 		}

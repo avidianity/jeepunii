@@ -91,7 +91,7 @@ yarn start
 With docker:
 
 ```sh
-docker-composer up -d --build
+docker-compose up -d --build
 ```
 
 ---

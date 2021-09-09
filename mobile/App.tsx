@@ -54,13 +54,24 @@ export default function App() {
 				init(token);
 			}
 		});
-		axios
-			.get<UserContract>('/auth/check')
+		state
+			.get('token')
+			.then((token) =>
+				axios.get<UserContract>('/auth/check', {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				})
+			)
 			.then(({ data: user }) => {
 				state.set('user', user);
 				setUser(user);
 			})
-			.catch(() => {});
+			.catch(async () => {
+				await state.remove('user');
+				await state.remove('token');
+				setUser(null);
+			});
 		setup();
 		return () => {
 			state.unlisten(key);

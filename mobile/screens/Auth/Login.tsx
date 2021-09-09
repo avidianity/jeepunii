@@ -47,6 +47,7 @@ const Login: FC<Props> = (props) => {
 			await Promise.all([state.set('user', user), state.set('token', token)]);
 			setToken(token);
 			setUser(user);
+			axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 			navigation.navigate('Home', {
 				screen: 'Menu',
 			});

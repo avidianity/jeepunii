@@ -132,16 +132,23 @@ export class JeepController {
 				'Passenger is not currently riding a jeep.',
 			);
 		}
+		let sessionPassenger: SessionPassenger;
 
-		const sessionPassenger = await SessionPassenger.findOneOrFail({
-			where: {
-				passenger: {
-					id: passenger.id,
+		try {
+			sessionPassenger = await SessionPassenger.findOneOrFail({
+				where: {
+					passenger: {
+						id: passenger.id,
+					},
+					done: false,
 				},
-				done: false,
-			},
-			relations: ['jeep', 'jeep.driver', 'jeep.driver.picture'],
-		});
+				relations: ['jeep', 'jeep.driver', 'jeep.driver.picture'],
+			});
+		} catch (error) {
+			passenger.riding = false;
+			await passenger.save();
+			throw error;
+		}
 
 		const { jeep } = sessionPassenger;
 		const { driver } = jeep;

@@ -22,6 +22,10 @@ export class QRCode {
 	}
 }
 
+export function minutesToMilliseconds(minutes: number) {
+	return minutes * 60000;
+}
+
 export function outIf<T>(condition: boolean, output: T, defaultValue = ''): T {
 	return condition ? output : (defaultValue as unknown as T);
 }

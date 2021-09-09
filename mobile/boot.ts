@@ -16,11 +16,19 @@ state.listen<string>('token', (token) => {
 });
 
 (async () => {
-	if (await state.has('token')) {
-		const token = await state.get<string>('token');
+	const token = await state.get<string>('token');
+	if (token) {
 		axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 	}
 })();
+
+axios.interceptors.request.use(async (config) => {
+	const token = await state.get<string>('token');
+	if (token) {
+		config.headers.common['Authorization'] = `Bearer ${token}`;
+	}
+	return config;
+});
 
 axios.interceptors.response.use(
 	(r) => r,

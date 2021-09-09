@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import './shims';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
@@ -24,5 +24,11 @@ state.listen<string>('token', (token) => {
 
 axios.interceptors.response.use(
 	(r) => r,
-	(e) => console.log(e)
+	(e: AxiosError) =>
+		console.log({
+			url: e.config.url,
+			headers: e.response?.headers,
+			response: e.response?.data,
+			status: e.response?.status,
+		})
 );

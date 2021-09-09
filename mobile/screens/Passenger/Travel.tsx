@@ -9,7 +9,7 @@ import { useArray, useNullable } from '../../hooks';
 import { PermissionStatus } from 'expo-modules-core';
 import { SessionContract } from '../../contracts/session.contract';
 import { UserContract } from '../../contracts/user.contract';
-import { calculateFromPoints, handleErrors } from '../../helpers';
+import { calculateFromPoints, getLocation, handleErrors } from '../../helpers';
 import * as Location from 'expo-location';
 import { useEffect } from 'react';
 import { useContext } from 'react';
@@ -46,6 +46,8 @@ const Travel: FC<Props> = (props) => {
 			const response = await Location.requestForegroundPermissionsAsync();
 			if (response.status === Location.PermissionStatus.GRANTED && !locationGranted) {
 				setLocationGranted(true);
+			} else if (response.status === Location.PermissionStatus.DENIED) {
+				setLocationGranted(false);
 			}
 		} catch (error) {
 			handleErrors(error);
@@ -54,14 +56,17 @@ const Travel: FC<Props> = (props) => {
 
 	const record = async () => {
 		await askLocation();
-		const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
+		const location = await getLocation(Location);
+		if (!location) {
+			return null;
+		}
 		return { lat: location.coords.latitude, lon: location.coords.longitude };
 	};
 
 	const parseQr = async (payload: string) => {
 		try {
 			const data = await record();
-			if (riding) {
+			if (riding && data) {
 				const {
 					data: { sessionPassenger },
 				} = await axios.post<{ passenger: UserContract; sessionPassenger: SessionPassengerContract }>('/jeeps/passenger/out', {
@@ -74,7 +79,7 @@ const Travel: FC<Props> = (props) => {
 				setRiding(false);
 				setSessionPassenger(sessionPassenger);
 				setDone(true);
-			} else {
+			} else if (data) {
 				const {
 					data: { driver, jeep, session },
 				} = await axios.post('/jeeps/passenger/in', {

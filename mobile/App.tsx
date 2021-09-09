@@ -55,10 +55,10 @@ export default function App() {
 			}
 		});
 		axios
-			.get('/auth/check')
-			.then(({ data: user }) => {
-				state.set('user', user);
-				setUser(user);
+			.get<UserContract>('/auth/check')
+			.then((response) => {
+				state.set('user', response.data);
+				setUser(response.data);
 			})
 			.catch(console.log);
 		setup();

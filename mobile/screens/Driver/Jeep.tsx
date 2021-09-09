@@ -9,7 +9,7 @@ import { Text } from 'react-native-elements';
 import Container from '../../components/Container';
 import { JeepContext, SocketContext } from '../../contexts';
 import { SessionContract } from '../../contracts/session.contract';
-import { handleErrors } from '../../helpers';
+import { getLocation, handleErrors } from '../../helpers';
 import { useArray, useNullable } from '../../hooks';
 import Current from './Session/Current';
 import StartButton from './Session/StartButton';
@@ -23,6 +23,8 @@ export type Passenger = {
 	data: UserContract;
 	online: boolean;
 };
+
+const id = String.random(10);
 
 /**
  * TODOS
@@ -125,6 +127,8 @@ const Jeep: FC<Props> = (props) => {
 			const response = await Location.requestForegroundPermissionsAsync();
 			if (response.status === Location.PermissionStatus.GRANTED && !granted) {
 				setGranted(true);
+			} else if (response.status === Location.PermissionStatus.DENIED) {
+				setGranted(false);
 			}
 		} catch (error) {
 			handleErrors(error);
@@ -133,11 +137,13 @@ const Jeep: FC<Props> = (props) => {
 
 	const record = async () => {
 		try {
-			const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
-			await axios.post('/drivers/session/point', {
-				lat: location.coords.latitude,
-				lon: location.coords.longitude,
-			});
+			const location = await getLocation(Location);
+			if (location) {
+				await axios.post('/drivers/session/point', {
+					lat: location.coords.latitude,
+					lon: location.coords.longitude,
+				});
+			}
 		} catch (error: any) {
 			handleErrors(error);
 			if (error?.response?.status === 400) {
@@ -204,10 +210,11 @@ const Jeep: FC<Props> = (props) => {
 	useEffect(() => {
 		ask();
 		current();
+		Location.startLocationUpdatesAsync(id, { activityType: Location.ActivityType.AutomotiveNavigation });
 
 		return () => {
 			clearHandles();
-
+			Location.stopLocationUpdatesAsync(id);
 			if (session) {
 				destroySessionSockets(session);
 			}

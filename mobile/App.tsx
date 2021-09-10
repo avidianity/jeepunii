@@ -63,8 +63,8 @@ export default function App() {
 					},
 				})
 			)
-			.then(({ data: user }) => {
-				state.set('user', user);
+			.then(async ({ data: user }) => {
+				await state.set('user', user);
 				setUser(user);
 			})
 			.catch(async () => {

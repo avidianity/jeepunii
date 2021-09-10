@@ -17,7 +17,8 @@ import { SessionModule } from './session/session.module';
 import { LocationModule } from './location/location.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import mimeTypes from 'mime-types';
-import { resolve } from 'path';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ScheduleModule as AppScheduleModule } from './schedule/schedule.module';
 
 @Module({
 	imports: [
@@ -103,6 +104,7 @@ import { resolve } from 'path';
 			}),
 			inject: [ConfigService],
 		}),
+		ScheduleModule.forRoot(),
 		AuthModule,
 		CryptoModule,
 		LogsModule,
@@ -114,6 +116,7 @@ import { resolve } from 'path';
 		SessionModule,
 		LocationModule,
 		AnalyticsModule,
+		AppScheduleModule,
 	],
 	providers: [],
 	exports: [],

@@ -156,6 +156,8 @@ export class JeepController {
 		const session = await this.driver.getSession(driver);
 
 		if (!session) {
+			sessionPassenger.done = true;
+			await sessionPassenger.save();
 			throw new NotFoundException('Passenger has no current session.');
 		}
 

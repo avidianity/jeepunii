@@ -33,6 +33,8 @@ export class UserService implements EntityServiceContract<User> {
 	}
 
 	async create(data: CreateUserDTO) {
+		data.password = await Hash.makeAsync(data.password);
+
 		let user = new User(data);
 
 		if (data.cooperativeId) {
@@ -41,8 +43,6 @@ export class UserService implements EntityServiceContract<User> {
 			);
 			user.cooperative = cooperative;
 		}
-
-		user.password = await Hash.makeAsync(data.password);
 
 		user = await user.save();
 
@@ -58,7 +58,7 @@ export class UserService implements EntityServiceContract<User> {
 		const user = await this.find(id);
 
 		if (data.password) {
-			user.password = await Hash.makeAsync(data.password);
+			data.password = await Hash.makeAsync(data.password);
 		}
 
 		user.fill(data);

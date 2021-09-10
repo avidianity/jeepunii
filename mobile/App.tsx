@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { State } from './libraries/State';
 import { useNetInfo } from '@react-native-community/netinfo';
+import { PermissionsAndroid } from 'react-native';
 
 const RootStack = createStackNavigator();
 
@@ -29,6 +30,7 @@ export default function App() {
 	const [socket, setSocket] = useNullable<Socket>();
 	const state = State.getInstance();
 	const info = useNetInfo();
+	const [granted, setGranted] = useState(false);
 
 	const setup = async () => {
 		if (await state.has('token')) {
@@ -48,7 +50,26 @@ export default function App() {
 		});
 	};
 
+	const permissions = async () => {
+		try {
+			const granted = await PermissionsAndroid.requestMultiple([
+				PermissionsAndroid.PERMISSIONS.CAMERA,
+				PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+				PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+			]);
+
+			setGranted(
+				granted['android.permission.CAMERA'] === PermissionsAndroid.RESULTS.GRANTED &&
+					granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED &&
+					granted['android.permission.ACCESS_COARSE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED
+			);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
+		permissions();
 		const key = state.listen<string>('token', (token) => {
 			if (!socket) {
 				init(token);

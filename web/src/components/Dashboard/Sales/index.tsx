@@ -20,11 +20,6 @@ import { LocationContract } from '../../../contracts/location.contract';
 import { jeepService } from '../../../services/jeep.service';
 import { SessionPassengerContract } from '../../../contracts/session-passenger.contract';
 
-type Sale = SessionPassengerContract & {
-	month: string;
-	year: string;
-};
-
 type Props = {};
 
 const Sales: FC<Props> = (props) => {
@@ -33,28 +28,9 @@ const Sales: FC<Props> = (props) => {
 		return data;
 	});
 	const { data: jeeps } = useQuery('jeeps', () => jeepService.analytics());
-	const { data: saleData } = useQuery('sales', async () => {
-		const { data } = await axios.get<{ monthly: Sale[], yearly: Sale[] }>('/analytics/sales');
-		return [
-			...data.monthly.map(session => {
-				return {
-					month: session?.month,
-					year: session?.year,
-					sale: sessions.reduce((previous, current) => {
-						return previous + current.fee;
-					}, 0),
-				};
-			}),
-			...data.monthly.map(session => {
-				return {
-					month: session?.month,
-					year: session?.year,
-					sale: sessions.reduce((previous, current) => {
-						return previous + current.fee;
-					}, 0),
-				};
-			}),
-		];
+	const { data: sales } = useQuery('sales', async () => {
+		const { data } = await axios.get<SessionPassengerContract[]>('/analytics/sales');
+		return data;
 	});
 
 	return (

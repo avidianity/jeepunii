@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . /app/
 
+RUN npm install -g @nestjs/cli
+
 RUN yarn
 
 CMD [ "yarn", "start" ]

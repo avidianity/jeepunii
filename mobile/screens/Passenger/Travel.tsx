@@ -128,7 +128,7 @@ const Travel: FC<Props> = (props) => {
 	const watch = async () => {
 		try {
 			if (session) {
-				const { data: points } = await axios.get(`/passenger/${user?.id}/${session.id}/points`);
+				const { data: points } = await axios.get(`/jeeps/passenger/${user?.id}/${session.id}/points`);
 				setPoints(points);
 			}
 		} catch (error) {

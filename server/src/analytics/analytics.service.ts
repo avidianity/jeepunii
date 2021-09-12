@@ -88,13 +88,11 @@ export class AnalyticsService {
 		});
 	}
 
+	/**
+	 * TODO
+	 * 1. Add filter to cooperatives on drivers and owners
+	 */
 	async sales() {
-		const sessions = await SessionPassenger.find({
-			order: {
-				createdAt: 'DESC',
-			},
-		});
-
 		if ([RolesEnum.DRIVER, RolesEnum.PASSENGER].includes(this.user.role)) {
 			return await SessionPassenger.find({
 				where: {
@@ -113,20 +111,11 @@ export class AnalyticsService {
 			});
 		}
 
-		return {
-			yearly: sessions
-				.map((session) => ({
-					...session,
-					year: dayjs(session.createdAt).year(),
-				}))
-				.groupBy('year'),
-			monthly: sessions
-				.map((session) => ({
-					...session,
-					month: dayjs(session.createdAt).format('MMMM'),
-				}))
-				.groupBy('month'),
-		};
+		return await SessionPassenger.find({
+			order: {
+				createdAt: 'DESC',
+			},
+		});
 	}
 
 	get user() {

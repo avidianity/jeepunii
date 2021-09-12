@@ -6,7 +6,8 @@ services:
     image: avidian/jeepunii
     build: .
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./storage:/app/storage
     ports:
       - 8000:8000
     restart: unless-stopped
@@ -36,7 +37,8 @@ services:
     image: avidian/jeepunii
     build: .
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./storage:/app/storage
     ports:
       - 8001:8001
     restart: unless-stopped
@@ -66,7 +68,8 @@ services:
     image: avidian/jeepunii
     build: .
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./storage:/app/storage
     ports:
       - 8002:8002
     restart: unless-stopped

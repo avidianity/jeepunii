@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /app
 
-COPY . .
+COPY . /app/
 
 RUN yarn
 

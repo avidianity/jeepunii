@@ -1,7 +1,18 @@
 import { RolesEnum } from './contracts/user.contract';
 import config from './localconfig.json';
 
-const vars = __DEV__ ? config.dev : config.prod;
+const vars = ((mode: string) => {
+	switch (mode) {
+		case 'dev':
+			return config.dev;
+		case 'prod':
+			return config.prod;
+		case 'staging':
+			return config.staging;
+		default:
+			throw new Error();
+	}
+})(config.mode);
 
 export const APP_NAME = process.env.REACT_APP_NAME || 'Jeepunii';
 

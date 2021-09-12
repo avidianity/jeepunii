@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { FC, useEffect } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { Avatar, ListItem, Text } from 'react-native-elements';
 import Toast from 'react-native-root-toast';
 import { SessionPassengerContract } from '../../../../contracts/session-passenger.contract';
@@ -33,7 +33,7 @@ const Sales: FC<Props> = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
-	const total = sales.reduce((prev, next) => prev + next.fee, 0);
+	const total = sales.reduce((prev, next) => prev + Number(next.fee), 0);
 
 	return (
 		<View style={{ paddingTop: 20 }}>
@@ -46,12 +46,14 @@ const Sales: FC<Props> = (props) => {
 			<FlatList
 				keyExtractor={(_, index) => index.toString()}
 				data={sales}
+				contentContainerStyle={styles.list}
 				renderItem={({ item: sale }) => (
 					<ListItem bottomDivider>
 						<Avatar rounded source={{ uri: sale.passenger?.picture?.url || 'https://via.placeholder.com/200' }} />
 						<ListItem.Content>
 							<ListItem.Title>
-								{sale.passenger?.lastName}, {sale.passenger?.firstName} - ₱{sale.fee}
+								{sale.passenger?.lastName}, {sale.passenger?.firstName} - ₱
+								{Number.isInteger(sale.fee) ? sale.fee : Number(sale.fee).toFixed(2)}
 							</ListItem.Title>
 							<ListItem.Subtitle>{sale.location?.name}</ListItem.Subtitle>
 						</ListItem.Content>
@@ -61,5 +63,11 @@ const Sales: FC<Props> = (props) => {
 		</View>
 	);
 };
+
+const styles = StyleSheet.create({
+	list: {
+		paddingBottom: 18,
+	},
+});
 
 export default Sales;

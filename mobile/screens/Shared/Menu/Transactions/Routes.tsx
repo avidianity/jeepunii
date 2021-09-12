@@ -48,7 +48,7 @@ const Routes: FC<Props> = (props) => {
 						<ListItem.Content>
 							<ListItem.Title>{route.name}</ListItem.Title>
 							<ListItem.Subtitle>
-								{route.address_city_district} - {route.address_road}
+								{route.address_region} - {route.address_road}
 							</ListItem.Subtitle>
 						</ListItem.Content>
 					</ListItem>

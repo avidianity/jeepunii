@@ -6,7 +6,7 @@ services:
     image: avidian/jeepunii
     build: .
     volumes:
-      - .:/usr/src/app
+      - .:/app
     ports:
       - 8000:8000
     restart: unless-stopped
@@ -36,7 +36,7 @@ services:
     image: avidian/jeepunii
     build: .
     volumes:
-      - .:/usr/src/app
+      - .:/app
     ports:
       - 8001:8001
     restart: unless-stopped
@@ -47,6 +47,36 @@ services:
       - net
     environment:
       PORT: 8001
+      ENV: local
+      KEY: abc
+      DB_CONNECTION: postgres
+      DB_HOST: jeepunii-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+      DB_NAME: jeepunii
+      REDIS_HOST: jeepunii-queue
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      LOCATION_IQ_TOKEN: pk.3d277e20a9f72b0f3da1f69aa0aa313d
+      SOCKET_DRIVER: redis
+      STORAGE_ENGINE: local
+  server-three:
+    container_name: server-three
+    image: avidian/jeepunii
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8002:8002
+    restart: unless-stopped
+    depends_on:
+      - database
+      - queue
+    networks:
+      - net
+    environment:
+      PORT: 8002
       ENV: local
       KEY: abc
       DB_CONNECTION: postgres

@@ -1,10 +1,16 @@
 {
+	"mode": "dev",
 	"dev": {
 		"address": "192.168.8.101",
 		"port": 8000,
 		"schema": "http"
 	},
 	"prod": {
+		"address": "jeepunii-api.tk",
+		"port": false,
+		"schema": "https"
+	},
+	"staging": {
 		"address": "jeepunii-api.tk",
 		"port": false,
 		"schema": "https"

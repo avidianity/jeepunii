@@ -125,10 +125,15 @@ const Jeep: FC<Props> = (props) => {
 	const ask = async () => {
 		try {
 			const response = await Location.requestForegroundPermissionsAsync();
-			if (response.status === Location.PermissionStatus.GRANTED && !granted) {
-				setGranted(true);
-			} else if (response.status === Location.PermissionStatus.DENIED) {
-				setGranted(false);
+			const responseBackground = await Location.requestBackgroundPermissionsAsync();
+			if (response.status === Location.PermissionStatus.GRANTED && responseBackground.status === Location.PermissionStatus.GRANTED) {
+				if (!granted) {
+					setGranted(true);
+				}
+			} else {
+				if (granted) {
+					setGranted(false);
+				}
 			}
 		} catch (error) {
 			handleErrors(error);

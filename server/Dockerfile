@@ -8,6 +8,4 @@ RUN yarn
 
 RUN npm install -g @nestjs/cli
 
-RUN nest update
-
 CMD [ "yarn", "start" ]

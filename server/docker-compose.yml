@@ -100,7 +100,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: jeepunii
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - jeepunii-database:/var/lib/postgresql/data
     ports:
       - 2158:5432
     networks:
@@ -116,3 +116,7 @@ services:
 networks:
   net:
     internal: false
+
+volumes:
+  jeepunii-database:
+    driver: local

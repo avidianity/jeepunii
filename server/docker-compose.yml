@@ -116,6 +116,7 @@ services:
 networks:
   net:
     internal: false
+    driver: bridge
 
 volumes:
   jeepunii-database:

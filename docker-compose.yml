@@ -1,12 +1,12 @@
-version: '3'
+version: "3"
 
 services:
-  server-one:
-    container_name: server-one
-    image: avidian/jeepunii
-    build: .
+  server:
+    container_name: jeepunii-server
+    image: avidian/jeepunii-server
+    build: ./server
     volumes:
-      - .:/app
+      - ./server:/app
     ports:
       - 8000:8000
     restart: unless-stopped
@@ -31,28 +31,43 @@ services:
       LOCATION_IQ_TOKEN: pk.3d277e20a9f72b0f3da1f69aa0aa313d
       SOCKET_DRIVER: redis
       STORAGE_ENGINE: local
+  web:
+    container_name: jeepunii-web
+    image: avidian/jeepunii-web
+    build: ./web
+    volumes:
+      - ./web:/var/www/html
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      - server
+    networks:
+      - net
   database:
     container_name: jeepunii-db
-    image: postgres:11.4
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: jeepunii
     volumes:
-      - jeepunii-database:/var/lib/postgresql/data
+      - "jeepunii-database:/var/lib/postgresql/data"
     ports:
       - 2158:5432
     networks:
       - net
   queue:
-    image: redis:6.0
+    image: redis:latest
     container_name: jeepunii-queue
     restart: unless-stopped
     ports:
       - 8725:6379
     networks:
       - net
+    volumes:
+      - "jeepunii-redis:/data"
 networks:
   net:
     internal: false
@@ -60,4 +75,6 @@ networks:
 
 volumes:
   jeepunii-database:
+    driver: local
+  jeepunii-redis:
     driver: local

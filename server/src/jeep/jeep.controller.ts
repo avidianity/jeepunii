@@ -52,7 +52,7 @@ export class JeepController {
 	getCurrent(@Req() request: Request) {
 		const { user: driver } = request;
 
-		if (driver.role !== RolesEnum.DRIVER) {
+		if (driver?.role !== RolesEnum.DRIVER) {
 			throw new BadRequestException('User is not a driver.');
 		}
 
@@ -63,7 +63,7 @@ export class JeepController {
 	async getPassengers(@Req() request: Request) {
 		const { user: driver } = request;
 
-		if (driver.role !== RolesEnum.DRIVER) {
+		if (driver?.role !== RolesEnum.DRIVER) {
 			throw new BadRequestException('User is not a driver.');
 		}
 
@@ -123,7 +123,7 @@ export class JeepController {
 	async getPassengerCurrent(@Req() request: Request) {
 		const passenger = request.user;
 
-		if (passenger.role !== RolesEnum.PASSENGER) {
+		if (passenger?.role !== RolesEnum.PASSENGER) {
 			throw new BadRequestException('User is not a passenger.');
 		}
 
@@ -153,7 +153,7 @@ export class JeepController {
 		const { jeep } = sessionPassenger;
 		const { driver } = jeep;
 
-		const session = await this.driver.getSession(driver);
+		const session = await this.driver.getSession(driver!);
 
 		if (!session) {
 			sessionPassenger.done = true;
@@ -168,7 +168,7 @@ export class JeepController {
 	async passengerIn(@Req() request: Request, @Body() data: PassengerInDTO) {
 		const passenger = request.user;
 
-		if (passenger.role !== RolesEnum.PASSENGER) {
+		if (passenger?.role !== RolesEnum.PASSENGER) {
 			throw new BadRequestException('User is not a passenger.');
 		}
 
@@ -252,7 +252,7 @@ export class JeepController {
 	async passengerOut(@Req() request: Request, @Body() data: PassengerOutDTO) {
 		const passenger = request.user;
 
-		if (passenger.role !== RolesEnum.PASSENGER) {
+		if (passenger?.role !== RolesEnum.PASSENGER) {
 			throw new BadRequestException('User is not a passenger.');
 		}
 

@@ -47,7 +47,7 @@ export class UserService implements EntityServiceContract<User> {
 		user = await user.save();
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} created a user.`,
+			`${this.logs.getUser()?.getFullname()} created a user.`,
 			user,
 		);
 
@@ -71,7 +71,7 @@ export class UserService implements EntityServiceContract<User> {
 		}
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} updated a user.`,
+			`${this.logs.getUser()?.getFullname()} updated a user.`,
 			user,
 		);
 
@@ -82,7 +82,7 @@ export class UserService implements EntityServiceContract<User> {
 		const user = await this.find(id);
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} deleted a user.`,
+			`${this.logs.getUser()?.getFullname()} deleted a user.`,
 			user,
 		);
 

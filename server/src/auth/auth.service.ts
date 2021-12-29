@@ -103,8 +103,10 @@ export class AuthService {
 		}
 
 		const user = new User().forceFill(token.user.toJSON());
-		delete token.user;
+		delete (token as any).user;
 		user.currentToken = token;
+
+		console.log(user);
 		return user;
 	}
 }

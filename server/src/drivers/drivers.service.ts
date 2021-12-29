@@ -112,8 +112,8 @@ export class DriversService {
 		const self = this.logs.getUser();
 
 		this.logs.log(
-			`${self.getFullname()} assigned ${user.getFullname()} as the driver for ${jeep.getDetails()}.`,
-			self,
+			`${self?.getFullname()} assigned ${user.getFullname()} as the driver for ${jeep.getDetails()}.`,
+			self!,
 		);
 
 		this.socket.emit(`user.${user.id}.assign`, { jeep });
@@ -140,8 +140,8 @@ export class DriversService {
 		const self = this.logs.getUser();
 
 		this.logs.log(
-			`${self.getFullname()} unassigned ${user.getFullname()} from ${jeep.getDetails()}.`,
-			self,
+			`${self?.getFullname()} unassigned ${user.getFullname()} from ${jeep.getDetails()}.`,
+			self!,
 		);
 
 		this.socket.emit(`user.${user.id}.unassign`, { jeep });

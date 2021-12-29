@@ -105,7 +105,7 @@ export class AuthController {
 	@UseGuards(HttpBearerGuard)
 	async logout(@Req() request: Request) {
 		const user = request.user;
-		return await user.currentToken.remove();
+		return await user?.currentToken?.remove();
 	}
 
 	@Get('/check')

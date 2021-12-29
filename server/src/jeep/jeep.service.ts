@@ -21,7 +21,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 	async all(options?: FindManyOptions<Jeep>) {
 		const user = this.logs.getUser();
 
-		if (!['Admin', 'Passenger'].includes(user.role)) {
+		if (user && !['Admin', 'Passenger'].includes(user.role)) {
 			return await Jeep.find({
 				...options,
 				relations: [
@@ -49,29 +49,31 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		const user = this.logs.getUser();
 		let jeep: Jeep | null = null;
 
-		if (!['Admin', 'Passenger'].includes(user.role)) {
-			jeep = await Jeep.findOne(id, {
-				relations: [
-					'cooperative',
-					'driver',
-					'passengers',
-					'passengers.location',
-				],
-				where: {
-					cooperative: user.cooperative,
-				},
-			});
+		if (user && !['Admin', 'Passenger'].includes(user.role)) {
+			jeep =
+				(await Jeep.findOne(id, {
+					relations: [
+						'cooperative',
+						'driver',
+						'passengers',
+						'passengers.location',
+					],
+					where: {
+						cooperative: user.cooperative,
+					},
+				})) || null;
 		}
 
 		if (!jeep) {
-			jeep = await Jeep.findOne(id, {
-				relations: [
-					'cooperative',
-					'driver',
-					'passengers',
-					'passengers.location',
-				],
-			});
+			jeep =
+				(await Jeep.findOne(id, {
+					relations: [
+						'cooperative',
+						'driver',
+						'passengers',
+						'passengers.location',
+					],
+				})) || null;
 		}
 
 		if (!jeep) {
@@ -94,7 +96,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		}
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} created a jeep.`,
+			`${this.logs.getUser()?.getFullname()} created a jeep.`,
 			cooperative,
 		);
 
@@ -118,7 +120,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		} else {
 			const session = await Session.findOne({
 				driver: {
-					id: jeep.driver.id,
+					id: jeep.driver?.id,
 				},
 				done: false,
 			});
@@ -143,7 +145,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		const updated = await jeep.fill(data).save();
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} updated a jeep.`,
+			`${this.logs.getUser()?.getFullname()} updated a jeep.`,
 			updated.cooperative,
 		);
 
@@ -162,7 +164,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		const jeep = await this.find(id);
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} deleted a jeep.`,
+			`${this.logs.getUser()?.getFullname()} deleted a jeep.`,
 			jeep,
 		);
 

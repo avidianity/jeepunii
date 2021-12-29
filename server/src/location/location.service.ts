@@ -77,7 +77,7 @@ export class LocationService {
 		const matches = await this.find(lat, lon);
 
 		if (matches.length > 0) {
-			return matches.first();
+			return matches.first()!;
 		}
 
 		const response = await this.request(lat, lon);

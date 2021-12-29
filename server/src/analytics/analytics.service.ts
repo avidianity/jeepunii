@@ -46,12 +46,15 @@ export class AnalyticsService {
 				relations: ['rides', 'rides.location'],
 			});
 
-			return user.rides
-				.filter(
-					(ride) => ride.done && ride.location instanceof Location,
-				)
-				.map((ride) => ride.location)
-				.sort(sorter);
+			return (
+				user?.rides
+					.filter(
+						(ride) =>
+							ride.done && ride.location instanceof Location,
+					)
+					.map((ride) => ride.location)
+					.sort(sorter) || []
+			);
 		}
 
 		return await this.location.all(options);
@@ -70,17 +73,19 @@ export class AnalyticsService {
 
 			const ids: number[] = [];
 
-			return user.rides
-				.filter((ride) => {
-					if (ids.includes(ride.jeep.id)) {
-						return false;
-					}
+			return (
+				user?.rides
+					.filter((ride) => {
+						if (ids.includes(ride.jeep.id)) {
+							return false;
+						}
 
-					ids.push(ride.jeep.id);
+						ids.push(ride.jeep.id);
 
-					return ride.done;
-				})
-				.map((ride) => ride.jeep);
+						return ride.done;
+					})
+					.map((ride) => ride.jeep) || []
+			);
 		}
 
 		return await this.jeep.all({
@@ -119,6 +124,6 @@ export class AnalyticsService {
 	}
 
 	get user() {
-		return this.logs.getUser();
+		return this.logs.getUser()!;
 	}
 }

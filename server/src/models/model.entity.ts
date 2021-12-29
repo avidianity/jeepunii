@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 export class Model extends BaseEntity {
-	protected hidden = [];
+	protected hidden: string[] = [];
 
 	constructor(data?: any) {
 		super();
@@ -21,14 +21,14 @@ export class Model extends BaseEntity {
 	}
 
 	get<T = any>(key: string): T {
-		return this[key];
+		return (this as any)[key];
 	}
 
 	fill(data: Partial<this>) {
 		const fillable = this.fillable();
 		Object.entries(data).forEach(([key, value]) => {
 			if (fillable.includes(key.trim())) {
-				this[key] = value;
+				(this as any)[key] = value;
 			} else {
 			}
 		});
@@ -38,13 +38,13 @@ export class Model extends BaseEntity {
 
 	forceFill(data: Partial<this>) {
 		Object.entries(data).forEach(([key, value]) => {
-			this[key] = value;
+			(this as any)[key] = value;
 		});
 		return this;
 	}
 
 	toJSON() {
-		return except(this, [...this.hidden, 'hidden']);
+		return except(this as any, [...this.hidden, 'hidden']);
 	}
 
 	toID() {

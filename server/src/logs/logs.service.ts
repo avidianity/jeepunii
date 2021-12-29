@@ -19,7 +19,7 @@ export class LogsService implements EntityServiceContract<Log> {
 	constructor(@Inject(REQUEST) protected request: Request) {}
 
 	getLevel() {
-		return this.levels[this.request.user.role];
+		return this.levels[this.request.user?.role!];
 	}
 
 	all(options?: FindManyOptions<Log>) {
@@ -74,7 +74,7 @@ export class LogsService implements EntityServiceContract<Log> {
 		try {
 			return await this.create({
 				message,
-				level: this.levels[this.request.user.role],
+				level: this.levels[this.request.user?.role!],
 				identifiable: model.toID(),
 			});
 		} catch (error) {

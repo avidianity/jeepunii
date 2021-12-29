@@ -42,7 +42,7 @@ export class SessionPassenger extends Model {
 	@Index()
 	startId: number;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, type: 'bigint' })
 	endId: number | null;
 
 	@ManyToOne(() => Jeep, (jeep) => jeep.passengers)

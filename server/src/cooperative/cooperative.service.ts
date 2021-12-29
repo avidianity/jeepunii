@@ -36,7 +36,7 @@ export class CooperativeService implements EntityServiceContract<Cooperative> {
 
 		const user = this.logs.getUser();
 
-		this.logs.log(`${user.getFullname()} created a cooperative.`, user);
+		this.logs.log(`${user?.getFullname()} created a cooperative.`, user!);
 
 		return cooperative;
 	}
@@ -47,7 +47,7 @@ export class CooperativeService implements EntityServiceContract<Cooperative> {
 		cooperative.fill(data);
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} updated a cooperative.`,
+			`${this.logs?.getUser()!.getFullname()} updated a cooperative.`,
 			cooperative,
 		);
 
@@ -58,7 +58,7 @@ export class CooperativeService implements EntityServiceContract<Cooperative> {
 		const cooperative = await this.find(id);
 
 		this.logs.log(
-			`${this.logs.getUser().getFullname()} deleted a cooperative.`,
+			`${this.logs.getUser()?.getFullname()} deleted a cooperative.`,
 			cooperative,
 		);
 

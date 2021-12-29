@@ -13,7 +13,9 @@ export class PointService implements EntityServiceContract<SessionPoint> {
 	}
 
 	async find(id: any) {
-		const point = SessionPoint.findOne(id, { relations: ['session'] });
+		const point = await SessionPoint.findOne(id, {
+			relations: ['session'],
+		});
 
 		if (!point) {
 			throw new NotFoundException('Point does not exist.');

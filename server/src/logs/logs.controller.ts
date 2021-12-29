@@ -12,22 +12,22 @@ export class LogsController {
 	async index() {
 		const user = this.logs.getUser();
 
-		if (!['Admin', 'Passenger'].includes(user.role)) {
+		if (!['Admin', 'Passenger'].includes(user?.role!)) {
 			const logs = await this.logs.all({
 				where: {
-					identifiable: user.jeep
+					identifiable: user?.jeep
 						? user.jeep.toID()
-						: user.cooperative.toID(),
+						: user?.cooperative.toID(),
 				},
 			});
 
-			if (user.role === 'Cooperative Owner') {
+			if (user?.role === 'Cooperative Owner') {
 				const cooperative = await Cooperative.findOne(
 					user.cooperative?.id,
 					{ relations: ['jeeps'] },
 				);
 
-				const ids = cooperative.jeeps.map((jeep) => jeep.toID());
+				const ids = cooperative?.jeeps.map((jeep) => jeep.toID()) || [];
 
 				const jeepLogBatches = await Promise.all(
 					ids.map(async (id) => {

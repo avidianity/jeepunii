@@ -28,7 +28,7 @@ export class DriversController {
 
 	@Get('/session')
 	async getSession(@Req() request: Request) {
-		return await this.drivers.getSession(request.user);
+		return await this.drivers.getSession(request.user!);
 	}
 
 	@Post('/session/points')
@@ -36,7 +36,7 @@ export class DriversController {
 		@Body() { data }: SessionPointsDTO,
 		@Req() request: Request,
 	) {
-		const session = await this.drivers.getSession(request.user);
+		const session = await this.drivers.getSession(request.user!);
 
 		if (!session) {
 			throw new BadRequestException(
@@ -57,7 +57,7 @@ export class DriversController {
 
 	@Post('/session/point')
 	async makePoint(@Body() data: SessionPointDTO, @Req() request: Request) {
-		const session = await this.drivers.getSession(request.user);
+		const session = await this.drivers.getSession(request.user!);
 		if (!session) {
 			throw new BadRequestException(
 				'Driver has no session currently set.',
@@ -73,12 +73,12 @@ export class DriversController {
 
 	@Post('/session')
 	async makeSession(@Req() request: Request) {
-		return await this.drivers.makeSession(request.user);
+		return await this.drivers.makeSession(request.user!);
 	}
 
 	@Delete('/session')
 	async deleteSession(@Req() request: Request) {
-		const session = await this.drivers.getSession(request.user);
+		const session = await this.drivers.getSession(request.user!);
 		if (!session) {
 			throw new BadRequestException(
 				'Driver is currently not in a driving session.',
@@ -93,12 +93,12 @@ export class DriversController {
 	@Post('/assign')
 	async assign(@Body() data: DriverCryptoDTO, @Req() request: Request) {
 		const jeep = this.crypto.decrypt<Jeep>(data.payload);
-		return await this.drivers.assign(request.user.id, jeep.id);
+		return await this.drivers.assign(request.user?.id!, jeep.id);
 	}
 
 	@Post('/unassign')
 	async unassign(@Body() data: DriverCryptoDTO, @Req() request: Request) {
 		const jeep = this.crypto.decrypt<Jeep>(data.payload);
-		return await this.drivers.unassign(request.user.id, jeep.id);
+		return await this.drivers.unassign(request.user?.id!, jeep.id);
 	}
 }

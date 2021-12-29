@@ -7,7 +7,7 @@ export class CryptoService {
 	constructor(protected config: ConfigService) {}
 
 	getKey() {
-		return this.config.get<string>('KEY');
+		return this.config.get<string>('KEY')!;
 	}
 
 	encrypt(data: any) {

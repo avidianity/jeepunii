@@ -29,7 +29,7 @@ export class Jeep extends Model {
 
 	@OneToOne(() => User, (user) => user.jeep)
 	@JoinColumn()
-	driver: User;
+	driver: User | null;
 
 	@OneToMany(() => SessionPassenger, (session) => session.jeep)
 	passengers: SessionPassenger[];

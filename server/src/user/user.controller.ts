@@ -33,10 +33,10 @@ export class UserController {
 		} else {
 			const user = this.users.getUser();
 
-			if (![RolesEnum.ADMIN, RolesEnum.PASSENGER].includes(user.role)) {
+			if (![RolesEnum.ADMIN, RolesEnum.PASSENGER].includes(user?.role!)) {
 				options.where = {
 					...(options.where as any),
-					cooperative: user.cooperative,
+					cooperative: user?.cooperative,
 				};
 			}
 		}

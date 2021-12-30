@@ -87,7 +87,7 @@ export class User extends Model {
 	@Column({ default: false })
 	riding: boolean;
 
-	@OneToOne(() => File)
+	@OneToOne(() => File, { nullable: true })
 	@JoinColumn()
 	picture: File;
 

@@ -106,7 +106,6 @@ export class AuthService {
 		delete (token as any).user;
 		user.currentToken = token;
 
-		console.log(user);
 		return user;
 	}
 }

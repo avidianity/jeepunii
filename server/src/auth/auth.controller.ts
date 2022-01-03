@@ -58,7 +58,7 @@ export class AuthController {
 			return { user };
 		}
 
-		const text = String.random();
+		const text = String.random(20);
 		const token = new Token();
 		token.hash = MD5(text).toString();
 		token.user = user;
@@ -85,6 +85,11 @@ export class AuthController {
 		await user.save();
 
 		return { user };
+	}
+
+	@Get('/ping')
+	ping() {
+		return 'pong';
 	}
 
 	@Post('/login')

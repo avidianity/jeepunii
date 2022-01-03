@@ -3,6 +3,7 @@ import React, { FC, useContext } from 'react';
 import { useEffect } from 'react';
 import { Text } from 'react-native-elements';
 import Container from '../../components/Container';
+import DrawerMenu from '../../components/DrawerMenu';
 import { AuthContext, JeepContext, SocketContext } from '../../contexts';
 import { JeepContract } from '../../contracts/jeep.contract';
 import { handleErrors } from '../../helpers';
@@ -59,6 +60,7 @@ const Home: FC<Props> = (props) => {
 
 	return (
 		<JeepContext.Provider value={{ jeep, setJeep }}>
+			<DrawerMenu />
 			<Container style={{ paddingTop: 80 }}>{!jeep ? <NoJeep /> : <Jeep />}</Container>
 		</JeepContext.Provider>
 	);

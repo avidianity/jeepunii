@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Colors } from '../constants';
 import Menu from './Shared/Menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,10 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { RolesEnum } from '../contracts/user.contract';
 import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Button, Text } from 'react-native-elements';
 
 type Props = {};
 
+const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 
 const Home: FC<Props> = (props) => {
@@ -35,6 +37,8 @@ const Home: FC<Props> = (props) => {
 		return null;
 	}
 
+	const MenuNavigator: any = user.role === RolesEnum.DRIVER ? Drawer : Tab;
+
 	if (!online) {
 		return (
 			<View style={styles.center}>
@@ -44,38 +48,35 @@ const Home: FC<Props> = (props) => {
 	}
 
 	return (
-		<Tab.Navigator
+		<MenuNavigator.Navigator
 			initialRouteName={user.role === RolesEnum.PASSENGER ? 'Travel' : 'Home'}
-			tabBarOptions={{ activeTintColor: Colors.light, activeBackgroundColor: Colors.primary }}>
-			{user.role === RolesEnum.DRIVER ? (
-				<Tab.Screen
-					name='Home'
-					component={DriverHome}
-					options={{
-						tabBarLabel: 'Home',
-						tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name='home' color={color} size={size} />,
-					}}
-				/>
-			) : null}
+			{...(user.role === RolesEnum.PASSENGER
+				? { tabBarOptions: { activeTintColor: Colors.light, activeBackgroundColor: Colors.primary } }
+				: {})}>
+			{user.role === RolesEnum.DRIVER ? <MenuNavigator.Screen name='Home' component={DriverHome} /> : null}
 			{user.role === RolesEnum.PASSENGER ? (
-				<Tab.Screen
+				<MenuNavigator.Screen
 					name='Travel'
 					component={Travel}
 					options={{
 						tabBarLabel: 'Travel',
-						tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name='car' color={color} size={size} />,
+						tabBarIcon: ({ color, size }: any) => <MaterialCommunityIcons name='car' color={color} size={size} />,
 					}}
 				/>
 			) : null}
-			<Tab.Screen
+			<MenuNavigator.Screen
 				name='Menu'
 				component={Menu}
-				options={{
-					tabBarLabel: 'Menu',
-					tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name='menu' color={color} size={size} />,
-				}}
+				{...(user.role === RolesEnum.PASSENGER
+					? {
+							options: {
+								tabBarLabel: 'Menu',
+								tabBarIcon: ({ color, size }: any) => <MaterialCommunityIcons name='menu' color={color} size={size} />,
+							},
+					  }
+					: {})}
 			/>
-		</Tab.Navigator>
+		</MenuNavigator.Navigator>
 	);
 };
 

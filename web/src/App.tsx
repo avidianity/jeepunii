@@ -20,6 +20,7 @@ import { io, Socket } from 'socket.io-client';
 import { APP_NAME, SERVER_URL } from './constants';
 import logo from './assets/logo-full.svg';
 import { outIf } from './helpers';
+import { detect } from 'detect-browser';
 
 const id = String.random(20);
 
@@ -66,9 +67,13 @@ function App() {
 			},
 		});
 
-		socket.on('connect', () => {
-			setSocket(socket);
+		socket.on('connect', () => socket.emit('ping', detect()));
+
+		socket.on('disconnect', () => {
+			setSocket(null);
 		});
+
+		socket.on('pong', () => setSocket(socket));
 	};
 
 	useEffect(() => {

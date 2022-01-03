@@ -18,7 +18,6 @@ import { io, Socket } from 'socket.io-client';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { State } from './libraries/State';
-import { useNetInfo } from '@react-native-community/netinfo';
 import { PermissionsAndroid } from 'react-native';
 
 const RootStack = createStackNavigator();
@@ -29,8 +28,17 @@ export default function App() {
 	const [dark, setDark] = useState(false);
 	const [socket, setSocket] = useNullable<Socket>();
 	const state = State.getInstance();
-	const info = useNetInfo();
-	const [granted, setGranted] = useState(false);
+	const [_, setGranted] = useState(false);
+	const [online, setOnline] = useState(true);
+
+	const ping = async () => {
+		try {
+			const { data } = await axios.get<string>('/auth/ping');
+			setOnline(data === 'pong');
+		} catch (_) {
+			setOnline(false);
+		}
+	};
 
 	const setup = async () => {
 		if (await state.has('token')) {
@@ -69,6 +77,7 @@ export default function App() {
 	};
 
 	useEffect(() => {
+		ping();
 		permissions();
 		const key = state.listen<string>('token', (token) => {
 			if (!socket) {
@@ -116,7 +125,7 @@ export default function App() {
 			<QueryClientProvider client={new QueryClient()}>
 				<SafeAreaProvider>
 					<RootSiblingParent>
-						<NetContext.Provider value={{ online: info.isConnected || false }}>
+						<NetContext.Provider value={{ online }}>
 							<SocketContext.Provider value={{ socket, setSocket }}>
 								<ThemeContext.Provider value={{ dark, setDark }}>
 									<NavigationContainer>

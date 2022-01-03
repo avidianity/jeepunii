@@ -4,6 +4,21 @@ import { Session } from 'src/models/session.entity';
 
 @Injectable()
 export class SessionService implements EntityServiceContract<Session> {
+	async getForDriver(id: number) {
+		return await Session.createQueryBuilder('session')
+			.where('session.driverId = :driverId', { driverId: id })
+			.leftJoinAndSelect(
+				'session.passengers',
+				'session_passenger',
+				'session_passenger.done = :done',
+				{
+					done: true,
+				},
+			)
+			.leftJoinAndSelect('session_passenger.passenger', 'passenger')
+			.getMany();
+	}
+
 	async all() {
 		return await Session.createQueryBuilder('session')
 			.leftJoinAndSelect('session.points', 'point')

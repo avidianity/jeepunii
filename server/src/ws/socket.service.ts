@@ -97,7 +97,7 @@ export class SocketService {
 				socket.user = user;
 
 				return next();
-			} catch (error) {
+			} catch (error: any) {
 				return next(error);
 			}
 		});
@@ -107,11 +107,15 @@ export class SocketService {
 
 			const { user } = socket;
 
-			this.users.push({ user: user, id: socket.id });
+			this.users.push({ user, id: socket.id });
 			this.emit(`connect.${user.id}`);
 
 			user.online = true;
 			await user.save();
+
+			socket.on('ping', () => {
+				socket.emit('pong');
+			});
 
 			socket.on('disconnect', async () => {
 				this.connections--;

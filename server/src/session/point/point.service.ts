@@ -12,6 +12,27 @@ export class PointService implements EntityServiceContract<SessionPoint> {
 		});
 	}
 
+	async getForUser(id: number) {
+		return await SessionPoint.createQueryBuilder('point')
+			.leftJoinAndSelect(
+				'point.session',
+				'session',
+				'session.driverId = :driverId',
+				{ driverId: id },
+			)
+			.leftJoinAndSelect(
+				'session.passengers',
+				'session_passenger',
+				'session_passenger.done = :done',
+				{
+					done: false,
+				},
+			)
+			.leftJoinAndSelect('session_passenger.passenger', 'passenger')
+			.leftJoinAndSelect('session_passenger.location', 'location')
+			.getMany();
+	}
+
 	async find(id: any) {
 		const point = await SessionPoint.findOne(id, {
 			relations: ['session'],

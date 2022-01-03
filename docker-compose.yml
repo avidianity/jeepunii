@@ -59,7 +59,7 @@ services:
     networks:
       - net
   queue:
-    image: redis:latest
+    image: redis:alpine
     container_name: jeepunii-queue
     restart: unless-stopped
     ports:
@@ -68,6 +68,10 @@ services:
       - net
     volumes:
       - "jeepunii-redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
 networks:
   net:
     internal: false

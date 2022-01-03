@@ -32,6 +32,13 @@ const Main: FC<Props> = (props) => {
 				onPress={() => navigation.navigate('Transactions')}
 			/>
 		),
+		() => (
+			<Button
+				icon={<Icon name='equalizer' type='material' color='#fff' />}
+				title='Analytics'
+				onPress={() => navigation.navigate('Analytics')}
+			/>
+		),
 		() => <Button icon={<Icon name='logout' type='material' color='#fff' />} title='Logout' onPress={() => logout()} />,
 	];
 

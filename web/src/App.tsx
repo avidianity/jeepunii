@@ -55,7 +55,7 @@ function App() {
 				state.set('user', data);
 			}
 		} catch (error) {
-			console.log((error as any).toJSON());
+			console.log((error as any).toObject());
 			EventBuses.AuthBus.dispatch('logout', 'force');
 		}
 	};

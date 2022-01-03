@@ -53,7 +53,7 @@ const Login: FC<Props> = (props) => {
 
 			history.push(routes.DASHBOARD);
 		} catch (error) {
-			console.log(error.toJSON());
+			console.log(error.toObject());
 			handleError(error);
 		} finally {
 			setProcessing(false);

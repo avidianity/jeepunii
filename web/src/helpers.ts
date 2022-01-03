@@ -75,7 +75,7 @@ export function ucwords(string: string) {
 let handle: NodeJS.Timeout | null = null;
 
 export function handleError(error: any) {
-	console.log(error.toJSON ? error.toJSON() : error);
+	console.log(error.toObject ? error.toObject() : error);
 	if (error) {
 		if (error.response) {
 			const response = error.response;

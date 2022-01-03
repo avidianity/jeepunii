@@ -26,7 +26,7 @@ const Menu: FC<Props> = (props) => {
 			try {
 				await axios.post('/auth/logout');
 			} catch (error) {
-				console.log((error as any).toJSON());
+				console.log((error as any).toObject());
 			} finally {
 				state.remove('user').remove('token');
 				socket?.disconnect();

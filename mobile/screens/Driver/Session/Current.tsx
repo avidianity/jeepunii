@@ -70,11 +70,20 @@ const Current: FC<Props> = ({ stop, passengers, session }) => {
 				throw new Error('No location.');
 			}
 
-			await axios.post<{ sessionPassenger: SessionPassengerContract; passenger: UserContract }>('/jeeps/passenger/anonymous/out', {
-				lat: location.coords.latitude,
-				lon: location.coords.longitude,
-				passengerId: id,
-			});
+			/**
+			 * TODO
+			 * 1. Display modal and use returned data to display fee and info of passenger.
+			 */
+			const {
+				data: {},
+			} = await axios.post<{ sessionPassenger: SessionPassengerContract; passenger: UserContract }>(
+				'/jeeps/passenger/anonymous/out',
+				{
+					lat: location.coords.latitude,
+					lon: location.coords.longitude,
+					passengerId: id,
+				}
+			);
 		} catch (error) {
 			handleErrors(error);
 		}

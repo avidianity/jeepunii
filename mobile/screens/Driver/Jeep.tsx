@@ -26,18 +26,6 @@ export type Passenger = {
 
 const id = String.random(10);
 
-/**
- * TODOS
- *
- * 1. Get Location permissions
- * 2. Create component for non-granted location permission
- * 3. Track lat/long points upon session start
- * 4. Cancel session
- * 5. Save points to server
- * 6. Detect passenger in/out
- * 7. Diff online/offline passengers
- * 8. UI for passengers
- */
 const Jeep: FC<Props> = (props) => {
 	const { jeep } = useContext(JeepContext);
 	const { socket } = useContext(SocketContext);

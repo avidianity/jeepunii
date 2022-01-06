@@ -17,7 +17,7 @@ import { MD5 } from 'crypto-js';
 export class AuthService {
 	constructor() {}
 
-	async register(data: RegisterDTO) {
+	async register(data: RegisterDTO, anonymous = false) {
 		const count = await User.count({
 			where: {
 				email: data.email,
@@ -35,6 +35,9 @@ export class AuthService {
 		user.fill({
 			...data,
 			password: await Hash.makeAsync(data.password),
+			anonymous,
+			approved: anonymous,
+			coins: anonymous ? 100 : 0,
 		});
 
 		if (data.cooperativeId) {
@@ -57,6 +60,7 @@ export class AuthService {
 			{
 				email: data.email,
 				role: In(data.roles),
+				anonymous: false,
 			},
 			{
 				relations: ['cooperative', 'picture'],

@@ -17,7 +17,6 @@ import { AuthContext } from '../../contexts';
 import { SessionPassengerContract } from '../../contracts/session-passenger.contract';
 import Done from './Done';
 import { SessionPointContract } from '../../contracts/session-point.contract';
-import { State } from '../../libraries/State';
 
 type Props = {};
 

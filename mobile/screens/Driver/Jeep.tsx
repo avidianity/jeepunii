@@ -49,76 +49,92 @@ const Jeep: FC<Props> = (props) => {
 	const [passengers, setPassengers] = useArray<Passenger>();
 	const [passengerSocketsListening, setPassengerSocketsListening] = useState(false);
 
+	if (!socket) {
+		return null;
+	}
+
+	const listenToSockets = (session: SessionContract) => {
+		if (!passengerSocketsListening) {
+			socket.on(`session.${session.id}.passenger.in`, (passenger) => {
+				const exists = passengers.find((item) => item.data.id === passenger.id);
+
+				if (!exists) {
+					passengers.push({
+						data: passenger,
+						online: true,
+					});
+				}
+
+				socket.on(`disconnect.${passenger.id}`, () => {
+					const index = passengers.findIndex((item) => item.data.id === passenger.id);
+					const item = passengers[index];
+
+					if (!item || !item.online) {
+						return;
+					}
+
+					item.online = false;
+					passengers.splice(index, 1, item);
+
+					setPassengers([...passengers]);
+				});
+
+				socket.on(`connect.${passenger.id}`, () => {
+					const index = passengers.findIndex((item) => item.data.id === passenger.id);
+					const item = passengers[index];
+
+					if (!item || item.online) {
+						return;
+					}
+
+					item.online = true;
+					passengers.splice(index, 1, item);
+
+					setPassengers([...passengers]);
+				});
+
+				setPassengers([...passengers]);
+			});
+
+			socket.on(`session.${session.id}.passenger.out`, (passenger) => {
+				const index = passengers.findIndex((item) => item.data.id === passenger.id);
+				const item = passengers[index];
+
+				if (!item) {
+					return;
+				}
+
+				passengers.splice(index, 1);
+
+				socket.off(`connect.${item.data.id}`);
+				socket.off(`disconnect.${item.data.id}`);
+
+				setPassengers([...passengers]);
+			});
+			setPassengerSocketsListening(true);
+		}
+	};
+
 	const current = async () => {
 		try {
-			const { data: session } = await axios.get<SessionContract | null>('/drivers/session');
-			if (typeof session === 'object' && session !== null) {
-				if (!passengerSocketsListening) {
-					socket?.on(`session.${session.id}.passenger.in`, (passenger) => {
-						const exists = passengers.find((item) => item.data.id === passenger.id);
+			const { data: session } = await axios.get<SessionContract>('/drivers/session');
 
-						if (!exists) {
-							passengers.push({
-								data: passenger,
-								online: true,
-							});
-						}
+			listenToSockets(session);
 
-						socket?.on(`disconnect.${passenger.id}`, () => {
-							const index = passengers.findIndex((item) => item.data.id === passenger.id);
-							const item = passengers[index];
-
-							if (!item || !item.online) {
-								return;
-							}
-
-							item.online = false;
-							passengers.splice(index, 1, item);
-
-							setPassengers([...passengers]);
-						});
-
-						socket?.on(`connect.${passenger.id}`, () => {
-							const index = passengers.findIndex((item) => item.data.id === passenger.id);
-							const item = passengers[index];
-
-							if (!item || item.online) {
-								return;
-							}
-
-							item.online = true;
-							passengers.splice(index, 1, item);
-
-							setPassengers([...passengers]);
-						});
-
-						setPassengers([...passengers]);
-					});
-
-					socket?.on(`session.${session.id}.passenger.out`, (passenger) => {
-						const index = passengers.findIndex((item) => item.data.id === passenger.id);
-						const item = passengers[index];
-
-						if (!item) {
-							return;
-						}
-
-						passengers.splice(index, 1);
-
-						socket?.off(`connect.${item.data.id}`);
-						socket?.off(`disconnect.${item.data.id}`);
-
-						setPassengers([...passengers]);
-					});
-					setPassengerSocketsListening(true);
-				}
-				setSession(session);
-				start();
-			} else {
-				setSession(null);
+			if (session.passengers) {
+				const currentPassengers = session.passengers
+					.filter((passenger) => passenger.passenger)
+					.map((passenger) => ({
+						data: passenger.passenger!,
+						online: passenger.passenger?.anonymous ? true : passenger.passenger?.online || false,
+					}));
+				setPassengers([...passengers, ...currentPassengers]);
 			}
-		} catch (error) {
-			handleErrors(error);
+			setSession(session);
+			start();
+		} catch (error: any) {
+			setSession(null);
+			console.log(error.toObject ? error.toObject() : error);
 		}
 	};
 
@@ -205,10 +221,10 @@ const Jeep: FC<Props> = (props) => {
 	};
 
 	const destroySessionSockets = (session: SessionContract) => {
-		socket?.off(`session.${session.id}.passenger.in`);
-		socket?.off(`session.${session.id}.passenger.out`);
-		passengers.forEach((passenger) => socket?.off(`connect.${passenger.data.id}`));
-		passengers.forEach((passenger) => socket?.off(`disconnect.${passenger.data.id}`));
+		socket.off(`session.${session.id}.passenger.in`);
+		socket.off(`session.${session.id}.passenger.out`);
+		passengers.forEach((passenger) => socket.off(`connect.${passenger.data.id}`));
+		passengers.forEach((passenger) => socket.off(`disconnect.${passenger.data.id}`));
 		setPassengerSocketsListening(false);
 	};
 
@@ -242,6 +258,7 @@ const Jeep: FC<Props> = (props) => {
 									try {
 										const { data: session } = await axios.post<SessionContract>('/drivers/session');
 										setSession(session);
+										listenToSockets(session);
 										start();
 									} catch (error) {
 										handleErrors(error);

@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JeepService } from './jeep.service';
 import { JeepController } from './jeep.controller';
 import { CryptoModule } from 'src/crypto/crypto.module';
@@ -14,7 +14,7 @@ import { UserModule } from 'src/user/user.module';
 	imports: [
 		CryptoModule,
 		LogsModule,
-		forwardRef(() => DriversModule),
+		DriversModule,
 		SocketModule,
 		LocationModule,
 		UserModule,

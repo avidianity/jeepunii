@@ -28,7 +28,7 @@ export class DriversController {
 
 	@Get('/session')
 	async getSession(@Req() request: Request) {
-		return await this.drivers.getSession(request.user!);
+		return await this.drivers.getSessionOrFail(request.user!);
 	}
 
 	@Post('/session/points')

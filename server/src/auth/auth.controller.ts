@@ -87,6 +87,15 @@ export class AuthController {
 		return { user };
 	}
 
+	@Post('/register/anonymous')
+	async registerAnonymous(@Body() data: RegisterDTO) {
+		data.role = RolesEnum.PASSENGER;
+
+		const user = await this.auth.register(data, true);
+
+		return user;
+	}
+
 	@Get('/ping')
 	ping() {
 		return 'pong';

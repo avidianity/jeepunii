@@ -1,0 +1,70 @@
+version: "3"
+
+services:
+  server:
+    container_name: jeepunii-server
+    image: avidian/jeepunii-server
+    build: ./server
+    volumes:
+      - ./server:/app
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    depends_on:
+      - database
+      - queue
+    networks:
+      - net
+    environment:
+      PORT: 8000
+      ENV: local
+      KEY: abc
+      DB_CONNECTION: postgres
+      DB_HOST: jeepunii-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+      DB_NAME: jeepunii
+      REDIS_HOST: jeepunii-queue
+      REDIS_PASSWORD: null
+      REDIS_PORT: 6379
+      SOCKET_DRIVER: redis
+      STORAGE_ENGINE: local
+  database:
+    container_name: jeepunii-db
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: jeepunii
+    volumes:
+      - "jeepunii-database:/var/lib/postgresql/data"
+    ports:
+      - 2158:5432
+    networks:
+      - net
+  queue:
+    image: redis:alpine
+    container_name: jeepunii-queue
+    restart: unless-stopped
+    ports:
+      - 8725:6379
+    networks:
+      - net
+    volumes:
+      - "jeepunii-redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      retries: 3
+      timeout: 5s
+networks:
+  net:
+    internal: false
+    driver: bridge
+
+volumes:
+  jeepunii-database:
+    driver: local
+  jeepunii-redis:
+    driver: local

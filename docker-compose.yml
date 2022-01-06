@@ -28,7 +28,6 @@ services:
       REDIS_HOST: jeepunii-queue
       REDIS_PASSWORD: null
       REDIS_PORT: 6379
-      LOCATION_IQ_TOKEN: pk.3d277e20a9f72b0f3da1f69aa0aa313d
       SOCKET_DRIVER: redis
       STORAGE_ENGINE: local
   web:
@@ -44,6 +43,18 @@ services:
       - server
     networks:
       - net
+  mobile:
+    container_name: jeepunii-mobile
+    image: avidian/jeepunii-mobile
+    build: ./mobile
+    volumes:
+      - ./mobile:/var/www/native
+    ports:
+      - 19000:19000
+      - 19001:19001
+      - 19002:19002
+    environment:
+      EXPO_DEVTOOLS_LISTEN_ADDRESS: 0.0.0.0
   database:
     container_name: jeepunii-db
     image: postgres:latest

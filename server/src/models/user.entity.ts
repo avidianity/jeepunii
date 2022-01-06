@@ -37,6 +37,7 @@ export class User extends Model {
 			'role',
 			'approved',
 			'coins',
+			'anonymous',
 		];
 	}
 
@@ -97,6 +98,9 @@ export class User extends Model {
 
 	@Column({ default: false })
 	online: boolean;
+
+	@Column({ default: false })
+	anonymous: boolean;
 
 	currentToken: Token;
 

@@ -29,6 +29,7 @@ export class UserController {
 		if (role) {
 			options.where = {
 				role,
+				anonymous: false,
 			};
 		} else {
 			const user = this.users.getUser();
@@ -37,6 +38,7 @@ export class UserController {
 				options.where = {
 					...(options.where as any),
 					cooperative: user?.cooperative,
+					anonymous: false,
 				};
 			}
 		}
@@ -51,6 +53,7 @@ export class UserController {
 		if (role) {
 			options.where = {
 				role,
+				anonymous: false,
 			};
 		}
 

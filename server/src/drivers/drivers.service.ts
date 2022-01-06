@@ -2,9 +2,11 @@ import {
 	BadRequestException,
 	ForbiddenException,
 	Injectable,
+	NotFoundException,
 } from '@nestjs/common';
 import { JeepService } from 'src/jeep/jeep.service';
 import { LogsService } from 'src/logs/logs.service';
+import { Jeep } from 'src/models/jeep.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -14,7 +16,6 @@ import { SocketService } from 'src/ws/socket.service';
 export class DriversService {
 	constructor(
 		protected logs: LogsService,
-		protected jeep: JeepService,
 		protected user: UserService,
 		protected socket: SocketService,
 	) {}
@@ -94,8 +95,34 @@ export class DriversService {
 		}
 	}
 
+	async getSessionOrFail(driver: User) {
+		const session = await this.getSession(driver);
+
+		if (!session) {
+			throw new NotFoundException('No session found.');
+		}
+
+		return session;
+	}
+
+	async hasSession(driver: User) {
+		if (!driver.jeep) {
+			throw new BadRequestException(
+				'Driver is not assigned to any jeep.',
+			);
+		}
+
+		const session = await Session.createQueryBuilder('session')
+			.where('session.driverID = :driverId', { driverId: driver.id })
+			.where('DATE(session.createdAt) >= CURDATE()')
+			.where('session.done = :done', { done: false })
+			.getCount();
+
+		return session > 0;
+	}
+
 	async assign(userID: number, jeepID: number) {
-		const jeep = await this.jeep.find(jeepID);
+		const jeep = await Jeep.findOneOrFail(jeepID);
 		const user = await this.user.find(userID);
 
 		if (user.role !== 'Driver') {
@@ -123,7 +150,7 @@ export class DriversService {
 
 	async unassign(userID: number, jeepID: number) {
 		const user = await this.user.find(userID);
-		const jeep = await this.jeep.find(jeepID);
+		const jeep = await Jeep.findOneOrFail(jeepID);
 
 		if (user.role !== 'Driver') {
 			throw new ForbiddenException('User is not a driver.');

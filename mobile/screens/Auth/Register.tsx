@@ -15,15 +15,7 @@ import { ImageInfo } from 'expo-image-picker/build/ImagePicker.types';
 
 type Props = {};
 
-type Inputs = {
-	firstName: string;
-	lastName: string;
-	address: string;
-	email: string;
-	phone: string;
-	password: string;
-	role: RolesEnum;
-};
+type Inputs = Pick<UserContract, 'firstName' | 'lastName' | 'address' | 'email' | 'phone' | 'password' | 'role'>;
 
 const Register: FC<Props> = (props) => {
 	const [processing, setProcessing] = useState(false);

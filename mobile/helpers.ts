@@ -5,7 +5,6 @@ import qrcode from 'qrcode';
 import Toast from 'react-native-root-toast';
 import { SessionPointContract } from './contracts/session-point.contract';
 import haversine from 'haversine-distance';
-import { LocationObject } from 'expo-location';
 
 dayjs.extend(relativeTime);
 
@@ -86,7 +85,7 @@ export function handleErrors(error: any) {
 	});
 }
 
-export async function getLocation(Location: typeof import('expo-location')): Promise<LocationObject | null> {
+export async function getLocation(Location: typeof import('expo-location')) {
 	try {
 		return await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.BestForNavigation });
 	} catch (_) {
@@ -192,4 +191,8 @@ const formatter = new Intl.NumberFormat('en-PH', {
 
 export function formatCurrency(value: number) {
 	return formatter.format(value).replace(/\D00(?=\D*$)/, '');
+}
+
+export function getPercentage(value: number, percentage: number) {
+	return (percentage / 100) * value;
 }

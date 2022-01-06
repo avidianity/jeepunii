@@ -1,13 +1,8 @@
-import { IsLatitude, IsLongitude, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { CoordinatesDTO } from './coordinates.dto';
 
-export class PassengerOutDTO {
+export class PassengerOutDTO extends CoordinatesDTO {
 	@IsString()
 	@IsNotEmpty()
 	payload: string;
-
-	@IsLatitude()
-	lat: number;
-
-	@IsLongitude()
-	lon: number;
 }

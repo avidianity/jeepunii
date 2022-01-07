@@ -35,72 +35,68 @@ const Jeep: FC<Props> = (props) => {
 	const [passengerHandle, setPassengerHandle] = useNullable<NodeJS.Timeout>();
 	const [granted, setGranted] = useState(false);
 	const [passengers, setPassengers] = useArray<Passenger>();
-	const [passengerSocketsListening, setPassengerSocketsListening] = useState(false);
 
 	if (!socket) {
 		return null;
 	}
 
 	const listenToSockets = (session: SessionContract) => {
-		if (!passengerSocketsListening) {
-			socket.on(`session.${session.id}.passenger.in`, (passenger) => {
-				const exists = passengers.find((item) => item.data.id === passenger.id);
+		socket.on(`session.${session.id}.passenger.in`, (passenger: UserContract) => {
+			const exists = passengers.find((item) => Number(item.data.id) === Number(passenger.id));
 
-				if (!exists) {
-					passengers.push({
-						data: passenger,
-						online: true,
-					});
-				}
-
-				socket.on(`disconnect.${passenger.id}`, () => {
-					const index = passengers.findIndex((item) => item.data.id === passenger.id);
-					const item = passengers[index];
-
-					if (!item || !item.online) {
-						return;
-					}
-
-					item.online = false;
-					passengers.splice(index, 1, item);
-
-					setPassengers([...passengers]);
+			if (!exists) {
+				passengers.push({
+					data: passenger,
+					online: true,
 				});
+			}
 
-				socket.on(`connect.${passenger.id}`, () => {
-					const index = passengers.findIndex((item) => item.data.id === passenger.id);
-					const item = passengers[index];
-
-					if (!item || item.online) {
-						return;
-					}
-
-					item.online = true;
-					passengers.splice(index, 1, item);
-
-					setPassengers([...passengers]);
-				});
-
-				setPassengers([...passengers]);
-			});
-
-			socket.on(`session.${session.id}.passenger.out`, (passenger) => {
-				const index = passengers.findIndex((item) => item.data.id === passenger.id);
+			socket.on(`disconnect.${passenger.id}`, () => {
+				const index = passengers.findIndex((item) => Number(item.data.id) === Number(passenger.id));
 				const item = passengers[index];
 
-				if (!item) {
+				if (!item || !item.online) {
 					return;
 				}
 
-				passengers.splice(index, 1);
-
-				socket.off(`connect.${item.data.id}`);
-				socket.off(`disconnect.${item.data.id}`);
+				item.online = false;
+				passengers.splice(index, 1, item);
 
 				setPassengers([...passengers]);
 			});
-			setPassengerSocketsListening(true);
-		}
+
+			socket.on(`connect.${passenger.id}`, () => {
+				const index = passengers.findIndex((item) => Number(item.data.id) === Number(passenger.id));
+				const item = passengers[index];
+
+				if (!item || item.online) {
+					return;
+				}
+
+				item.online = true;
+				passengers.splice(index, 1, item);
+
+				setPassengers([...passengers]);
+			});
+
+			setPassengers([...passengers]);
+		});
+
+		socket.on(`session.${session.id}.passenger.out`, (passenger) => {
+			const index = passengers.findIndex((item) => Number(item.data.id) === Number(passenger.id));
+			const item = passengers[index];
+
+			if (!item) {
+				return;
+			}
+
+			passengers.splice(index, 1);
+
+			socket.off(`connect.${item.data.id}`);
+			socket.off(`disconnect.${item.data.id}`);
+
+			setPassengers([...passengers]);
+		});
 	};
 
 	const current = async () => {
@@ -213,7 +209,6 @@ const Jeep: FC<Props> = (props) => {
 		socket.off(`session.${session.id}.passenger.out`);
 		passengers.forEach((passenger) => socket.off(`connect.${passenger.data.id}`));
 		passengers.forEach((passenger) => socket.off(`disconnect.${passenger.data.id}`));
-		setPassengerSocketsListening(false);
 	};
 
 	useEffect(() => {

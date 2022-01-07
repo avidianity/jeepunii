@@ -58,6 +58,10 @@ const Home: FC<Props> = (props) => {
 		// eslint-disable-next-line
 	}, []);
 
+	if (!socket) {
+		return null;
+	}
+
 	return (
 		<JeepContext.Provider value={{ jeep, setJeep }}>
 			<DrawerMenu />

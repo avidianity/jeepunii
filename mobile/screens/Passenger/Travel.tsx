@@ -3,7 +3,7 @@ import { Button, Icon, Text } from 'react-native-elements';
 import Container from '../../components/Container';
 import { StyleSheet, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { JeepContract } from '../../contracts/jeep.contract';
 import { useArray, useNullable } from '../../hooks';
 import { PermissionStatus } from 'expo-modules-core';
@@ -35,6 +35,7 @@ const Travel: FC<Props> = (props) => {
 	const [done, setDone] = useState(false);
 	const [sessionPassenger, setSessionPassenger] = useNullable<SessionPassengerContract>();
 	const [points, setPoints] = useArray<SessionPointContract>();
+	const [handle, setHandle] = useState<NodeJS.Timer | null>(null);
 
 	const askScanner = async () => {
 		const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -131,6 +132,10 @@ const Travel: FC<Props> = (props) => {
 				setPoints(points);
 			}
 		} catch (error) {
+			if ((error as AxiosError).response?.status === 404 && handle) {
+				clearInterval(handle);
+				setHandle(null);
+			}
 			console.log(error);
 		}
 	};
@@ -147,10 +152,12 @@ const Travel: FC<Props> = (props) => {
 		askLocation();
 		check();
 
-		const handle = setInterval(watch, 10000);
+		setHandle(setInterval(watch, 10000));
 
 		return () => {
-			clearInterval(handle);
+			if (handle) {
+				clearInterval(handle);
+			}
 		};
 		// eslint-disable-next-line
 	}, []);

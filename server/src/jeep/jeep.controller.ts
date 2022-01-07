@@ -114,6 +114,9 @@ export class JeepController {
 
 		const points = await SessionPoint.find({
 			id: MoreThanOrEqual(session.startId),
+			session: {
+				id: sessionID,
+			},
 		});
 
 		return points;
@@ -157,6 +160,8 @@ export class JeepController {
 
 		if (!session) {
 			sessionPassenger.done = true;
+			passenger.riding = false;
+			await passenger.save();
 			await sessionPassenger.save();
 			throw new NotFoundException('Passenger has no current session.');
 		}

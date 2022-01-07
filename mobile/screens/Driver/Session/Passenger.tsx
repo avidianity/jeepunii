@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import React, { FC, useEffect } from 'react';
 import { Alert, Platform, StyleProp, StyleSheet, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { Text } from 'react-native-elements';
@@ -30,6 +30,9 @@ const Passenger: FC<Props> = ({ style, passenger, session, onEnd }) => {
 			const { data } = await axios.get<SessionPointContract[]>(`/jeeps/passenger/${user.id}/${session.id}/points`);
 			setPoints(data);
 		} catch (error: any) {
+			if ((error as AxiosError).response?.status === 404 && handle) {
+				clearInterval(handle);
+			}
 			console.log(error.toObject ? error.toObject() : error);
 		}
 	};

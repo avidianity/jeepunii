@@ -43,6 +43,8 @@ export class SocketService {
 				credentials: true,
 				origin: (origin, callback) => callback(null, origin),
 			},
+			pingInterval: 7500,
+			pingTimeout: 5000,
 		});
 
 		const driver = this.config.get<string>('SOCKET_DRIVER');
@@ -139,8 +141,10 @@ export class SocketService {
 	emit<Ev extends EventNames<EventsMap>>(
 		ev: Ev,
 		...args: EventParams<EventsMap, Ev>
-	): boolean {
-		return this.server.emit(ev, ...args);
+	): void {
+		this.server.sockets.sockets.forEach((socket) =>
+			socket.emit(ev, ...args),
+		);
 	}
 
 	count() {

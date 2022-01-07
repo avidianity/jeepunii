@@ -5,7 +5,7 @@ import { Button, Text } from 'react-native-elements';
 import Container from '../../components/Container';
 import { LocationContract } from '../../contracts/location.contract';
 import { SessionPassengerContract } from '../../contracts/session-passenger.contract';
-import { formatCurrency } from '../../helpers';
+import { formatCurrency, handleErrors } from '../../helpers';
 import { useNullable } from '../../hooks';
 
 type Props = {
@@ -17,11 +17,15 @@ const Done: FC<Props> = ({ session, done }) => {
 	const [start, setStart] = useNullable<LocationContract>();
 
 	const fetch = async () => {
-		const { data } = await axios.post('/locations/info', {
-			lat: session.start_lat,
-			lon: session.start_lon,
-		});
-		setStart(data);
+		try {
+			const { data } = await axios.post('/locations/info', {
+				lat: session.start_lat,
+				lon: session.start_lon,
+			});
+			setStart(data);
+		} catch (error: any) {
+			handleErrors(error);
+		}
 	};
 
 	useEffect(() => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/models/user.entity';
 import { createAdapter } from '@socket.io/redis-adapter';
@@ -18,6 +18,7 @@ export class SocketService {
 	protected server: Server;
 	protected connections = 0;
 	protected users: Users = [];
+	protected sockets = new Map<string, Socket>();
 
 	constructor(protected auth: AuthService, protected config: ConfigService) {}
 
@@ -119,6 +120,8 @@ export class SocketService {
 				socket.emit('pong');
 			});
 
+			this.sockets.set(socket.id, socket);
+
 			socket.on('disconnect', async () => {
 				this.connections--;
 
@@ -133,6 +136,8 @@ export class SocketService {
 					this.users.splice(index, 1);
 				}
 
+				this.sockets.delete(socket.id);
+
 				this.emit(`disconnect.${user.id}`);
 			});
 		});
@@ -142,9 +147,7 @@ export class SocketService {
 		ev: Ev,
 		...args: EventParams<EventsMap, Ev>
 	): void {
-		this.server.sockets.sockets.forEach((socket) =>
-			socket.emit(ev, ...args),
-		);
+		this.sockets.forEach((socket) => socket.emit(ev, ...args));
 	}
 
 	count() {

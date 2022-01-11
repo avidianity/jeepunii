@@ -65,7 +65,7 @@ const Analytics: FC<Props> = (props) => {
 					<Card.Title>Analytics</Card.Title>
 					<Card.Divider />
 					<View style={styles.row}>
-						<Text style={styles.text}>Total KMs Travelled: {totalKms}</Text>
+						<Text style={styles.text}>Total KMs Travelled: {totalKms.toFixed(0)}</Text>
 					</View>
 					<View style={styles.row}>
 						<Text style={styles.text}>Total Passengers: {passengers.length}</Text>

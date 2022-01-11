@@ -16,7 +16,7 @@ sudo groupadd docker
 
 sudo usermod -aG docker $USER
 
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
 
 sudo ufw enable
 sudo ufw allow ssh
@@ -27,9 +27,9 @@ sudo apt update
 
 sudo apt install nginx
 
-sudo rm /etc/nginx/sites-available/default
+sudo rm /etc/nginx/sites-enabled/default
 
-sudo cp ./nginx/nginx.conf /etc/nginx/sites-available/default
+sudo cp ./nginx/nginx.conf /etc/nginx/sites-enabled/default
 
 sudo nginx -t
 
@@ -48,3 +48,5 @@ cd ./server
 cp .env.example .env
 
 yarn
+
+cd ../

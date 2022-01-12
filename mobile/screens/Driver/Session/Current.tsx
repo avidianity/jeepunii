@@ -34,6 +34,8 @@ const Current: FC<Props> = ({ stop, passengers, session }) => {
 			data.email = `${String.random(10)}@yopmail.com`;
 			data.address = String.random(10);
 			data.password = String.random(10);
+			data.lastName = 'N/A';
+			data.phone = '+639163758735';
 			data.role = RolesEnum.PASSENGER;
 
 			const { data: passenger } = await axios.post<UserContract>('/auth/register/anonymous', {
@@ -162,36 +164,6 @@ const Current: FC<Props> = ({ stop, passengers, session }) => {
 										/>
 									)}
 									name='firstName'
-									defaultValue=''
-								/>
-								<Controller
-									control={control}
-									render={({ field: { onChange, onBlur, value } }) => (
-										<Input
-											label='Last Name'
-											autoCompleteType='name'
-											onBlur={onBlur}
-											onChangeText={(value) => onChange(value)}
-											value={value}
-											style={styles.input}
-										/>
-									)}
-									name='lastName'
-									defaultValue=''
-								/>
-								<Controller
-									control={control}
-									render={({ field: { onChange, onBlur, value } }) => (
-										<Input
-											label='Phone'
-											autoCompleteType='tel'
-											onBlur={onBlur}
-											onChangeText={(value) => onChange(value)}
-											value={value}
-											style={styles.input}
-										/>
-									)}
-									name='phone'
 									defaultValue=''
 								/>
 							</View>

@@ -174,7 +174,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 			passenger,
 		);
 
-		return { sessionPassenger, passenger };
+		return sessionPassenger;
 	}
 
 	async all(options?: FindManyOptions<Jeep>) {

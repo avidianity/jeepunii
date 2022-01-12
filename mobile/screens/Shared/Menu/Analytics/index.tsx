@@ -8,7 +8,7 @@ import { SessionPointContract } from '../../../../contracts/session-point.contra
 import { handleErrors } from '../../../../helpers';
 import { useArray, useNullable } from '../../../../hooks';
 import haversine from 'haversine-distance';
-import { JeepContext } from '../../../../contexts';
+import { AuthContext } from '../../../../contexts';
 import { JeepContract } from '../../../../contracts/jeep.contract';
 
 type Props = {};
@@ -16,7 +16,7 @@ type Props = {};
 const Analytics: FC<Props> = (props) => {
 	const [points, setPoints] = useArray<SessionPointContract>();
 	const [handle, setHandle] = useNullable<NodeJS.Timer>();
-	const { jeep } = useContext(JeepContext);
+	const { user } = useContext(AuthContext);
 	const [passengers, setPassengers] = useState(0);
 
 	const fetch = async () => {
@@ -34,7 +34,7 @@ const Analytics: FC<Props> = (props) => {
 
 	const getJeep = async () => {
 		try {
-			const { data } = await axios.get<JeepContract>(`/jeeps/${jeep?.id}`);
+			const { data } = await axios.get<JeepContract>(`/jeeps/${user?.jeep?.id}`);
 			setPassengers(
 				(() => {
 					const ids: number[] = [];

@@ -217,6 +217,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 						'driver',
 						'passengers',
 						'passengers.location',
+						'passengers.passenger',
 					],
 					where: {
 						cooperative: user.cooperative,
@@ -232,6 +233,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 						'driver',
 						'passengers',
 						'passengers.location',
+						'passengers.passenger',
 					],
 				})) || null;
 		}

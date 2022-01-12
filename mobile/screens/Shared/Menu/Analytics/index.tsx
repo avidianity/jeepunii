@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -8,20 +8,19 @@ import { SessionPointContract } from '../../../../contracts/session-point.contra
 import { handleErrors } from '../../../../helpers';
 import { useArray, useNullable } from '../../../../hooks';
 import haversine from 'haversine-distance';
-import { SessionContract } from '../../../../contracts/session.contract';
-import { flatten } from 'lodash';
-import { SessionPassengerContract } from '../../../../contracts/session-passenger.contract';
+import { JeepContext } from '../../../../contexts';
+import { JeepContract } from '../../../../contracts/jeep.contract';
 
 type Props = {};
 
 const Analytics: FC<Props> = (props) => {
 	const [points, setPoints] = useArray<SessionPointContract>();
-	const [sessions, setSessions] = useArray<SessionContract>();
 	const [handle, setHandle] = useNullable<NodeJS.Timer>();
-	const [sales, setSales] = useArray<SessionPassengerContract>();
+	const { jeep } = useContext(JeepContext);
+	const [passengers, setPassengers] = useState(0);
 
 	const fetch = async () => {
-		await Promise.all([getPoints(), getSales()]);
+		await Promise.all([getPoints(), getJeep()]);
 	};
 
 	const getPoints = async () => {
@@ -33,10 +32,22 @@ const Analytics: FC<Props> = (props) => {
 		}
 	};
 
-	const getSales = async () => {
+	const getJeep = async () => {
 		try {
-			const { data } = await axios.get('/analytics/sales');
-			setSales(data);
+			const { data } = await axios.get<JeepContract>(`/jeeps/${jeep?.id}`);
+			setPassengers(
+				(() => {
+					const ids: number[] = [];
+
+					data.passengers?.forEach((passenger) => {
+						if (!ids.includes(passenger.passenger?.id!)) {
+							ids.push(passenger.passenger?.id!);
+						}
+					});
+
+					return ids.length;
+				})()
+			);
 		} catch (error) {
 			console.log(error);
 		}
@@ -49,18 +60,6 @@ const Analytics: FC<Props> = (props) => {
 		}
 		return prev;
 	}, 0);
-
-	const passengers = (() => {
-		const ids: number[] = [];
-
-		sales.forEach((sale) => {
-			if (!ids.includes(sale.passenger?.id!)) {
-				ids.push(sale.passenger?.id!);
-			}
-		});
-
-		return ids.length;
-	})();
 
 	useEffect(() => {
 		fetch();

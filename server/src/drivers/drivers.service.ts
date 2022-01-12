@@ -32,19 +32,15 @@ export class DriversService {
 		const jeep = user.jeep;
 
 		const sessions = await Session.find({
-			where: {
-				passengers: [
-					{
-						jeep: {
-							id: jeep.id,
-						},
-					},
-				],
-			},
-			relations: ['passengers'],
+			relations: ['passengers', 'passengers.jeep'],
 		});
 
-		return sessions;
+		return sessions.filter((session) => {
+			const same = session.passengers.find(
+				(passenger) => passenger.jeep.id === jeep.id,
+			);
+			return same;
+		});
 	}
 
 	async makeSession(driver: User) {

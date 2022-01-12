@@ -97,6 +97,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 				start_lon: data.lon,
 				startId: lastPoint.id,
 				jeep,
+				driver_id: driver.id,
 			}).save();
 
 			this.socket.emit(`session.${session.id}.passenger.in`, passenger);

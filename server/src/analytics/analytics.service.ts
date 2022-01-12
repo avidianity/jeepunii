@@ -111,11 +111,7 @@ export class AnalyticsService {
 			return await SessionPassenger.find({
 				where: {
 					done: true,
-					session: {
-						driver: {
-							id: this.user.id,
-						},
-					},
+					driver_id: this.user.id,
 				},
 				relations: [
 					'jeep',

@@ -14,6 +14,9 @@ export class SessionPassenger extends Model {
 	@ManyToOne(() => Session, (session) => session.passengers)
 	session: Session;
 
+	@Column()
+	driver_id: number;
+
 	@Column({
 		type: 'decimal',
 		default: 0,

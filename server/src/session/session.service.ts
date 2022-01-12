@@ -5,14 +5,6 @@ import { Session } from 'src/models/session.entity';
 @Injectable()
 export class SessionService implements EntityServiceContract<Session> {
 	async getForDriver(id: number) {
-		return await Session.find({
-			where: {
-				driver: {
-					id,
-				},
-				passengers: [{ done: true }],
-			},
-		});
 		return await Session.createQueryBuilder('session')
 			.where('session.driverId = :driverId', { driverId: id })
 			.leftJoinAndSelect(

@@ -15,11 +15,6 @@ import { SessionService } from './session.service';
 export class SessionController {
 	constructor(protected session: SessionService) {}
 
-	@Get('/:id')
-	async show(@Param('id') id: number) {
-		return await this.session.find(id);
-	}
-
 	@Get('driver')
 	@UseGuards(HttpBearerGuard)
 	async driver(@Req() request: Request) {
@@ -28,5 +23,10 @@ export class SessionController {
 		}
 
 		return await this.session.getForDriver(request.user.id);
+	}
+
+	@Get('/:id')
+	async show(@Param('id') id: number) {
+		return await this.session.find(id);
 	}
 }

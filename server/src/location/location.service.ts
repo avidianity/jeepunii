@@ -83,15 +83,24 @@ export class LocationService {
 		const response = await this.request(lat, lon);
 
 		let location = await Location.findOne({
-			where: { name: response.display_name },
+			where: { place_id: response.place_id },
 		});
+
+		const fragments = response.display_name.split(',');
+
+		fragments.pop();
+		fragments.pop();
+		fragments.pop();
+		fragments.pop();
+
+		const name = fragments.join(',');
 
 		if (!location) {
 			location = await new Location({
 				place_id: response.place_id,
 				lat: response.lat.toNumber(),
 				lon: response.lon.toNumber(),
-				name: response.display_name,
+				name,
 				address_road: response.address?.road || 'N/A',
 				address_city_district: response.address?.city_district || 'N/A',
 				address_state: response.address?.state || 'N/A',

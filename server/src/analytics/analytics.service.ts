@@ -120,6 +120,8 @@ export class AnalyticsService {
 				relations: [
 					'jeep',
 					'jeep.driver',
+					'session',
+					'session.driver',
 					'location',
 					'passenger',
 					'passenger.picture',

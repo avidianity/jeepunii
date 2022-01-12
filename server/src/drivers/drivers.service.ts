@@ -7,6 +7,7 @@ import {
 import { JeepService } from 'src/jeep/jeep.service';
 import { LogsService } from 'src/logs/logs.service';
 import { Jeep } from 'src/models/jeep.entity';
+import { SessionPassenger } from 'src/models/session-passenger.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -19,6 +20,23 @@ export class DriversService {
 		protected user: UserService,
 		protected socket: SocketService,
 	) {}
+
+	async markSessionAsDone(id: number) {
+		const session = await Session.findOneOrFail(id);
+		session.done = true;
+		return await session.save();
+	}
+
+	async getPassengersTotal(id: number) {
+		return await Session.find({
+			where: {
+				driver: {
+					id,
+				},
+			},
+			relations: ['passengers', 'passengers.passenger'],
+		});
+	}
 
 	async makeSession(driver: User) {
 		if (!driver.jeep) {

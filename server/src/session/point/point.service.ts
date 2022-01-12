@@ -20,16 +20,6 @@ export class PointService implements EntityServiceContract<SessionPoint> {
 				'session.driverId = :driverId',
 				{ driverId: id },
 			)
-			.leftJoinAndSelect(
-				'session.passengers',
-				'session_passenger',
-				'session_passenger.done = :done',
-				{
-					done: false,
-				},
-			)
-			.leftJoinAndSelect('session_passenger.passenger', 'passenger')
-			.leftJoinAndSelect('session_passenger.location', 'location')
 			.getMany();
 	}
 

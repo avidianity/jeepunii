@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -32,26 +32,22 @@ const Analytics: FC<Props> = (props) => {
 
 	const getSessions = async () => {
 		try {
-			const { data } = await axios.get<SessionContract[]>('/sessions/driver');
+			const { data } = await axios.get<SessionContract[]>('/drivers/passengers-count');
 			setSessions(data);
 		} catch (error) {
 			handleErrors(error);
 		}
 	};
 
-	const totalKms = useMemo(
-		() =>
-			points.reduce((prev, point, index, points) => {
-				const next = points[index + 1];
-				if (next) {
-					return prev + haversine(point, next) / 1000;
-				}
-				return prev;
-			}, 0),
-		[points]
-	);
+	const totalMeters = points.reduce((prev, point, index, points) => {
+		const next = points[index + 1];
+		if (next) {
+			return prev + haversine(point, next);
+		}
+		return prev;
+	}, 0);
 
-	const passengers = useMemo(() => flatten(sessions.map((session) => session.passengers!)), [sessions]);
+	const passengers = flatten(sessions.map((session) => session.passengers!));
 
 	useEffect(() => {
 		fetch();
@@ -65,7 +61,7 @@ const Analytics: FC<Props> = (props) => {
 					<Card.Title>Analytics</Card.Title>
 					<Card.Divider />
 					<View style={styles.row}>
-						<Text style={styles.text}>Total KMs Travelled: {totalKms.toFixed(0)}</Text>
+						<Text style={styles.text}>Total Meters Travelled: {totalMeters.toFixed(0)}</Text>
 					</View>
 					<View style={styles.row}>
 						<Text style={styles.text}>Total Passengers: {passengers.length}</Text>

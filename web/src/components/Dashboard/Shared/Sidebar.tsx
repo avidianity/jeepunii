@@ -85,7 +85,7 @@ const Sidebar: FC<Props> = (props) => {
 		{
 			url: url(routes.SALES),
 			icon: 'ti-money',
-			title: 'Sales',
+			title: 'Analytics',
 			show: ![RolesEnum.PASSENGER].includes(role),
 		},
 		{

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ActivityIndicator, Modal, Dimensions, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Modal, Dimensions, StyleSheet, View, ScrollView } from 'react-native';
 import { Alert } from 'react-native';
 import { Icon, Button, Text, Input } from 'react-native-elements';
 import Container from '../../../components/Container';
@@ -203,9 +203,11 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	item: {
-		height: 70,
+		height: 100,
 		width: '50%',
 		paddingHorizontal: 2,
+		paddingTop: 10,
+		paddingBottom: 14,
 	},
 	centeredView: {
 		flex: 1,

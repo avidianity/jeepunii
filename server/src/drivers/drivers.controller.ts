@@ -6,6 +6,7 @@ import {
 	Get,
 	Post,
 	Req,
+	Session,
 	UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -25,6 +26,11 @@ export class DriversController {
 		protected drivers: DriversService,
 		protected crypto: CryptoService,
 	) {}
+
+	@Get('/passengers-count')
+	async getPassengersTotal(@Req() request: Request) {
+		return await this.drivers.getPassengersTotal(request.user?.id!);
+	}
 
 	@Get('/session')
 	async getSession(@Req() request: Request) {
@@ -84,8 +90,8 @@ export class DriversController {
 				'Driver is currently not in a driving session.',
 			);
 		}
-		session.done = true;
-		await session.save();
+
+		this.drivers.markSessionAsDone(session.id);
 
 		return session;
 	}

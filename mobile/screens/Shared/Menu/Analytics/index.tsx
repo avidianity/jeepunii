@@ -10,6 +10,7 @@ import { useArray, useNullable } from '../../../../hooks';
 import haversine from 'haversine-distance';
 import { SessionContract } from '../../../../contracts/session.contract';
 import { flatten } from 'lodash';
+import { SessionPassengerContract } from '../../../../contracts/session-passenger.contract';
 
 type Props = {};
 
@@ -17,9 +18,10 @@ const Analytics: FC<Props> = (props) => {
 	const [points, setPoints] = useArray<SessionPointContract>();
 	const [sessions, setSessions] = useArray<SessionContract>();
 	const [handle, setHandle] = useNullable<NodeJS.Timer>();
+	const [sales, setSales] = useArray<SessionPassengerContract>();
 
 	const fetch = async () => {
-		await Promise.all([getPoints(), getSessions()]);
+		await Promise.all([getPoints(), getSales()]);
 	};
 
 	const getPoints = async () => {
@@ -31,12 +33,12 @@ const Analytics: FC<Props> = (props) => {
 		}
 	};
 
-	const getSessions = async () => {
+	const getSales = async () => {
 		try {
-			const { data } = await axios.get<SessionContract[]>('/drivers/passengers-count');
-			setSessions(data);
+			const { data } = await axios.get('/analytics/sales');
+			setSales(data);
 		} catch (error) {
-			handleErrors(error);
+			console.log(error);
 		}
 	};
 
@@ -48,7 +50,17 @@ const Analytics: FC<Props> = (props) => {
 		return prev;
 	}, 0);
 
-	const passengers = flatten(sessions.map((session) => session.passengers!));
+	const passengers = (() => {
+		const ids: number[] = [];
+
+		sales.forEach((sale) => {
+			if (!ids.includes(sale.passenger?.id!)) {
+				ids.push(sale.passenger?.id!);
+			}
+		});
+
+		return ids.length;
+	})();
 
 	useEffect(() => {
 		fetch();
@@ -73,7 +85,7 @@ const Analytics: FC<Props> = (props) => {
 						<Text style={styles.text}>Total KMs Travelled: {totalMeters.toFixed(0).toNumber() / 1000}</Text>
 					</View>
 					<View style={styles.row}>
-						<Text style={styles.text}>Total Passengers: {passengers.length}</Text>
+						<Text style={styles.text}>Total Passengers: {passengers}</Text>
 					</View>
 				</Card>
 			</View>

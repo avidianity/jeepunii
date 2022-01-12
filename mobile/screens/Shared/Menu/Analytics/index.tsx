@@ -10,6 +10,7 @@ import { useArray, useNullable } from '../../../../hooks';
 import haversine from 'haversine-distance';
 import { AuthContext } from '../../../../contexts';
 import { JeepContract } from '../../../../contracts/jeep.contract';
+import { State } from '../../../../libraries/State';
 
 type Props = {};
 
@@ -18,6 +19,7 @@ const Analytics: FC<Props> = (props) => {
 	const [handle, setHandle] = useNullable<NodeJS.Timer>();
 	const { user } = useContext(AuthContext);
 	const [passengers, setPassengers] = useState(0);
+	const state = State.getInstance();
 
 	const fetch = async () => {
 		await Promise.all([getPoints(), getJeep()]);
@@ -34,7 +36,8 @@ const Analytics: FC<Props> = (props) => {
 
 	const getJeep = async () => {
 		try {
-			const { data } = await axios.get<JeepContract>(`/jeeps/${user?.jeep?.id}`);
+			const token = await state.get('token');
+			const { data } = await axios.get<JeepContract>(`/jeeps/${user?.jeep?.id}`, { headers: { Authorization: `Bearer ${token}` } });
 			setPassengers(
 				(() => {
 					const ids: number[] = [];

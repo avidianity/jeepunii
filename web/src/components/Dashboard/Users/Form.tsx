@@ -201,7 +201,7 @@ const Form: FC<Props> = ({ type }) => {
 								/>
 							</div>
 						) : null}
-						{!disableCooperative ? (
+						{!disableCooperative && type !== RolesEnum.PASSENGER ? (
 							<div className='form-group col-12'>
 								<label htmlFor='cooperativeId'>Cooperative</label>
 								<select {...register('cooperativeId')} id='cooperativeId' className='form-control' disabled={processing}>

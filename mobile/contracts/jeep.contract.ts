@@ -1,5 +1,6 @@
 import { CooperativeContract } from './cooperative.contract';
 import { ModelContract } from './model.contract';
+import { SessionPassengerContract } from './session-passenger.contract';
 import { UserContract } from './user.contract';
 
 export interface JeepContract extends ModelContract {
@@ -9,4 +10,5 @@ export interface JeepContract extends ModelContract {
 	driverId: number;
 	cooperative?: CooperativeContract;
 	driver?: UserContract;
+	passengers?: SessionPassengerContract[];
 }

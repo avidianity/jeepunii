@@ -8,14 +8,14 @@ import { SessionPointContract } from '../../../../contracts/session-point.contra
 import { handleErrors } from '../../../../helpers';
 import { useArray, useNullable } from '../../../../hooks';
 import haversine from 'haversine-distance';
-import { SessionContract } from '../../../../contracts/session.contract';
 import { flatten } from 'lodash';
+import { JeepContract } from '../../../../contracts/jeep.contract';
 
 type Props = {};
 
 const Analytics: FC<Props> = (props) => {
 	const [points, setPoints] = useArray<SessionPointContract>();
-	const [sessions, setSessions] = useArray<SessionContract>();
+	const [jeeps, setJeeps] = useArray<JeepContract>();
 	const [handle, setHandle] = useNullable<NodeJS.Timer>();
 
 	const fetch = async () => {
@@ -33,8 +33,8 @@ const Analytics: FC<Props> = (props) => {
 
 	const getSessions = async () => {
 		try {
-			const { data } = await axios.get<SessionContract[]>('/drivers/passengers-count');
-			setSessions(data);
+			const { data } = await axios.get<JeepContract[]>('/analytics/jeeps');
+			setJeeps(data);
 		} catch (error) {
 			handleErrors(error);
 		}
@@ -48,7 +48,7 @@ const Analytics: FC<Props> = (props) => {
 		return prev;
 	}, 0);
 
-	const passengers = flatten(sessions.map((session) => session.passengers!));
+	const passengers = flatten(jeeps.map((jeep) => jeep.passengers!));
 
 	useEffect(() => {
 		fetch();

@@ -86,6 +86,15 @@ export class AnalyticsService {
 					})
 					.map((ride) => ride.jeep) || []
 			);
+		} else if (this.user.role === RolesEnum.DRIVER) {
+			return await this.jeep.all({
+				relations: ['passengers'],
+				where: {
+					cooperative: {
+						id: this.user.cooperative.id,
+					},
+				},
+			});
 		}
 
 		return await this.jeep.all({
@@ -98,10 +107,34 @@ export class AnalyticsService {
 	 * 1. Add filter to cooperatives on drivers and owners
 	 */
 	async sales() {
-		if ([RolesEnum.DRIVER, RolesEnum.PASSENGER].includes(this.user.role)) {
+		if (RolesEnum.DRIVER === this.user.role) {
 			return await SessionPassenger.find({
 				where: {
 					done: true,
+					session: {
+						driver: {
+							id: this.user.id,
+						},
+					},
+				},
+				relations: [
+					'jeep',
+					'jeep.driver',
+					'location',
+					'passenger',
+					'passenger.picture',
+				],
+				order: {
+					createdAt: 'DESC',
+				},
+			});
+		} else if (RolesEnum.PASSENGER === this.user.role) {
+			return await SessionPassenger.find({
+				where: {
+					done: true,
+					passenger: {
+						id: this.user.id,
+					},
 				},
 				relations: [
 					'jeep',

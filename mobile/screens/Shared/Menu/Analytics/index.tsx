@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Colors } from '../../../../constants';
 import { SessionPointContract } from '../../../../contracts/session-point.contract';
 import { handleErrors } from '../../../../helpers';
-import { useArray } from '../../../../hooks';
+import { useArray, useNullable } from '../../../../hooks';
 import haversine from 'haversine-distance';
 import { SessionContract } from '../../../../contracts/session.contract';
 import { flatten } from 'lodash';
@@ -16,6 +16,7 @@ type Props = {};
 const Analytics: FC<Props> = (props) => {
 	const [points, setPoints] = useArray<SessionPointContract>();
 	const [sessions, setSessions] = useArray<SessionContract>();
+	const [handle, setHandle] = useNullable<NodeJS.Timer>();
 
 	const fetch = async () => {
 		await Promise.all([getPoints(), getSessions()]);
@@ -51,6 +52,14 @@ const Analytics: FC<Props> = (props) => {
 
 	useEffect(() => {
 		fetch();
+
+		setHandle(setInterval(() => fetch(), 5000));
+
+		return () => {
+			if (handle) {
+				clearInterval(handle);
+			}
+		};
 		// eslint-ignore-next-line
 	}, []);
 

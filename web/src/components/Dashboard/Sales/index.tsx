@@ -61,7 +61,17 @@ const Sales: FC<Props> = (props) => {
 								<BarChart
 									data={jeeps?.map((jeep) => ({
 										...jeep,
-										passengers: jeep.passengers?.length || 0,
+										passengers: (() => {
+											const ids: number[] = [];
+
+											jeep.passengers?.forEach((passenger) => {
+												if (!ids.includes(passenger.passenger?.id!)) {
+													ids.push(passenger.passenger?.id!);
+												}
+											});
+
+											return ids.length;
+										})(),
 									}))}>
 									<CartesianGrid strokeDasharray='3 3' />
 									<XAxis dataKey='name' />

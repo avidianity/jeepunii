@@ -98,7 +98,7 @@ export class AnalyticsService {
 		}
 
 		return await this.jeep.all({
-			relations: ['passengers'],
+			relations: ['passengers', 'passengers.passenger'],
 		});
 	}
 

@@ -28,11 +28,23 @@ export class DriversService {
 	}
 
 	async getPassengersTotal(id: number) {
+		const user = await User.findOneOrFail(id, { relations: ['jeep'] });
+		const jeep = user.jeep;
+
 		const sessions = await Session.find({
-			relations: ['passengers', 'passengers.passenger', 'driver'],
+			where: {
+				passengers: [
+					{
+						jeep: {
+							id: jeep.id,
+						},
+					},
+				],
+			},
+			relations: ['passengers'],
 		});
 
-		return sessions.filter((session) => session.driver.id === id);
+		return sessions;
 	}
 
 	async makeSession(driver: User) {

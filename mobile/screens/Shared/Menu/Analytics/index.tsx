@@ -59,7 +59,7 @@ const Analytics: FC<Props> = (props) => {
 	const totalMeters = points.reduce((prev, point, index, points) => {
 		const next = points[index + 1];
 		if (next) {
-			return prev + haversine(point, next);
+			return prev + haversine(point, next) / 1000;
 		}
 		return prev;
 	}, 0);
@@ -84,7 +84,7 @@ const Analytics: FC<Props> = (props) => {
 					<Card.Title>Analytics</Card.Title>
 					<Card.Divider />
 					<View style={styles.row}>
-						<Text style={styles.text}>Total KMs Travelled: {totalMeters.toFixed(0).toNumber() / 1000}</Text>
+						<Text style={styles.text}>Total KMs Travelled: {totalMeters.toFixed(0).toNumber()}</Text>
 					</View>
 					<View style={styles.row}>
 						<Text style={styles.text}>Total Passengers: {passengers}</Text>

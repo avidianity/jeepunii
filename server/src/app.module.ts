@@ -18,7 +18,6 @@ import { LocationModule } from './location/location.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import mimeTypes from 'mime-types';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ScheduleModule as AppScheduleModule } from './schedule/schedule.module';
 
 @Module({
 	imports: [
@@ -116,7 +115,6 @@ import { ScheduleModule as AppScheduleModule } from './schedule/schedule.module'
 		SessionModule,
 		LocationModule,
 		AnalyticsModule,
-		AppScheduleModule,
 	],
 	providers: [],
 	exports: [],

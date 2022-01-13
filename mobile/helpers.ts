@@ -89,8 +89,13 @@ export async function getLocation(Location: typeof import('expo-location')) {
 	try {
 		return await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.BestForNavigation });
 	} catch (error) {
-		console.log(error);
-		throw error;
+		const location = await Location.getLastKnownPositionAsync();
+
+		if (!location) {
+			throw error;
+		}
+
+		return location;
 	}
 }
 

@@ -52,7 +52,7 @@ export class DriversService {
 
 		try {
 			const session = await Session.createQueryBuilder('session')
-				.where('session.driverID = :driverId', { driverId: driver.id })
+				.where('session.driverId = :driverId', { driverId: driver.id })
 				.where('DATE(session.createdAt) >= CURDATE()')
 				.leftJoinAndSelect('session.points', 'point')
 				.leftJoinAndSelect(
@@ -136,7 +136,7 @@ export class DriversService {
 		}
 
 		const session = await Session.createQueryBuilder('session')
-			.where('session.driverID = :driverId', { driverId: driver.id })
+			.where('session.driverId= :driverId', { driverId: driver.id })
 			.where('DATE(session.createdAt) >= CURDATE()')
 			.where('session.done = :done', { done: false })
 			.getCount();

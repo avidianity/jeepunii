@@ -94,12 +94,6 @@ const Sidebar: FC<Props> = (props) => {
 			title: 'Logs',
 			show: true,
 		},
-		// {
-		// 	url: url(routes.CHATS),
-		// 	icon: 'ti-comment',
-		// 	title: 'Chats',
-		// 	show: true,
-		// },
 		{
 			url: url(routes.ROUTES),
 			icon: 'ti-stats-up',
@@ -161,14 +155,6 @@ const Sidebar: FC<Props> = (props) => {
 					</div>
 				</div>
 				<ul className='sidebar-menu scrollable pos-r'>
-					<li className='nav-item mT-30'>
-						<Link className={`sidebar-link`} to={routes.DASHBOARD}>
-							<span className={`icon-holder`}>
-								<i className='c-blue-500 ti-home'></i>{' '}
-							</span>
-							<span className={`title`}>Dashboard</span>
-						</Link>
-					</li>
 					{links
 						.filter((link) => link.show)
 						.map((link, index) => (

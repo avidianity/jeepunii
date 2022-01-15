@@ -18,7 +18,7 @@ export class Session extends Model {
 		return ['driver', 'done'];
 	}
 
-	@ManyToOne(() => User, (user) => user.sessions)
+	@ManyToOne(() => User, (user) => user.sessions, { nullable: false })
 	driver: User;
 
 	@Column({ default: false })

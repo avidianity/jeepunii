@@ -29,16 +29,7 @@ export default function App() {
 	const [socket, setSocket] = useNullable<Socket>();
 	const state = State.getInstance();
 	const [_, setGranted] = useState(false);
-	const [online, setOnline] = useState(true);
-
-	const ping = async () => {
-		try {
-			const { data } = await axios.get<string>('/auth/ping');
-			setOnline(data === 'pong');
-		} catch (_) {
-			setOnline(false);
-		}
-	};
+	const [online, setOnline] = useState(false);
 
 	const setup = async () => {
 		if (await state.has('token')) {
@@ -54,7 +45,12 @@ export default function App() {
 		});
 
 		socket.on('connect', () => {
+			setOnline(true);
 			setSocket(socket);
+		});
+
+		socket.on('disconnect', () => {
+			setOnline(false);
 		});
 	};
 
@@ -77,7 +73,6 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		ping();
 		permissions();
 		const key = state.listen<string>('token', (token) => {
 			if (!socket) {

@@ -24,8 +24,6 @@ export type Passenger = {
 	online: boolean;
 };
 
-const id = String.random(10);
-
 const Jeep: FC<Props> = (props) => {
 	const { jeep } = useContext(JeepContext);
 	const { socket } = useContext(SocketContext);
@@ -35,6 +33,8 @@ const Jeep: FC<Props> = (props) => {
 	const [passengerHandle, setPassengerHandle] = useNullable<NodeJS.Timeout>();
 	const [granted, setGranted] = useState(false);
 	const [passengers, setPassengers] = useArray<Passenger>();
+	const [loc, setLoc] = useNullable<Location.LocationObject>();
+	const [message, setMessage] = useState('');
 
 	if (!socket) {
 		return null;
@@ -173,7 +173,7 @@ const Jeep: FC<Props> = (props) => {
 	};
 
 	const start = () => {
-		setHandle(setInterval(() => record(), 5000));
+		setHandle(setInterval(() => record(), 15000));
 		setPassengerHandle(setInterval(() => fetchPassengers(), 10000));
 	};
 
@@ -214,11 +214,16 @@ const Jeep: FC<Props> = (props) => {
 	useEffect(() => {
 		ask();
 		current();
-		Location.startLocationUpdatesAsync(id, { activityType: Location.ActivityType.AutomotiveNavigation });
+
+		const handle = setInterval(async () => {
+			setMessage('Fetching coordinates...');
+			setLoc(await getLocation(Location));
+			setMessage('Fetched');
+		}, 2000);
 
 		return () => {
+			clearInterval(handle);
 			clearHandles();
-			Location.stopLocationUpdatesAsync(id);
 			if (session) {
 				destroySessionSockets(session);
 			}
@@ -232,6 +237,9 @@ const Jeep: FC<Props> = (props) => {
 				<>
 					<Text h3>{jeep?.name}</Text>
 					<Text style={{ fontSize: 16 }}>Assigned: {dayjs(jeep?.updatedAt).fromNow()}</Text>
+					<Text>{message}</Text>
+					<Text>Latitude: {loc?.coords.latitude || 'N/A'}</Text>
+					<Text>Longitutde: {loc?.coords.longitude || 'N/A'}</Text>
 					<View style={{ marginTop: 20 }}>
 						{session ? (
 							<Current passengers={passengers} session={session} stop={stop} />

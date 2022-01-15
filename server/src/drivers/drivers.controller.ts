@@ -56,6 +56,7 @@ export class DriversController {
 					session,
 					lat: item.lat,
 					lon: item.lon,
+					jeep_id: session.driver.jeep.id,
 				}).save(),
 			),
 		);
@@ -74,6 +75,7 @@ export class DriversController {
 			session,
 			lat: data.lat,
 			lon: data.lon,
+			jeep_id: session.driver.jeep.id,
 		}).save();
 	}
 

@@ -38,7 +38,7 @@ const Passenger: FC<Props> = ({ style, passenger, session, onEnd }) => {
 	};
 
 	useEffect(() => {
-		setHandle(setInterval(getPoints, 30000));
+		setHandle(setInterval(() => getPoints(), 1000));
 		return () => {
 			if (handle) {
 				clearInterval(handle);

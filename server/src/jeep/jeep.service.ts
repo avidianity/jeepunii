@@ -63,6 +63,8 @@ export class JeepService implements EntityServiceContract<Jeep> {
 			);
 		}
 
+		const lastPoint = session.points.last();
+
 		if (
 			(await SessionPassenger.count({
 				where: {
@@ -77,19 +79,9 @@ export class JeepService implements EntityServiceContract<Jeep> {
 					},
 					done: false,
 				},
-			})) === 0
+			})) === 0 &&
+			lastPoint
 		) {
-			const lastPoint = await SessionPoint.findOneOrFail({
-				where: {
-					session: {
-						id: session.id,
-					},
-				},
-				order: {
-					createdAt: 'DESC',
-				},
-			});
-
 			await SessionPassenger.create({
 				passenger,
 				session,

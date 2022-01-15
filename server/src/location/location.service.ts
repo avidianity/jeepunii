@@ -5,6 +5,8 @@ import { lastValueFrom } from 'rxjs';
 import { LocationIQResponse } from 'src/interfaces/location-iq-response.interface';
 import { Location } from 'src/models/location.entity';
 import { Brackets, FindManyOptions, FindOneOptions } from 'typeorm';
+import { kdTree as KDTree } from 'kd-tree-javascript';
+import haversine from 'haversine-distance';
 
 @Injectable()
 export class LocationService {
@@ -41,36 +43,32 @@ export class LocationService {
 	}
 
 	async find(lat: number, lon: number) {
-		return await Location.createQueryBuilder('location')
-			.where(
-				new Brackets((query) => {
-					query
-						.where('location.lat_bound_start >= :lat_bound_start', {
-							lat_bound_start: lat,
-						})
-						.andWhere('location.lat_bound_end <= :lat_bound_end', {
-							lat_bound_end: lat,
-						})
-						.andWhere(
-							'location.lon_bound_start >= :lon_bound_start',
-							{
-								lon_bound_start: lon,
-							},
-						)
-						.andWhere('location.lat_bound_end <= :lon_bound_end', {
-							lon_bound_end: lon,
-						});
-				}),
-			)
-			.orWhere(
-				new Brackets((query) => {
-					query.where('location.lat = :lat AND location.lon = :lon', {
-						lat,
-						lon,
-					});
-				}),
-			)
-			.getMany();
+		const all = await Location.find();
+
+		const tree = new KDTree(
+			all.map((location) => ({
+				lat: location.lat,
+				lon: location.lon,
+			})),
+			(prev, next) => {
+				return haversine(prev, next);
+			},
+			['lat', 'lon'],
+		);
+
+		const results = tree
+			.nearest({ lat, lon }, 1)
+			.map(([location]) => location);
+
+		if (results.length > 0) {
+			const result = results.first()!;
+			return all.filter(
+				(location) =>
+					location.lat === result.lat && location.lon === result.lon,
+			);
+		}
+
+		return [];
 	}
 
 	async make(lat: number, lon: number) {

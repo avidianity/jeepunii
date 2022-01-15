@@ -9,6 +9,6 @@ export class Token extends Model {
 	@Column()
 	hash: string;
 
-	@ManyToOne(() => User, (user) => user.tokens)
+	@ManyToOne(() => User, (user) => user.tokens, { nullable: false })
 	user: User;
 }

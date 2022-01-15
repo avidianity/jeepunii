@@ -24,7 +24,9 @@ export class Jeep extends Model {
 	@Column()
 	plateNumber: string;
 
-	@ManyToOne(() => Cooperative, (cooperative) => cooperative.jeeps)
+	@ManyToOne(() => Cooperative, (cooperative) => cooperative.jeeps, {
+		nullable: false,
+	})
 	cooperative: Cooperative;
 
 	@OneToOne(() => User, (user) => user.jeep)

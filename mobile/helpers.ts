@@ -5,6 +5,7 @@ import qrcode from 'qrcode';
 import Toast from 'react-native-root-toast';
 import { SessionPointContract } from './contracts/session-point.contract';
 import haversine from 'haversine-distance';
+import { LocationAccuracy } from 'expo-location';
 
 dayjs.extend(relativeTime);
 
@@ -87,15 +88,12 @@ export function handleErrors(error: any) {
 
 export async function getLocation(Location: typeof import('expo-location')) {
 	try {
-		return await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.BestForNavigation });
+		return await Location.getCurrentPositionAsync({
+			distanceInterval: 100,
+			accuracy: LocationAccuracy.BestForNavigation,
+		});
 	} catch (error) {
-		const location = await Location.getLastKnownPositionAsync();
-
-		if (!location) {
-			throw error;
-		}
-
-		return location;
+		return null;
 	}
 }
 

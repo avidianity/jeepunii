@@ -98,7 +98,9 @@ export class AuthController {
 
 	@Get('/ping')
 	ping() {
-		return 'pong';
+		return {
+			data: 'pong',
+		};
 	}
 
 	@Post('/login')

@@ -36,21 +36,25 @@ const Analytics: FC<Props> = (props) => {
 
 	const getJeep = async () => {
 		try {
-			const token = await state.get('token');
-			const { data } = await axios.get<JeepContract>(`/jeeps/${user?.jeep?.id}`, { headers: { Authorization: `Bearer ${token}` } });
-			setPassengers(
-				(() => {
-					const ids: number[] = [];
+			const token = await state.get<string>('token');
+			if (token && user && user.jeep) {
+				const { data } = await axios.get<JeepContract>(`/jeeps/${user.jeep.id}`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				setPassengers(
+					(() => {
+						const ids: number[] = [];
 
-					data.passengers?.forEach((passenger) => {
-						if (!ids.includes(passenger.passenger?.id!)) {
-							ids.push(passenger.passenger?.id!);
-						}
-					});
+						data.passengers?.forEach((passenger) => {
+							if (!ids.includes(passenger.passenger?.id!)) {
+								ids.push(passenger.passenger?.id!);
+							}
+						});
 
-					return ids.length;
-				})()
-			);
+						return ids.length;
+					})()
+				);
+			}
 		} catch (error) {
 			console.log(error);
 		}

@@ -8,10 +8,12 @@ import { User } from './user.entity';
 
 @Entity()
 export class SessionPassenger extends Model {
-	@ManyToOne(() => User, (user) => user.rides)
+	@ManyToOne(() => User, (user) => user.rides, { nullable: false })
 	passenger: User;
 
-	@ManyToOne(() => Session, (session) => session.passengers)
+	@ManyToOne(() => Session, (session) => session.passengers, {
+		nullable: false,
+	})
 	session: Session;
 
 	@Column()

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, Session } from '@nestjs/common';
 import { EntityServiceContract } from 'src/interfaces/entity-service-contract.interface';
 import { SessionPoint } from 'src/models/session-point.entity';
+import { User } from 'src/models/user.entity';
 import { FindManyOptions } from 'typeorm';
 
 @Injectable()
@@ -13,18 +14,15 @@ export class PointService implements EntityServiceContract<SessionPoint> {
 	}
 
 	async getForUser(id: number) {
-		const points = await SessionPoint.find({
-			where: {
-				session: {
-					driver: {
-						id,
-					},
-				},
-			},
-			relations: ['session', 'session.driver'],
+		const user = await User.findOneOrFail(id, {
+			relations: ['jeep'],
 		});
 
-		return points.filter((point) => point.session.driver.id === id);
+		return await SessionPoint.find({
+			where: {
+				jeep_id: user.jeep.id,
+			},
+		});
 	}
 
 	async find(id: any) {

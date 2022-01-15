@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, Session } from '@nestjs/common';
+import dayjs from 'dayjs';
 import { EntityServiceContract } from 'src/interfaces/entity-service-contract.interface';
 import { SessionPoint } from 'src/models/session-point.entity';
 import { User } from 'src/models/user.entity';
@@ -23,6 +24,59 @@ export class PointService implements EntityServiceContract<SessionPoint> {
 				jeep_id: user.jeep.id,
 			},
 		});
+	}
+
+	async getForJeep(id: number) {
+		const all = await this.all({
+			where: {
+				jeep_id: id,
+			},
+		});
+
+		const byYear: Record<string, SessionPoint[]> = {};
+
+		all.forEach((item) => {
+			const date = dayjs(item.createdAt);
+
+			const year = date.format('YYYY');
+
+			if (!(year in byYear)) {
+				byYear[year] = [];
+			}
+
+			byYear[year].push(item);
+		});
+
+		const byMonth: Record<string, SessionPoint[]> = {};
+
+		for (const year in byYear) {
+			const items = byYear[year];
+
+			items.forEach((item) => {
+				const date = dayjs(item.createdAt);
+
+				const month = date.format('MMMM');
+
+				const key = `${month} ${year}`;
+
+				if (!(key in byMonth)) {
+					byMonth[key] = [];
+				}
+
+				byMonth[key].push(item);
+			});
+		}
+
+		const data: { month: string; data: SessionPoint[] }[] = [];
+
+		for (const month in byMonth) {
+			data.push({
+				month,
+				data: byMonth[month],
+			});
+		}
+
+		return data;
 	}
 
 	async find(id: any) {

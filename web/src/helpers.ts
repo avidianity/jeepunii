@@ -4,6 +4,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import qrcode from 'qrcode';
 import swal from 'sweetalert';
+import { SessionPointContract } from './contracts/session-point.contract';
+import haversine from 'haversine-distance';
 
 dayjs.extend(relativeTime);
 
@@ -215,4 +217,14 @@ const formatter = new Intl.NumberFormat('en-PH', {
 
 export function formatCurrency(value: number) {
 	return formatter.format(value).replace(/\D00(?=\D*$)/, '');
+}
+
+export function calculateDistanceFromPoints(points: SessionPointContract[]) {
+	return points.reduce((prev, point, index, points) => {
+		const next = points[index + 1];
+		if (next) {
+			return prev + haversine(point, next) / 1000;
+		}
+		return prev;
+	}, 0);
 }

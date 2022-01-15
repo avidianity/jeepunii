@@ -16,6 +16,11 @@ export class PointController {
 		return await this.point.getForUser(user.id);
 	}
 
+	@Get('/by-month')
+	async allByMonth() {
+		const all = await this.point.all();
+	}
+
 	@Get('/:id')
 	async show(@Param('id') id: number) {
 		return await this.point.find(id);

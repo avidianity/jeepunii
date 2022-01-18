@@ -53,23 +53,7 @@ export class DriversService {
 		}
 
 		try {
-			const session = await Session.createQueryBuilder('session')
-				.where('session.driverId = :driverId', { driverId: driver.id })
-				.where('DATE(session.createdAt) >= CURDATE()')
-				.leftJoinAndSelect('session.points', 'point')
-				.leftJoinAndSelect(
-					'session.passengers',
-					'session_passenger',
-					'session_passenger.done = :done',
-					{
-						done: false,
-					},
-				)
-				.leftJoinAndSelect('session_passenger.passenger', 'passenger')
-				.leftJoinAndSelect('session.driver', 'driver')
-				.leftJoinAndSelect('driver.picture', 'picture')
-				.leftJoinAndSelect('driver.jeep', 'jeep')
-				.getOneOrFail();
+			const session = await this.getSessionOrFail(driver);
 
 			if (session.done) {
 				session.done = false;
@@ -138,13 +122,12 @@ export class DriversService {
 			);
 		}
 
-		const session = await Session.createQueryBuilder('session')
-			.where('session.driverId = :driverId', { driverId: driver.id })
-			.where('DATE(session.createdAt) >= CURDATE()')
-			.where('session.done = :done', { done: false })
-			.getCount();
-
-		return session > 0;
+		try {
+			await this.getSessionOrFail(driver);
+			return true;
+		} catch (_) {
+			return false;
+		}
 	}
 
 	async assign(userID: number, jeepID: number) {

@@ -92,6 +92,7 @@ export class DriversService {
 					driver: {
 						id: driver.id,
 					},
+					done: false,
 				},
 				order: {
 					createdAt: 'DESC',

@@ -220,11 +220,13 @@ export function formatCurrency(value: number) {
 }
 
 export function calculateDistanceFromPoints(points: SessionPointContract[]) {
-	return points.reduce((prev, point, index, points) => {
+	const distance = points.reduce((prev, point, index, points) => {
 		const next = points[index + 1];
 		if (next) {
 			return prev + haversine(point, next) / 1000;
 		}
 		return prev;
 	}, 0);
+
+	return Number.isInteger(distance) ? distance : distance.toFixed(2);
 }

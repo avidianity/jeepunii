@@ -8,12 +8,22 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { HttpBearerGuard } from 'src/auth/http-bearer.guard';
+import { SessionPassenger } from 'src/models/session-passenger.entity';
 import { RolesEnum } from 'src/models/user.entity';
 import { SessionService } from './session.service';
 
 @Controller('sessions')
 export class SessionController {
 	constructor(protected session: SessionService) {}
+
+	@Get('passenger/:id/location')
+	async showSessionPassenger(@Param('id') id: number) {
+		const sessionPassenger = await SessionPassenger.findOneOrFail(id, {
+			relations: ['location'],
+		});
+
+		return sessionPassenger.location;
+	}
 
 	@Get('driver')
 	@UseGuards(HttpBearerGuard)

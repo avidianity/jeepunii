@@ -112,6 +112,10 @@ export class DriversService {
 				.leftJoinAndSelect('driver.jeep', 'jeep')
 				.getOneOrFail();
 
+			if (session.driver.id !== driver.id) {
+				return null;
+			}
+
 			return session;
 		} catch (_) {
 			return null;

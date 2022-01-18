@@ -75,9 +75,9 @@ export class JeepController {
 			);
 		}
 
-		const passengers = session.passengers.map(
-			(passenger) => passenger.passenger,
-		);
+		const passengers = session.passengers
+			.filter((passenger) => !passenger.done)
+			.map((passenger) => passenger.passenger);
 
 		const ids: number[] = [];
 

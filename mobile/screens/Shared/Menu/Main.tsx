@@ -133,7 +133,7 @@ const Main: FC<Props> = (props) => {
 					{user?.firstName} {user?.lastName}
 				</Text>
 				{user?.role === RolesEnum.DRIVER ? <Text>{user?.cooperative?.name}</Text> : null}
-				{user?.role === RolesEnum.PASSENGER ? <Text>₱{coins}</Text> : null}
+				{user?.role === RolesEnum.PASSENGER ? <Text>₱{Number.isInteger(coins) ? coins : coins.toFixed(2)}</Text> : null}
 				<Text>ID Number: #{`${user?.id}`.padStart(5, '0')}</Text>
 			</View>
 			<Divider style={{ backgroundColor: Colors.dark, height: 1, width: '75%', marginVertical: 12 }} />

@@ -93,6 +93,9 @@ export class DriversService {
 						id: driver.id,
 					},
 				},
+				order: {
+					createdAt: 'DESC',
+				},
 			});
 
 			session.passengers = session.passengers.filter(

@@ -61,7 +61,7 @@ export class User extends Model {
 	@Column()
 	password: string;
 
-	@Column('decimal', { default: 0 })
+	@Column('double precision', { default: 0 })
 	coins: number;
 
 	@Column({ type: 'enum', enum: RolesEnum, default: RolesEnum.PASSENGER })

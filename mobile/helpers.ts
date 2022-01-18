@@ -89,11 +89,10 @@ export function handleErrors(error: any) {
 export async function getLocation(Location: typeof import('expo-location')) {
 	try {
 		return await Location.getCurrentPositionAsync({
-			distanceInterval: 100,
 			accuracy: LocationAccuracy.BestForNavigation,
 		});
 	} catch (error) {
-		return null;
+		return await Location.getLastKnownPositionAsync();
 	}
 }
 

@@ -113,7 +113,6 @@ const List: FC<Props> = ({ type }) => {
 					issued: dayjs(user.createdAt).format('MMMM DD, YYYY hh:mm A'),
 					cooperative: user.cooperative?.name || 'N/A',
 					coins: formatCurrency(user.coins),
-					riding: user.riding ? <span className='badge badge-success'>Yes</span> : <span className='badge badge-info'>No</span>,
 					jeep: user.jeep?.name || 'N/A',
 					actions:
 						self?.id !== user.id ? (
@@ -384,10 +383,6 @@ function getColumnMap(type: RolesEnum, self: UserContract) {
 				{
 					Header: 'Credits',
 					accessor: 'coins',
-				},
-				{
-					Header: 'Riding',
-					accessor: 'riding',
 				},
 				{
 					Header: 'Issued',

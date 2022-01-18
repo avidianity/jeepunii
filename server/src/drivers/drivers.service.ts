@@ -95,6 +95,10 @@ export class DriversService {
 				},
 			});
 
+			session.passengers = session.passengers.filter(
+				(passengers) => !passengers.done,
+			);
+
 			if (!dayjs(session.createdAt).isToday()) {
 				return null;
 			}

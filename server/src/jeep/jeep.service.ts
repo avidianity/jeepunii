@@ -16,7 +16,7 @@ import { SessionPoint } from 'src/models/session-point.entity';
 import { Session } from 'src/models/session.entity';
 import { RolesEnum, User } from 'src/models/user.entity';
 import { SocketService } from 'src/ws/socket.service';
-import { FindManyOptions } from 'typeorm';
+import { Between, FindManyOptions } from 'typeorm';
 import { CoordinatesDTO } from './dto/coordinates.dto';
 import { CreateJeepDTO } from './dto/create-jeep.dto';
 import { UpdateJeepDTO } from './dto/update-jeep.dto';
@@ -160,21 +160,21 @@ export class JeepService implements EntityServiceContract<Jeep> {
 					'session.driver',
 					'session.driver.jeep',
 					'passenger',
+					'jeep',
 				],
 			},
 		);
 
 		const lastPoint = last(sessionPassenger.session.points);
 
-		const points = await SessionPoint.createQueryBuilder('point')
-			.where('point.sessionId = :sessionId', {
-				sessionId: sessionPassenger.session.id,
-			})
-			.where('point.id BETWEEN :start AND :end', {
-				start: sessionPassenger.startId,
-				end: lastPoint.id,
-			})
-			.getMany();
+		const points = await SessionPoint.find({
+			where: {
+				session: {
+					id: sessionPassenger.session.id,
+				},
+				id: Between(sessionPassenger.startId, lastPoint.id),
+			},
+		});
 
 		const distance = points.reduce((prev, point, index, points) => {
 			const next = points[index + 1];
@@ -186,7 +186,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 
 		const fare = (distance / 4) * 1.5 + 10;
 
-		passenger.coins -= fare >= 10 ? fare : 10;
+		passenger.coins = passenger.coins - (fare >= 10 ? fare : 10);
 		passenger.riding = false;
 		await passenger.save();
 

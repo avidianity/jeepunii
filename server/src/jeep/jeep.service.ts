@@ -14,7 +14,7 @@ import { Jeep } from 'src/models/jeep.entity';
 import { SessionPassenger } from 'src/models/session-passenger.entity';
 import { SessionPoint } from 'src/models/session-point.entity';
 import { Session } from 'src/models/session.entity';
-import { User } from 'src/models/user.entity';
+import { RolesEnum, User } from 'src/models/user.entity';
 import { SocketService } from 'src/ws/socket.service';
 import { FindManyOptions } from 'typeorm';
 import { CoordinatesDTO } from './dto/coordinates.dto';
@@ -101,6 +101,47 @@ export class JeepService implements EntityServiceContract<Jeep> {
 		return session;
 	}
 
+	async getPassengerSession(passenger: User) {
+		if (passenger?.role !== RolesEnum.PASSENGER) {
+			throw new BadRequestException('User is not a passenger.');
+		}
+
+		let sessionPassenger: SessionPassenger;
+
+		try {
+			sessionPassenger = await SessionPassenger.findOneOrFail({
+				where: {
+					passenger: {
+						id: passenger.id,
+					},
+					done: false,
+				},
+				relations: ['jeep', 'jeep.driver', 'jeep.driver.picture'],
+			});
+			passenger.riding = true;
+			await passenger.save();
+		} catch (error) {
+			passenger.riding = false;
+			await passenger.save();
+			throw error;
+		}
+
+		const { jeep } = sessionPassenger;
+		const { driver } = jeep;
+
+		const session = await this.driver.getSession(driver!);
+
+		if (!session) {
+			sessionPassenger.done = true;
+			passenger.riding = false;
+			await passenger.save();
+			await sessionPassenger.save();
+			throw new NotFoundException('Passenger has no current session.');
+		}
+
+		return { session, jeep, driver };
+	}
+
 	async unassignPassenger(jeep: Jeep, passenger: User, data: CoordinatesDTO) {
 		const sessionPassenger = await SessionPassenger.findOneOrFail(
 			{
@@ -118,6 +159,7 @@ export class JeepService implements EntityServiceContract<Jeep> {
 					'session.points',
 					'session.driver',
 					'session.driver.jeep',
+					'passenger',
 				],
 			},
 		);

@@ -27,7 +27,7 @@ const Travel: FC<Props> = (props) => {
 	const [locationGranted, setLocationGranted] = useState(false);
 	const [scannerGranted, setScannerGranted] = useState(false);
 	const [scanned, setScanned] = useState(false);
-	const { user, setUser } = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
 	const [riding, setRiding] = useState(user?.riding || false);
 	const [jeep, setJeep] = useNullable<JeepContract>();
 	const [session, setSession] = useNullable<SessionContract>();
@@ -101,7 +101,8 @@ const Travel: FC<Props> = (props) => {
 
 	const check = async () => {
 		try {
-			if (user?.riding) {
+			const { data } = await axios.get<UserContract>('/auth/check');
+			if (data.riding) {
 				const {
 					data: { driver, jeep, session },
 				} = await axios.get('/jeeps/passenger/current');
@@ -116,11 +117,6 @@ const Travel: FC<Props> = (props) => {
 				setRiding(false);
 			}
 		} catch (error) {
-			if (user) {
-				user.riding = false;
-				setUser(user);
-				setRiding(false);
-			}
 			console.log(error);
 		}
 	};

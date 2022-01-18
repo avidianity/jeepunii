@@ -126,47 +126,7 @@ export class JeepController {
 	async getPassengerCurrent(@Req() request: Request) {
 		const passenger = request.user;
 
-		if (passenger?.role !== RolesEnum.PASSENGER) {
-			throw new BadRequestException('User is not a passenger.');
-		}
-
-		if (!passenger.riding) {
-			throw new BadRequestException(
-				'Passenger is not currently riding a jeep.',
-			);
-		}
-		let sessionPassenger: SessionPassenger;
-
-		try {
-			sessionPassenger = await SessionPassenger.findOneOrFail({
-				where: {
-					passenger: {
-						id: passenger.id,
-					},
-					done: false,
-				},
-				relations: ['jeep', 'jeep.driver', 'jeep.driver.picture'],
-			});
-		} catch (error) {
-			passenger.riding = false;
-			await passenger.save();
-			throw error;
-		}
-
-		const { jeep } = sessionPassenger;
-		const { driver } = jeep;
-
-		const session = await this.driver.getSession(driver!);
-
-		if (!session) {
-			sessionPassenger.done = true;
-			passenger.riding = false;
-			await passenger.save();
-			await sessionPassenger.save();
-			throw new NotFoundException('Passenger has no current session.');
-		}
-
-		return { session, jeep, driver };
+		return this.jeep.getPassengerSession(passenger!);
 	}
 
 	@Post('/passenger/anonymous/in')
@@ -235,24 +195,26 @@ export class JeepController {
 			throw new BadRequestException('User is not a passenger.');
 		}
 
-		if (passenger.riding) {
-			throw new BadRequestException(
-				'Passenger is currently riding a jeep.',
-			);
-		}
-
 		if (passenger.coins < 15) {
 			throw new BadRequestException(
 				'Passenger does not have enough credits.',
 			);
 		}
 
-		const payload = this.crypto.decrypt(data.payload);
-		const jeep = await this.jeep.find(payload.id);
+		try {
+			return await this.jeep.getPassengerSession(passenger!);
+		} catch (_) {
+			const payload = this.crypto.decrypt(data.payload);
+			const jeep = await this.jeep.find(payload.id);
 
-		const session = await this.jeep.assignPassenger(jeep, passenger, data);
+			const session = await this.jeep.assignPassenger(
+				jeep,
+				passenger,
+				data,
+			);
 
-		return { session, jeep, driver: jeep.driver };
+			return { session, jeep, driver: jeep.driver };
+		}
 	}
 
 	@Post('/passenger/out')

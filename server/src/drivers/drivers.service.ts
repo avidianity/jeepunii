@@ -95,6 +95,10 @@ export class DriversService {
 				},
 			});
 
+			if (!dayjs(session.createdAt).isToday()) {
+				return null;
+			}
+
 			if (session.driver.id !== driver.id) {
 				return null;
 			}

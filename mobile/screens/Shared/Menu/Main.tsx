@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import axios from 'axios';
-import React, { FC, useContext, useMemo } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { Platform, TouchableHighlight } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 import { Button, Divider, Icon, Image, Text } from 'react-native-elements';
@@ -23,6 +23,7 @@ const Main: FC<Props> = (props) => {
 
 	const { user, setUser } = useContext(AuthContext);
 	const { online } = useContext(NetContext);
+	const [coins, setCoins] = useState(user?.coins || 0);
 
 	const items = [
 		() => (
@@ -100,6 +101,18 @@ const Main: FC<Props> = (props) => {
 		}
 	};
 
+	const checkCoins = async () => {
+		try {
+			const token = await state.get('token');
+			const { data } = await axios.get('/auth/check', { headers: `Bearer ${token}` });
+			setCoins(data.coins);
+		} catch (_) {}
+	};
+
+	useEffect(() => {
+		checkCoins();
+	}, []);
+
 	return (
 		<Container style={styles.container}>
 			<View style={styles.imageContainer}>
@@ -120,7 +133,7 @@ const Main: FC<Props> = (props) => {
 					{user?.firstName} {user?.lastName}
 				</Text>
 				{user?.role === RolesEnum.DRIVER ? <Text>{user?.cooperative?.name}</Text> : null}
-				{user?.role === RolesEnum.PASSENGER ? <Text>{formatCurrency(user?.coins)}</Text> : null}
+				{user?.role === RolesEnum.PASSENGER ? <Text>₱{coins}</Text> : null}
 				<Text>ID Number: #{`${user?.id}`.padStart(5, '0')}</Text>
 			</View>
 			<Divider style={{ backgroundColor: Colors.dark, height: 1, width: '75%', marginVertical: 12 }} />

@@ -4,14 +4,16 @@ import {
 	Injectable,
 	NotFoundException,
 } from '@nestjs/common';
-import { JeepService } from 'src/jeep/jeep.service';
 import { LogsService } from 'src/logs/logs.service';
 import { Jeep } from 'src/models/jeep.entity';
-import { SessionPassenger } from 'src/models/session-passenger.entity';
 import { Session } from 'src/models/session.entity';
 import { User } from 'src/models/user.entity';
 import { UserService } from 'src/user/user.service';
 import { SocketService } from 'src/ws/socket.service';
+import dayjs from 'dayjs';
+import isToday from 'dayjs/plugin/isToday';
+
+dayjs.extend(isToday);
 
 @Injectable()
 export class DriversService {
@@ -92,25 +94,22 @@ export class DriversService {
 		}
 
 		try {
-			const session = await Session.createQueryBuilder('session')
-				.where('session.driverId = :driverId', { driverId: driver.id })
-				.where('DATE(session.createdAt) >= CURDATE()')
-				.where('session.done = :done', { done: false })
-				.leftJoinAndSelect('session.points', 'point')
-				.leftJoinAndSelect(
-					'session.passengers',
-					'session_passenger',
-					'session_passenger.done = :done',
-					{
-						done: false,
+			const session = await Session.findOneOrFail({
+				relations: [
+					'points',
+					'passengers',
+					'passengers.passenger',
+					'passengers.location',
+					'driver',
+					'driver.jeep',
+					'driver.picture',
+				],
+				where: {
+					driver: {
+						id: driver.id,
 					},
-				)
-				.leftJoinAndSelect('session_passenger.passenger', 'passenger')
-				.leftJoinAndSelect('session_passenger.location', 'location')
-				.leftJoinAndSelect('session.driver', 'driver')
-				.leftJoinAndSelect('driver.picture', 'picture')
-				.leftJoinAndSelect('driver.jeep', 'jeep')
-				.getOneOrFail();
+				},
+			});
 
 			if (session.driver.id !== driver.id) {
 				return null;

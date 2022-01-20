@@ -83,6 +83,7 @@ export class DriversService {
 					'points',
 					'passengers',
 					'passengers.passenger',
+					'passengers.passenger.picture',
 					'passengers.location',
 					'driver',
 					'driver.jeep',

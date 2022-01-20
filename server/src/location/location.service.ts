@@ -113,6 +113,7 @@ export class LocationService {
 		fragments.pop();
 		fragments.pop();
 		fragments.pop();
+		fragments.pop();
 
 		const name = fragments.join(',');
 

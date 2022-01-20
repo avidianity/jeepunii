@@ -101,12 +101,6 @@ export class LocationService {
 	}
 
 	async make(lat: number, lon: number) {
-		const matches = await this.find(lat, lon);
-
-		if (matches.length > 0) {
-			return matches.first()!;
-		}
-
 		const response = await this.request(lat, lon);
 
 		let location = await Location.findOne({

@@ -14,6 +14,12 @@ export class LocationController {
 
 	@Post('/info')
 	async getInfo(@Body() data: InfoDTO) {
+		const results = await this.location.find(data.lat, data.lon);
+
+		if (results.length > 0) {
+			return results.first()!;
+		}
+
 		return await this.location.make(data.lat, data.lon);
 	}
 

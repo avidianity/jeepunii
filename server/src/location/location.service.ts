@@ -43,7 +43,36 @@ export class LocationService {
 	}
 
 	async find(lat: number, lon: number) {
-		const all = await Location.find();
+		const all = await Location.createQueryBuilder('location')
+			.where(
+				new Brackets((query) => {
+					query
+						.where('location.lat_bound_start >= :lat_bound_start', {
+							lat_bound_start: lat,
+						})
+						.andWhere('location.lat_bound_end <= :lat_bound_end', {
+							lat_bound_end: lat,
+						})
+						.andWhere(
+							'location.lon_bound_start >= :lon_bound_start',
+							{
+								lon_bound_start: lon,
+							},
+						)
+						.andWhere('location.lat_bound_end <= :lon_bound_end', {
+							lon_bound_end: lon,
+						});
+				}),
+			)
+			.orWhere(
+				new Brackets((query) => {
+					query.where('location.lat = :lat AND location.lon = :lon', {
+						lat,
+						lon,
+					});
+				}),
+			)
+			.getMany();
 
 		const tree = new KDTree(
 			all.map((location) => ({
@@ -57,7 +86,7 @@ export class LocationService {
 		);
 
 		const results = tree
-			.nearest({ lat, lon }, 1)
+			.nearest({ lat, lon }, 1, 50)
 			.map(([location]) => location);
 
 		if (results.length > 0) {
@@ -68,7 +97,7 @@ export class LocationService {
 			);
 		}
 
-		return [];
+		return all;
 	}
 
 	async make(lat: number, lon: number) {

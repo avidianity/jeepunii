@@ -1,15 +1,19 @@
 {
-  "build": {
-    "release": {},
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
-    }
-  },
-  "submit": {
-    "release": {}
-  },
-  "cli": {
-    "version": ">= 0.43.0"
-  }
+	"build": {
+		"release": {
+			"android": {
+				"buildType": "apk"
+			}
+		},
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal"
+		}
+	},
+	"submit": {
+		"release": {}
+	},
+	"cli": {
+		"version": ">= 0.43.0"
+	}
 }
